@@ -25,9 +25,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "deploy:host": "yarn build && firebase deploy --only hosting",
-    "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -46,6 +44,7 @@
   },
   "devDependencies": {
     "@storybook/addon-actions": "^5.3.19",
+    "@storybook/addon-info": "^5.3.19",
     "@storybook/addon-links": "^5.3.19",
     "@storybook/addons": "^5.3.19",
     "@storybook/preset-create-react-app": "^3.1.4",
@@ -72,11 +71,13 @@
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
     "prettier-stylelint": "^0.4.2",
+    "react-docgen-typescript-loader": "^3.7.2",
     "stylelint": "^13.6.1",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-standard": "^20.0.0",
     "stylelint-config-styled-components": "^0.1.1",
     "stylelint-order": "^4.1.0",
-    "stylelint-processor-styled-components": "^1.10.0"
+    "stylelint-processor-styled-components": "^1.10.0",
+    "ts-loader": "^8.0.1"
   }
 }
