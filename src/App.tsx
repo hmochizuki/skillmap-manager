@@ -1,26 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { FC } from "react";
+import { Redirect, Route, Switch } from "react-router";
+import { CssBaseline } from "@material-ui/core";
+import Home from "components/organisms/Home";
+import Layout from "components/common/Layout";
+import routes from "./routes";
+import "./App.css";
 
-function App() {
+const App: FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <CssBaseline />
+      <Layout>
+        <Switch>
+          <Route path={routes.home} component={Home} exact />
+          <Redirect to={routes.home} />
+        </Switch>
+      </Layout>
+    </>
   );
-}
+};
 
 export default App;
