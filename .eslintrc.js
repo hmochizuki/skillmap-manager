@@ -153,6 +153,7 @@ module.exports = {
       },
     ],
     'import/prefer-default-export': 'off',
+    'no-empty-pattern': 'warn',
   },
   settings: {
     'import/parsers': {
