@@ -40,7 +40,7 @@ type Props = {
   open: boolean;
 };
 
-function AppBar({ handleDrawerOpen, open }: Props) {
+const AppBar: React.FC<Props> = ({ handleDrawerOpen, open }) => {
   const classes = useStyles();
 
   return (
@@ -68,6 +68,6 @@ function AppBar({ handleDrawerOpen, open }: Props) {
       </Toolbar>
     </BaseAppBar>
   );
-}
+};
 
 export default memo(AppBar);

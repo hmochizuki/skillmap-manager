@@ -6,33 +6,33 @@ import List from "components/common/atoms/List";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import CheckBoxIcon from "@material-ui/icons/CheckBox";
-import PersonIcon from "@material-ui/icons/AccountBox";
-import SettingsIcon from "@material-ui/icons/Settings";
-import TimelineIcon from "@material-ui/icons/TrendingUp";
-import EqualizerIcon from "@material-ui/icons/Equalizer";
-import HelpIcon from "@material-ui/icons/Help";
+import Icon from "components/common/atoms/Icon";
 import { drawerWidth } from "./constants";
 
 const contentMenus = [
   {
+    title: "Edit",
+    icon: <Icon name="edit" />,
+    text: "Edit",
+  },
+  {
     title: "MyCheckBox",
-    icon: <CheckBoxIcon />,
+    icon: <Icon name="checkbox" />,
     text: "MyCheckBox",
   },
   {
     title: "MyGraphs",
-    icon: <PersonIcon />,
+    icon: <Icon name="mySkillmap" />,
     text: "MyGraphs",
   },
   {
     title: "TeamGraphs",
-    icon: <EqualizerIcon />,
+    icon: <Icon name="teamSkillmap" />,
     text: "TeamGraphs",
   },
   {
     title: "TimelineGraphs",
-    icon: <TimelineIcon />,
+    icon: <Icon name="timelineGraphs" />,
     text: "TimelineGraphs",
   },
 ];
@@ -40,12 +40,12 @@ const contentMenus = [
 const settingMenus = [
   {
     title: "BaseSettings",
-    icon: <SettingsIcon />,
+    icon: <Icon name="settings" />,
     text: "BaseSettings",
   },
   {
     title: "Help",
-    icon: <HelpIcon />,
+    icon: <Icon name="help" />,
     text: "Help",
   },
 ];
@@ -55,7 +55,7 @@ type Props = {
   open: boolean;
 };
 
-function Drawer({ handleDrawerClose, open }: Props) {
+const Drawer: React.FC<Props> = ({ handleDrawerClose, open }) => {
   const useStyles = makeStyles((theme: Theme) =>
     createStyles({
       root: {
@@ -125,6 +125,6 @@ function Drawer({ handleDrawerClose, open }: Props) {
       <List items={settingMenus} />
     </BaseDrawer>
   );
-}
+};
 
 export default memo(Drawer);

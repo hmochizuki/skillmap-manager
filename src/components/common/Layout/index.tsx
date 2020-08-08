@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function Layout({ children }: any) {
+export default function Layout({ children }: { children: JSX.Element }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
