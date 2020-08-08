@@ -14,7 +14,7 @@ type Props = {
   items: Array<Item>;
 };
 
-const List = ({ items }: Props) => (
+const List: React.FC<Props> = ({ items }) => (
   <BaseList>
     {items.map(({ title, icon, text }) => (
       <ListItem key={title} button>
@@ -22,30 +22,6 @@ const List = ({ items }: Props) => (
         {text && <ListItemText primary={text} />}
       </ListItem>
     ))}
-    {/* <ListItem button key="text">
-      <ListItemIcon>
-        <CheckBoxIcon />
-      </ListItemIcon>
-      <ListItemText primary="text" />
-    </ListItem>
-    <ListItem button key="text">
-      <ListItemIcon>
-        <PersonIcon />
-      </ListItemIcon>
-      <ListItemText primary="text" />
-    </ListItem>
-    <ListItem button key="analytics">
-      <ListItemIcon>
-        <EqualizerIcon />
-      </ListItemIcon>
-      <ListItemText primary="analytics" />
-    </ListItem>
-    <ListItem button key="hoge">
-      <ListItemIcon>
-        <TimelineIcon />
-      </ListItemIcon>
-      <ListItemText primary="hoge" />
-    </ListItem> */}
   </BaseList>
 );
 
