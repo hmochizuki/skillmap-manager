@@ -1,15 +1,11 @@
 import React, { memo } from "react";
-import Chip from "components/common/atoms/Chip";
 import { makeStyles, createStyles } from "@material-ui/core";
 import TextField from "components/common/atoms/TextField";
-import IconButton from "components/common/atoms/IconButton";
 import { SkillMap } from "types/skillmap";
+import HeaderChips from "components/common/molecules/HeaderChips";
 
 const useStyles = makeStyles(() =>
   createStyles({
-    header: {
-      display: "flex",
-    },
     chips: {
       display: "flex",
       flexGrow: 3,
@@ -42,29 +38,14 @@ type Props = {
 
 const Manage: React.FC<Props> = ({ skillmap }) => {
   const classes = useStyles();
+  const chips = skillmap.map((e) => ({
+    label: e.label,
+    handleClick: () => {},
+  }));
 
   return (
     <>
-      <div className={classes.header}>
-        <div className={classes.chips}>
-          {skillmap.map((e) => (
-            <div key={e.id} className={classes.chip}>
-              <Chip
-                variant="default"
-                size="medium"
-                handleClick={() => {}}
-                label={e.label}
-              />
-            </div>
-          ))}
-          <IconButton
-            iconName="add"
-            label="add"
-            size="small"
-            onClick={() => {}}
-          />
-        </div>
-      </div>
+      <HeaderChips chips={chips} edit />
       <section className={classes.questions}>
         {skillmap.map((map) => {
           return (
@@ -97,8 +78,6 @@ const Manage: React.FC<Props> = ({ skillmap }) => {
           );
         })}
       </section>
-
-      <section />
     </>
   );
 };

@@ -7,35 +7,9 @@ import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import Icon from "components/common/atoms/Icon";
+import { useHistory } from "react-router";
+import routes from "routes";
 import { drawerWidth } from "./constants";
-
-const contentMenus = [
-  {
-    title: "Edit",
-    icon: <Icon name="edit" />,
-    text: "Edit",
-  },
-  {
-    title: "MyCheckBox",
-    icon: <Icon name="checkbox" />,
-    text: "MyCheckBox",
-  },
-  {
-    title: "MyGraphs",
-    icon: <Icon name="mySkillmap" />,
-    text: "MyGraphs",
-  },
-  {
-    title: "TeamGraphs",
-    icon: <Icon name="teamSkillmap" />,
-    text: "TeamGraphs",
-  },
-  {
-    title: "TimelineGraphs",
-    icon: <Icon name="timelineGraphs" />,
-    text: "TimelineGraphs",
-  },
-];
 
 const settingMenus = [
   {
@@ -99,6 +73,41 @@ const Drawer: React.FC<Props> = ({ handleDrawerClose, open }) => {
     })
   );
   const classes = useStyles();
+  const history = useHistory();
+
+  const contentMenus = [
+    {
+      title: "Edit",
+      icon: <Icon name="edit" />,
+      text: "Edit",
+      handleClick: () => {
+        history.push(routes.manage);
+      },
+    },
+    {
+      title: "MyCheckBox",
+      icon: <Icon name="checkbox" />,
+      text: "MyCheckBox",
+      handleClick: () => {
+        history.push(routes.answer);
+      },
+    },
+    {
+      title: "MyGraphs",
+      icon: <Icon name="mySkillmap" />,
+      text: "MyGraphs",
+    },
+    {
+      title: "TeamGraphs",
+      icon: <Icon name="teamSkillmap" />,
+      text: "TeamGraphs",
+    },
+    {
+      title: "TimelineGraphs",
+      icon: <Icon name="timelineGraphs" />,
+      text: "TimelineGraphs",
+    },
+  ];
 
   return (
     <BaseDrawer
