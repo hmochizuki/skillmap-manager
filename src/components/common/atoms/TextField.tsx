@@ -3,9 +3,11 @@ import { TextField as BaseTextField } from "@material-ui/core";
 
 type props = {
   id: string;
-  label: string;
+  label?: string;
   defaultValue?: string;
+  placeholder?: string;
   helperText?: string;
+  fullWidth: boolean;
   error?: boolean;
 };
 
@@ -13,7 +15,9 @@ const TextField: FC<props> = ({
   id,
   label,
   defaultValue,
+  placeholder,
   helperText,
+  fullWidth,
   error = false,
 }) => {
   return (
@@ -21,7 +25,12 @@ const TextField: FC<props> = ({
       id={id}
       label={label}
       defaultValue={defaultValue}
+      placeholder={placeholder}
       helperText={helperText}
+      InputLabelProps={{
+        shrink: true,
+      }}
+      fullWidth={fullWidth}
       error={error}
     />
   );

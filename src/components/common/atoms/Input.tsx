@@ -6,6 +6,7 @@ type props = {
   placeholder?: string;
   defaultValue?: string;
   disabled?: boolean;
+  fullWidth?: boolean;
   error?: boolean;
 };
 
@@ -14,6 +15,7 @@ const Input: FC<props> = ({
   placeholder,
   defaultValue,
   disabled = false,
+  fullWidth = false,
   error = false,
 }) => {
   return (
@@ -22,6 +24,7 @@ const Input: FC<props> = ({
       placeholder={placeholder}
       defaultValue={defaultValue}
       disabled={disabled}
+      fullWidth={fullWidth}
       error={error}
     />
   );

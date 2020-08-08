@@ -7,7 +7,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Typography from "@material-ui/core/Typography";
 
-const useStyles = makeStyles(({}) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
       maxWidth: 345,
@@ -58,7 +58,6 @@ export default function RecipeReviewCard({
   footerItems,
 }: Props) {
   const classes = useStyles();
-  console.log({ header });
 
   return (
     <Card className={classes.root}>

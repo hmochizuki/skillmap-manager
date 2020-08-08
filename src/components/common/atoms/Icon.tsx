@@ -10,6 +10,7 @@ import Create from "@material-ui/icons/Create";
 import Error from "@material-ui/icons/ErrorOutline";
 import Navigation from "@material-ui/icons/NavigateNext";
 import Expand from "@material-ui/icons/ExpandMore";
+import AddCircle from "@material-ui/icons/AddCircle";
 
 export type IconName =
   | "edit"
@@ -22,6 +23,7 @@ export type IconName =
   | "leftClose"
   | "navigation"
   | "expand"
+  | "add"
   | "error";
 
 type Props = {
@@ -51,6 +53,8 @@ const Icon: React.FC<Props> = ({ name, size }) => {
       return <Navigation fontSize={size} />;
     case "expand":
       return <Expand fontSize={size} />;
+    case "add":
+      return <AddCircle fontSize={size} />;
     default:
       return <Error fontSize={size} />;
   }
