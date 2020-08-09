@@ -4,10 +4,10 @@ import NavCard from "./NavCard";
 
 const cardProps = {
   header: {
-    title: "管理・編集する",
+    title: "ワークシートを編集",
     subTitle: "サブタイトル",
   },
-  navigateTo: routes.manage,
+  navigateTo: routes.workSheetManage,
   media: {
     title: "イメージタイトル",
     path: "",

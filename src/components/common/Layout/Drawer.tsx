@@ -81,7 +81,7 @@ const Drawer: React.FC<Props> = ({ handleDrawerClose, open }) => {
       icon: <Icon name="edit" />,
       text: "Edit",
       handleClick: () => {
-        history.push(routes.manage);
+        history.push(routes.workSheetManage);
       },
     },
     {
@@ -89,7 +89,7 @@ const Drawer: React.FC<Props> = ({ handleDrawerClose, open }) => {
       icon: <Icon name="checkbox" />,
       text: "MyCheckBox",
       handleClick: () => {
-        history.push(routes.answer);
+        history.push(routes.workSheetAnswer);
       },
     },
     {

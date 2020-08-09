@@ -15,8 +15,11 @@ const App: FC = () => {
       <Layout>
         <Switch>
           <Route path={routes.home} component={Home} exact />
-          <Route path={routes.manage} component={Manage} />
-          <Route path={routes.answer} component={Answer} />
+          <Route path={routes.workSheet}>
+            <Route path={routes.workSheetManage} component={Manage} />
+            <Route path={routes.workSheetAnswer} component={Answer} />
+            <Redirect to={routes.workSheetManage} />
+          </Route>
           <Redirect to={routes.home} />
         </Switch>
       </Layout>

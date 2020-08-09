@@ -1,7 +1,10 @@
+const workSheet = "/worksheet";
+
 const routes = {
   home: "/",
-  manage: "/manage",
-  answer: "/answer",
+  workSheet,
+  workSheetManage: `${workSheet}/manage`,
+  workSheetAnswer: `${workSheet}/answer`,
 };
 
 export default routes;
