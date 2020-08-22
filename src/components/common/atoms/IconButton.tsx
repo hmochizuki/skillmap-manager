@@ -1,6 +1,8 @@
 import BaseIconButton from "@material-ui/core/IconButton";
 import React, { FC, memo } from "react";
 import Icon, { IconName } from "components/common/atoms/Icon";
+import { makeStyles, createStyles } from "@material-ui/core";
+import clsx from "clsx";
 
 type props = {
   label: string;
@@ -8,7 +10,16 @@ type props = {
   size?: "small" | "large";
   onClick: () => void;
   iconName: IconName;
+  className?: any; // TODO
 };
+
+const useStyles = makeStyles(() =>
+  createStyles({
+    icon: {
+      padding: 0,
+    },
+  })
+);
 
 const IconButton: FC<props> = ({
   label,
@@ -16,9 +27,17 @@ const IconButton: FC<props> = ({
   iconName,
   size,
   onClick,
+  className,
 }) => {
+  const classes = useStyles();
+
   return (
-    <BaseIconButton aria-label={label} disabled={disabled} onClick={onClick}>
+    <BaseIconButton
+      aria-label={label}
+      disabled={disabled}
+      onClick={onClick}
+      className={clsx(classes.icon, className)}
+    >
       <Icon name={iconName} size={size} />
     </BaseIconButton>
   );

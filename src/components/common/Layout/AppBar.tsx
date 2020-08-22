@@ -3,11 +3,10 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import BaseAppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
 import routeNames from "router/routeNames";
+import IconButton from "../atoms/IconButton";
 
 const drawerWidth = 240;
 
@@ -31,10 +30,17 @@ const useStyles = makeStyles((theme: Theme) =>
     menuButton: {
       marginRight: 36,
     },
+    signoutButton: {
+      marginRight: 0,
+      marginLeft: "auto",
+    },
     hide: {
       display: "none",
     },
     title: {
+      color: "#fff",
+    },
+    icon: {
       color: "#fff",
     },
   })
@@ -57,21 +63,24 @@ const AppBar: React.FC<Props> = ({ handleDrawerOpen, open }) => {
     >
       <Toolbar>
         <IconButton
-          color="inherit"
-          aria-label="open drawer"
+          label="appBarMenu"
+          iconName="menu"
           onClick={handleDrawerOpen}
-          edge="start"
-          className={clsx(classes.menuButton, {
+          className={clsx(classes.icon, classes.menuButton, {
             [classes.hide]: open,
           })}
-        >
-          <MenuIcon />
-        </IconButton>
+        />
         <Link to={routeNames.home} className={classes.title}>
           <Typography variant="h6" noWrap>
             Skill Map Manager
           </Typography>
         </Link>
+        <IconButton
+          label="appBarSignout"
+          iconName="signout"
+          onClick={() => {}}
+          className={clsx(classes.icon, classes.signoutButton)}
+        />
       </Toolbar>
     </BaseAppBar>
   );

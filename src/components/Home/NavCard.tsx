@@ -4,6 +4,7 @@ import IconButton from "components/common/atoms/IconButton";
 import { useHistory } from "react-router";
 import { PrimaryButton } from "components/common/atoms/Buttons";
 import { Link } from "react-router-dom";
+import { makeStyles, createStyles } from "@material-ui/core";
 
 type Props = {
   header: {
@@ -18,7 +19,16 @@ type Props = {
   contents: string;
 };
 
+const useStyles = makeStyles(() =>
+  createStyles({
+    icon: {
+      padding: "14px",
+    },
+  })
+);
+
 const NavCard: React.FC<Props> = ({ header, navigateTo, media, contents }) => {
+  const classes = useStyles();
   const history = useHistory();
   const navigate = useCallback(() => history.push(navigateTo), [
     navigateTo,
@@ -34,6 +44,7 @@ const NavCard: React.FC<Props> = ({ header, navigateTo, media, contents }) => {
           iconName="navigation"
           size="large"
           onClick={navigate}
+          className={classes.icon}
         />
       </Link>
     ),

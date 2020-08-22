@@ -12,6 +12,8 @@ import Error from "@material-ui/icons/ErrorOutline";
 import Navigation from "@material-ui/icons/NavigateNext";
 import Expand from "@material-ui/icons/ExpandMore";
 import AddCircle from "@material-ui/icons/AddCircle";
+import ExitToApp from "@material-ui/icons/ExitToApp";
+import Menu from "@material-ui/icons/Menu";
 
 export type IconName =
   | "edit"
@@ -25,6 +27,8 @@ export type IconName =
   | "navigation"
   | "expand"
   | "add"
+  | "signout"
+  | "menu"
   | "error";
 
 type Props = {
@@ -35,7 +39,7 @@ type Props = {
 const useStyles = makeStyles(() =>
   createStyles({
     icon: {
-      verticalAlign: "bottom",
+      verticalAlign: "center",
     },
   })
 );
@@ -65,6 +69,10 @@ const Icon: React.FC<Props> = ({ name, size }) => {
       return <Expand fontSize={size} className={classes.icon} />;
     case "add":
       return <AddCircle fontSize={size} className={classes.icon} />;
+    case "signout":
+      return <ExitToApp fontSize={size} className={classes.icon} />;
+    case "menu":
+      return <Menu fontSize={size} className={classes.icon} />;
     default:
       return <Error fontSize={size} className={classes.icon} />;
   }
