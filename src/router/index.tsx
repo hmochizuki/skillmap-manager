@@ -14,17 +14,25 @@ const Router: FC = () => {
 
   return (
     <Switch>
-      <Route path={routeNames.home} component={Home} exact />
-      <Route path={routeNames.workSheet}>
-        <Route path={routeNames.workSheetManage} component={Manage} />
-        <Route path={routeNames.workSheetAnswer} component={Answer} />
-        <Redirect to={routeNames.workSheetManage} />
-      </Route>
-      <Route path={routeNames.skillmap}>
-        <Route path={routeNames.privateMap} component={PrivateMap} />
-      </Route>
-      {!user && <Route path={routeNames.signin} component={Signin} />}
-      <Redirect to={routeNames.home} />
+      {user ? (
+        <>
+          <Route path={routeNames.home} component={Home} exact />
+          <Route path={routeNames.workSheet}>
+            <Route path={routeNames.workSheetManage} component={Manage} />
+            <Route path={routeNames.workSheetAnswer} component={Answer} />
+            <Redirect to={routeNames.workSheetManage} />
+          </Route>
+          <Route path={routeNames.skillmap}>
+            <Route path={routeNames.privateMap} component={PrivateMap} />
+          </Route>
+          <Redirect to={routeNames.home} />
+        </>
+      ) : (
+        <>
+          <Route path={routeNames.signin} component={Signin} />
+          <Redirect to={routeNames.signin} />
+        </>
+      )}
     </Switch>
   );
 };

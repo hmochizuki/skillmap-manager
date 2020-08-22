@@ -1,11 +1,12 @@
-import React, { memo } from "react";
+import React, { memo, useContext, useCallback } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import BaseAppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import routeNames from "router/routeNames";
+import { UserContext, AuthContext } from "contexts";
 import IconButton from "../atoms/IconButton";
 
 const drawerWidth = 240;
@@ -53,6 +54,13 @@ type Props = {
 
 const AppBar: React.FC<Props> = ({ handleDrawerOpen, open }) => {
   const classes = useStyles();
+  const { auth } = useContext(AuthContext);
+  const { user } = useContext(UserContext);
+  const history = useHistory();
+  const signOut = useCallback(() => {
+    if (auth && user) auth.signOut();
+    history.replace(routeNames.home);
+  }, [auth, user, history]);
 
   return (
     <BaseAppBar
@@ -78,7 +86,7 @@ const AppBar: React.FC<Props> = ({ handleDrawerOpen, open }) => {
         <IconButton
           label="appBarSignout"
           iconName="signout"
-          onClick={() => {}}
+          onClick={signOut}
           className={clsx(classes.icon, classes.signoutButton)}
         />
       </Toolbar>
