@@ -1,4 +1,6 @@
 import React, { memo } from "react";
+import { useHistory } from "react-router";
+import routes from "routes";
 import clsx from "clsx";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import BaseDrawer from "@material-ui/core/Drawer";
@@ -7,9 +9,7 @@ import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import Icon from "components/common/atoms/Icon";
-import { useHistory } from "react-router";
-import routes from "routes";
-import { drawerWidth } from "./constants";
+import { drawerWidth } from "components/common/layout/constants";
 
 const settingMenus = [
   {
@@ -93,9 +93,12 @@ const Drawer: React.FC<Props> = ({ handleDrawerClose, open }) => {
       },
     },
     {
-      title: "MyGraphs",
+      title: "privateMap",
       icon: <Icon name="mySkillmap" />,
-      text: "MyGraphs",
+      text: "privateMap",
+      handleClick: () => {
+        history.push(routes.privateMap);
+      },
     },
     {
       title: "TeamGraphs",

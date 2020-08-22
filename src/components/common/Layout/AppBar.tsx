@@ -6,6 +6,8 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
+import { Link } from "react-router-dom";
+import routes from "routes";
 
 const drawerWidth = 240;
 
@@ -31,6 +33,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     hide: {
       display: "none",
+    },
+    title: {
+      color: "#fff",
     },
   })
 );
@@ -62,9 +67,11 @@ const AppBar: React.FC<Props> = ({ handleDrawerOpen, open }) => {
         >
           <MenuIcon />
         </IconButton>
-        <Typography variant="h6" noWrap>
-          Skill Map Manager
-        </Typography>
+        <Link to={routes.home} className={classes.title}>
+          <Typography variant="h6" noWrap>
+            Skill Map Manager
+          </Typography>
+        </Link>
       </Toolbar>
     </BaseAppBar>
   );

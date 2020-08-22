@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import routes from "routes";
 import NavCard from "./NavCard";
 
@@ -15,7 +15,7 @@ const cardProps = {
   contents: "コンテンツ",
 };
 
-const App = () => (
+const Home = () => (
   <div className="App">
     <p>
       <NavCard {...cardProps} />
@@ -23,4 +23,4 @@ const App = () => (
   </div>
 );
 
-export default App;
+export default memo(Home);

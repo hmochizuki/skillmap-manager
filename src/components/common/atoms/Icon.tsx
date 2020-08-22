@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import { makeStyles, createStyles } from "@material-ui/core";
 import LeftClose from "@material-ui/icons/ChevronLeft";
 import CheckBox from "@material-ui/icons/CheckBox";
 import Account from "@material-ui/icons/AccountBox";
@@ -31,32 +32,41 @@ type Props = {
   size?: "small" | "large" | undefined;
 };
 
+const useStyles = makeStyles(() =>
+  createStyles({
+    icon: {
+      verticalAlign: "bottom",
+    },
+  })
+);
+
 const Icon: React.FC<Props> = ({ name, size }) => {
+  const classes = useStyles();
   switch (name) {
     case "edit":
-      return <Create fontSize={size} />;
+      return <Create fontSize={size} className={classes.icon} />;
     case "checkbox":
-      return <CheckBox fontSize={size} />;
+      return <CheckBox fontSize={size} className={classes.icon} />;
     case "mySkillmap":
-      return <Account fontSize={size} />;
+      return <Account fontSize={size} className={classes.icon} />;
     case "teamSkillmap":
-      return <Equalizer fontSize={size} />;
+      return <Equalizer fontSize={size} className={classes.icon} />;
     case "timelineGraphs":
-      return <Timeline fontSize={size} />;
+      return <Timeline fontSize={size} className={classes.icon} />;
     case "settings":
-      return <Settings fontSize={size} />;
+      return <Settings fontSize={size} className={classes.icon} />;
     case "help":
-      return <Help fontSize={size} />;
+      return <Help fontSize={size} className={classes.icon} />;
     case "leftClose":
-      return <LeftClose fontSize={size} />;
+      return <LeftClose fontSize={size} className={classes.icon} />;
     case "navigation":
-      return <Navigation fontSize={size} />;
+      return <Navigation fontSize={size} className={classes.icon} />;
     case "expand":
-      return <Expand fontSize={size} />;
+      return <Expand fontSize={size} className={classes.icon} />;
     case "add":
-      return <AddCircle fontSize={size} />;
+      return <AddCircle fontSize={size} className={classes.icon} />;
     default:
-      return <Error fontSize={size} />;
+      return <Error fontSize={size} className={classes.icon} />;
   }
 };
 
