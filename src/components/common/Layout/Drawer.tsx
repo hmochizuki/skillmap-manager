@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { useHistory } from "react-router";
-import routes from "routes";
+import routeNames from "router/routeNames";
 import clsx from "clsx";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import BaseDrawer from "@material-ui/core/Drawer";
@@ -81,7 +81,7 @@ const Drawer: React.FC<Props> = ({ handleDrawerClose, open }) => {
       icon: <Icon name="edit" />,
       text: "Edit",
       handleClick: () => {
-        history.push(routes.workSheetManage);
+        history.push(routeNames.workSheetManage);
       },
     },
     {
@@ -89,7 +89,7 @@ const Drawer: React.FC<Props> = ({ handleDrawerClose, open }) => {
       icon: <Icon name="checkbox" />,
       text: "MyCheckBox",
       handleClick: () => {
-        history.push(routes.workSheetAnswer);
+        history.push(routeNames.workSheetAnswer);
       },
     },
     {
@@ -97,7 +97,7 @@ const Drawer: React.FC<Props> = ({ handleDrawerClose, open }) => {
       icon: <Icon name="mySkillmap" />,
       text: "privateMap",
       handleClick: () => {
-        history.push(routes.privateMap);
+        history.push(routeNames.privateMap);
       },
     },
     {

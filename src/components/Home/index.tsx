@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import routes from "routes";
+import routeNames from "router/routeNames";
 import NavCard from "./NavCard";
 
 const cardProps = {
@@ -7,7 +7,7 @@ const cardProps = {
     title: "ワークシートを編集",
     subTitle: "サブタイトル",
   },
-  navigateTo: routes.workSheetManage,
+  navigateTo: routeNames.workSheetManage,
   media: {
     title: "イメージタイトル",
     path: "",

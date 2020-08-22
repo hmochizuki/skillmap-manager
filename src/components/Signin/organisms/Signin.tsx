@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useContext } from "react";
 import {
   makeStyles,
   createStyles,
@@ -8,8 +8,9 @@ import {
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "firebase";
 import { useHistory } from "react-router";
-import routes from "routes";
+import routeNames from "router/routeNames";
 import PageTitle from "components/common/atoms/PageTitle";
+import { UserContext } from "contexts";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -25,6 +26,7 @@ const useStyles = makeStyles(() =>
 const Signin: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
+  const { setCredential } = useContext(UserContext);
   const uiConfig: firebaseui.auth.Config = {
     signInFlow: "redirect",
     signInOptions: [
@@ -35,8 +37,8 @@ const Signin: React.FC = () => {
     ],
     callbacks: {
       signInSuccessWithAuthResult: (authResult, redirectUrl) => {
-        // setCredential(authResult as firebase.auth.UserCredential);
-        const dest = redirectUrl || routes.home;
+        setCredential(authResult as firebase.auth.UserCredential);
+        const dest = redirectUrl || routeNames.home;
         history.replace(dest);
 
         return false;

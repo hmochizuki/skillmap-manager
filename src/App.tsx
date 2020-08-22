@@ -1,34 +1,38 @@
-import React, { FC } from "react";
-import { Redirect, Route, Switch } from "react-router";
+import React, { FC, useState, useEffect } from "react";
+import firebase from "firebase/app";
+import "firebase/auth";
 import { CssBaseline } from "@material-ui/core";
-import Home from "components/Home";
-import Manage from "components/Manage";
-import Answer from "components/Answer";
-import PrivateMap from "components/PrivateMap";
-import Signin from "components/Signin";
 import Layout from "components/common/layout";
-import routes from "./routes";
+import { UserContext } from "contexts";
 import "./App.css";
+import Router from "router";
 
 const App: FC = () => {
+  const [user, setUser] = useState<firebase.User | null>(null);
+  const [
+    credential,
+    setCredential,
+  ] = useState<firebase.auth.UserCredential | null>(null);
+  const auth = firebase.auth();
+
+  const subscribeUser = auth.onAuthStateChanged(async (firebaseUser) => {
+    if (firebaseUser) {
+      setUser(firebaseUser);
+    } else setUser(null);
+  });
+
+  useEffect(() => {
+    return subscribeUser();
+  });
+
   return (
     <>
-      <CssBaseline />
-      <Layout>
-        <Switch>
-          <Route path={routes.home} component={Home} exact />
-          <Route path={routes.workSheet}>
-            <Route path={routes.workSheetManage} component={Manage} />
-            <Route path={routes.workSheetAnswer} component={Answer} />
-            <Redirect to={routes.workSheetManage} />
-          </Route>
-          <Route path={routes.skillmap}>
-            <Route path={routes.privateMap} component={PrivateMap} />
-          </Route>
-          <Route path={routes.signin} component={Signin} />
-          <Redirect to={routes.home} />
-        </Switch>
-      </Layout>
+      <UserContext.Provider value={{ user, credential, setCredential }}>
+        <CssBaseline />
+        <Layout>
+          <Router />
+        </Layout>
+      </UserContext.Provider>
     </>
   );
 };

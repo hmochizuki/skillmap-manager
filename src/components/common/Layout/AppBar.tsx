@@ -7,7 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
-import routes from "routes";
+import routeNames from "router/routeNames";
 
 const drawerWidth = 240;
 
@@ -67,7 +67,7 @@ const AppBar: React.FC<Props> = ({ handleDrawerOpen, open }) => {
         >
           <MenuIcon />
         </IconButton>
-        <Link to={routes.home} className={classes.title}>
+        <Link to={routeNames.home} className={classes.title}>
           <Typography variant="h6" noWrap>
             Skill Map Manager
           </Typography>

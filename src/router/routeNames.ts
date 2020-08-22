@@ -1,7 +1,7 @@
 const workSheet = "/worksheet";
 const skillmap = "/skillmap";
 
-const routes = {
+const routeNames = {
   home: "/",
   workSheet,
   workSheetManage: `${workSheet}/manage`,
@@ -11,4 +11,4 @@ const routes = {
   signin: "/signin",
 };
 
-export default routes;
+export default routeNames;
