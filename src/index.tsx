@@ -1,11 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
+import firebase from "firebase/app";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
 import thema from "components/theme";
+import firebaseConfig from "config/firebase";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
+
+firebase.initializeApp(firebaseConfig);
 
 ReactDOM.render(
   <React.StrictMode>

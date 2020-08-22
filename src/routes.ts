@@ -8,6 +8,7 @@ const routes = {
   workSheetAnswer: `${workSheet}/answer`,
   skillmap,
   privateMap: `${skillmap}/private`,
+  signin: "/signin",
 };
 
 export default routes;

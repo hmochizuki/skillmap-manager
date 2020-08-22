@@ -9,7 +9,7 @@ type props = {
 
 const PageTitle: FC<props> = ({ iconName, title }) => {
   return (
-    <Typography variant="h5" noWrap>
+    <Typography variant="h3" noWrap>
       {iconName && <Icon name={iconName} size="large" />}
       {title}
     </Typography>

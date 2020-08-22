@@ -5,6 +5,7 @@ import Home from "components/Home";
 import Manage from "components/Manage";
 import Answer from "components/Answer";
 import PrivateMap from "components/PrivateMap";
+import Signin from "components/Signin";
 import Layout from "components/common/layout";
 import routes from "./routes";
 import "./App.css";
@@ -24,6 +25,7 @@ const App: FC = () => {
           <Route path={routes.skillmap}>
             <Route path={routes.privateMap} component={PrivateMap} />
           </Route>
+          <Route path={routes.signin} component={Signin} />
           <Redirect to={routes.home} />
         </Switch>
       </Layout>
