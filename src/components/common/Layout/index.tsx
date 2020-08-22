@@ -1,5 +1,6 @@
-import React from "react";
+import React, { FC, useContext } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { UserContext } from "contexts";
 import AppBar from "./AppBar";
 import Drawer from "./Drawer";
 
@@ -23,8 +24,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function Layout({ children }: { children: JSX.Element }) {
+const Layout: FC = ({ children }) => {
   const classes = useStyles();
+  const { user } = useContext(UserContext);
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerClose = () => {
@@ -38,11 +40,13 @@ export default function Layout({ children }: { children: JSX.Element }) {
   return (
     <div className={classes.root}>
       <AppBar handleDrawerOpen={handleDrawerOpen} open={open} />
-      <Drawer handleDrawerClose={handleDrawerClose} open={open} />
+      {user && <Drawer handleDrawerClose={handleDrawerClose} open={open} />}
       <main className={classes.content}>
         <div className={classes.toolbar} />
         {children}
       </main>
     </div>
   );
-}
+};
+
+export default Layout;

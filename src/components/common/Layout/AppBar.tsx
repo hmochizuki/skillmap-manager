@@ -70,14 +70,16 @@ const AppBar: React.FC<Props> = ({ handleDrawerOpen, open }) => {
       })}
     >
       <Toolbar>
-        <IconButton
-          label="appBarMenu"
-          iconName="menu"
-          onClick={handleDrawerOpen}
-          className={clsx(classes.icon, classes.menuButton, {
-            [classes.hide]: open,
-          })}
-        />
+        {user && (
+          <IconButton
+            label="appBarMenu"
+            iconName="menu"
+            onClick={handleDrawerOpen}
+            className={clsx(classes.icon, classes.menuButton, {
+              [classes.hide]: open,
+            })}
+          />
+        )}
         <Link to={routeNames.home} className={classes.title}>
           <Typography variant="h6" noWrap>
             Skill Map Manager
