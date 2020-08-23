@@ -17,9 +17,7 @@ const cardProps = {
 
 const Home = () => (
   <div className="App">
-    <p>
-      <NavCard {...cardProps} />
-    </p>
+    <NavCard {...cardProps} />
   </div>
 );
 

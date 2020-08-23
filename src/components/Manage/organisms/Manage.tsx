@@ -35,14 +35,22 @@ const useStyles = makeStyles(() =>
 type Props = {
   categories: WorkSheetCollection["categories"];
   workSheet: WorkSheet;
+  categoryFilter: Record<string, boolean>;
+  changeCategoriesfilter: (category: string, filter: boolean) => void;
 };
 
-const Manage: React.FC<Props> = ({ categories, workSheet }) => {
+const Manage: React.FC<Props> = ({
+  categories,
+  workSheet,
+  categoryFilter,
+  changeCategoriesfilter,
+}) => {
   const classes = useStyles();
 
   const chips = categories.map((e) => ({
     label: e,
-    handleClick: () => {},
+    filtered: categoryFilter[e],
+    handleClick: () => changeCategoriesfilter(e, !categoryFilter[e]),
   }));
 
   return (
@@ -69,7 +77,7 @@ const Manage: React.FC<Props> = ({ categories, workSheet }) => {
                       <TextField
                         id={e}
                         defaultValue={e}
-                        placeholder="入力してくさい"
+                        placeholder="入力してください"
                         fullWidth
                       />
                     </div>

@@ -36,7 +36,7 @@ const Answer: React.FC<Props> = ({ categories, workSheet }) => {
 
   return (
     <>
-      <HeaderChips chips={chips} edit={false} />
+      {/* <HeaderChips chips={chips} edit={false} /> */}
       <section className={classes.questions}>
         {categories.map((category) => {
           return (

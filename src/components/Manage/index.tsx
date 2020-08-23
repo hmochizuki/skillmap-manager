@@ -1,5 +1,6 @@
-import React, { memo } from "react";
-import { WorkSheet } from "types/workSheet";
+import React, { memo, useReducer } from "react";
+import { WorkSheet, WorkSheetCollection } from "types/workSheet";
+import { Action } from "types/reducer";
 import Presentation from "./organisms/Manage";
 
 const categories = ["React", "Redux", "Others"];
@@ -17,8 +18,63 @@ const workSheet: WorkSheet = {
   ],
 };
 
+enum ActionTypes {
+  CHANGE_CATEGORY_FILTER = "CHANGE_CATEGORY_FILTER",
+}
+
+type ManageState = {
+  categories: WorkSheetCollection["categories"];
+  workSheet: WorkSheet;
+  categoryFilter: Record<string, boolean>;
+};
+
+type CategoryFilterAction = Action<
+  "CHANGE_CATEGORY_FILTER",
+  Record<string, boolean>
+>;
+
+const initialState = {
+  categories,
+  workSheet,
+  categoryFilter: {
+    React: true,
+    Redux: false,
+    Others: true,
+  },
+};
+
+const reducer: React.Reducer<ManageState, CategoryFilterAction> = (
+  state: ManageState,
+  { type, payload }: CategoryFilterAction
+) => {
+  switch (type) {
+    case ActionTypes.CHANGE_CATEGORY_FILTER:
+      return {
+        ...state,
+        categoryFilter: { ...state.categoryFilter, ...payload },
+      };
+    default:
+      throw new Error();
+  }
+};
+
 const ManagerContainer = () => {
-  return <Presentation workSheet={workSheet} categories={categories} />;
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const changeCategoriesfilter = (category: string, filter: boolean) => {
+    dispatch({
+      type: ActionTypes.CHANGE_CATEGORY_FILTER,
+      payload: { [category]: filter },
+    });
+  };
+
+  return (
+    <Presentation
+      workSheet={state.workSheet}
+      categories={state.categories}
+      categoryFilter={state.categoryFilter}
+      changeCategoriesfilter={changeCategoriesfilter}
+    />
+  );
 };
 
 export default memo(ManagerContainer);

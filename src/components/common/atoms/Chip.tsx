@@ -1,25 +1,11 @@
-import React, { memo, useState, useCallback } from "react";
+import React, { memo } from "react";
 import BaseChip from "@material-ui/core/Chip";
-
-type Variant = "default" | "outlined";
 
 type Props = {
   label: string;
   size: "medium" | "small";
-  variant: Variant;
+  variant?: "default" | "outlined";
   handleClick?: () => void;
-};
-
-const useChipClick = (defautlVariant: Variant, handleClick?: () => void) => {
-  const [v, setV] = useState(defautlVariant);
-  const handleClickWithSwaithVariant = useCallback(() => {
-    if (handleClick) {
-      setV(v === "default" ? "outlined" : "default");
-      handleClick();
-    }
-  }, [v, handleClick]);
-
-  return { v, handleClickWithSwaithVariant };
 };
 
 const Chip: React.FC<Props> = ({
@@ -28,18 +14,13 @@ const Chip: React.FC<Props> = ({
   variant = "default",
   handleClick,
 }) => {
-  const { v, handleClickWithSwaithVariant } = useChipClick(
-    variant,
-    handleClick
-  );
-
   return (
     <BaseChip
       color="primary"
-      variant={v}
+      variant={variant}
       size={size}
       label={label}
-      onClick={handleClickWithSwaithVariant}
+      onClick={handleClick}
     />
   );
 };

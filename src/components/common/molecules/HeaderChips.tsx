@@ -21,6 +21,7 @@ const useStyles = makeStyles(() =>
 type Props = {
   chips: Array<{
     label: string;
+    filtered?: boolean;
     handleClick: () => void;
   }>;
   edit: boolean;
@@ -31,22 +32,21 @@ const HeaderChips: React.FC<Props> = ({ chips, edit }) => {
 
   return (
     <div className={classes.chips}>
-      <Chip
-        variant="default"
-        size="medium"
-        handleClick={() => {}}
-        label="All"
-      />
-      {chips.map((e) => (
-        <div key={e.label} className={classes.chip}>
-          <Chip
-            variant="default"
-            size="medium"
-            handleClick={() => {}}
-            label={e.label}
-          />
-        </div>
-      ))}
+      <Chip size="medium" handleClick={() => {}} label="All" />
+      {chips.map((e) => {
+        const variant = e.filtered ? "outlined" : "default";
+
+        return (
+          <div key={e.label} className={classes.chip}>
+            <Chip
+              size="medium"
+              variant={variant}
+              handleClick={e.handleClick}
+              label={e.label}
+            />
+          </div>
+        );
+      })}
       {edit && (
         <IconButton
           iconName="add"
