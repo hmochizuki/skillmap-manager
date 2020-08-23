@@ -1,8 +1,8 @@
 import React, { memo } from "react";
 import { makeStyles, createStyles } from "@material-ui/core";
 import TextField from "components/common/atoms/TextField";
-import { SkillMap } from "types/skillmap";
 import HeaderChips from "components/common/molecules/HeaderChips";
+import { WorkSheetCollection, WorkSheet } from "types/workSheet";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -33,13 +33,15 @@ const useStyles = makeStyles(() =>
 );
 
 type Props = {
-  skillmap: SkillMap;
+  categories: WorkSheetCollection["categories"];
+  workSheet: WorkSheet;
 };
 
-const Manage: React.FC<Props> = ({ skillmap }) => {
+const Manage: React.FC<Props> = ({ categories, workSheet }) => {
   const classes = useStyles();
-  const chips = skillmap.map((e) => ({
-    label: e.label,
+
+  const chips = categories.map((e) => ({
+    label: e,
     handleClick: () => {},
   }));
 
@@ -47,26 +49,26 @@ const Manage: React.FC<Props> = ({ skillmap }) => {
     <>
       <HeaderChips chips={chips} edit />
       <section className={classes.questions}>
-        {skillmap.map((map) => {
+        {categories.map((category) => {
           return (
-            <div key={map.id} className={classes.labelGroup}>
-              {map.questions.map((e, i) => {
+            <div key={category} className={classes.labelGroup}>
+              {workSheet[category].map((e, i) => {
                 return (
                   <>
                     {i === 0 && (
-                      <div key={`${map.id}_new`} className={classes.question}>
+                      <div key={`${category}_new`} className={classes.question}>
                         <TextField
-                          id={e.id}
-                          label={map.label}
+                          id={e}
+                          label={category}
                           placeholder="入力してください"
                           fullWidth
                         />
                       </div>
                     )}
-                    <div key={e.id} className={classes.question}>
+                    <div key={e} className={classes.question}>
                       <TextField
-                        id={e.id}
-                        defaultValue={e.question}
+                        id={e}
+                        defaultValue={e}
                         placeholder="入力してくさい"
                         fullWidth
                       />

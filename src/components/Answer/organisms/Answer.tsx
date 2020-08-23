@@ -1,8 +1,8 @@
 import React, { memo } from "react";
 import { makeStyles, createStyles } from "@material-ui/core";
-import { SkillMap } from "types/skillmap";
 import HeaderChips from "components/common/molecules/HeaderChips";
 import Checkbox from "components/common/atoms/Checkbox";
+import { WorkSheet, WorkSheetCollection } from "types/workSheet";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -23,13 +23,14 @@ const useStyles = makeStyles(() =>
 );
 
 type Props = {
-  skillmap: SkillMap;
+  categories: WorkSheetCollection["categories"];
+  workSheet: WorkSheet;
 };
 
-const Answer: React.FC<Props> = ({ skillmap }) => {
+const Answer: React.FC<Props> = ({ categories, workSheet }) => {
   const classes = useStyles();
-  const chips = skillmap.map((e) => ({
-    label: e.label,
+  const chips = categories.map((e) => ({
+    label: e,
     handleClick: () => {},
   }));
 
@@ -37,17 +38,17 @@ const Answer: React.FC<Props> = ({ skillmap }) => {
     <>
       <HeaderChips chips={chips} edit={false} />
       <section className={classes.questions}>
-        {skillmap.map((map) => {
+        {categories.map((category) => {
           return (
-            <div key={map.id} className={classes.labelGroup}>
-              {map.questions.map((e, i) => {
+            <div key={category} className={classes.labelGroup}>
+              {workSheet[category].map((e, i) => {
                 return (
-                  <div key={e.id} className={classes.question}>
-                    <p>{i === 0 && map.label}</p>
+                  <div key={e} className={classes.question}>
+                    <p>{i === 0 && category}</p>
                     <Checkbox
-                      name={e.id}
+                      name={e}
                       checked={false}
-                      label={e.question}
+                      label={e}
                       onClick={() => {}}
                     />
                   </div>
