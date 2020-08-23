@@ -10,7 +10,7 @@ import firebase from "firebase";
 import { useHistory } from "react-router";
 import routeNames from "router/routeNames";
 import PageTitle from "components/common/atoms/PageTitle";
-import { UserContext, AuthContext } from "contexts";
+import { UserContext, FirebaseContext } from "contexts";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -26,7 +26,7 @@ const useStyles = makeStyles(() =>
 const Signin: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
-  const { auth } = useContext(AuthContext);
+  const { auth } = useContext(FirebaseContext);
   const { setCredential } = useContext(UserContext);
   const uiConfig: firebaseui.auth.Config = {
     signInFlow: "redirect",

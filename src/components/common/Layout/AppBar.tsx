@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
 import { Link, useHistory } from "react-router-dom";
 import routeNames from "router/routeNames";
-import { UserContext, AuthContext } from "contexts";
+import { UserContext, FirebaseContext } from "contexts";
 import IconButton from "../atoms/IconButton";
 
 const drawerWidth = 240;
@@ -54,7 +54,7 @@ type Props = {
 
 const AppBar: React.FC<Props> = ({ handleDrawerOpen, open }) => {
   const classes = useStyles();
-  const { auth } = useContext(AuthContext);
+  const { auth } = useContext(FirebaseContext);
   const { user } = useContext(UserContext);
   const history = useHistory();
   const signOut = useCallback(() => {

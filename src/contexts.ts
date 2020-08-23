@@ -1,11 +1,13 @@
 import { createContext } from "react";
 
-type AuthContextValue = {
+type FirebaseContextValue = {
   auth: firebase.auth.Auth | null;
+  db: firebase.firestore.Firestore | null;
 };
 
-export const AuthContext = createContext<AuthContextValue>({
+export const FirebaseContext = createContext<FirebaseContextValue>({
   auth: null,
+  db: null,
 });
 
 type UserContextValue = {
