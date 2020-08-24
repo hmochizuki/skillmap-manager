@@ -1,8 +1,8 @@
-import React, { memo } from "react";
+import React, { useCallback } from "react";
 import { makeStyles, createStyles } from "@material-ui/core";
-import TextField from "components/common/atoms/TextField";
 import HeaderChips from "components/common/molecules/HeaderChips";
 import { WorkSheetCollection, WorkSheet } from "types/workSheet";
+import TextFieldList from "../molecules/TextFieldList";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -25,10 +25,6 @@ const useStyles = makeStyles(() =>
       padding: "0 2vw",
       marginBottom: "2vh",
     },
-    question: {
-      width: "40vw",
-      marginBottom: "1vh",
-    },
   })
 );
 
@@ -37,6 +33,8 @@ type Props = {
   workSheet: WorkSheet;
   categoryFilter: Record<string, boolean>;
   changeCategoriesfilter: (category: string, filter: boolean) => void;
+  changeWorkSheet: (category: string, index: number, value: string) => void;
+  addNewQuestion: (category: string, value: string) => void;
 };
 
 const Manage: React.FC<Props> = ({
@@ -44,6 +42,8 @@ const Manage: React.FC<Props> = ({
   workSheet,
   categoryFilter,
   changeCategoriesfilter,
+  changeWorkSheet,
+  addNewQuestion,
 }) => {
   const classes = useStyles();
 
@@ -53,6 +53,22 @@ const Manage: React.FC<Props> = ({
     handleClick: () => changeCategoriesfilter(e, !categoryFilter[e]),
   }));
 
+  const handleNewText = useCallback(
+    (category: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      addNewQuestion(category, event.target.value);
+    },
+    [addNewQuestion]
+  );
+
+  const handleEditText = useCallback(
+    (category: string) => (index: number) => (
+      event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+      changeWorkSheet(category, index, event.target.value);
+    },
+    [changeWorkSheet]
+  );
+
   return (
     <>
       <HeaderChips chips={chips} edit />
@@ -60,30 +76,12 @@ const Manage: React.FC<Props> = ({
         {categories.map((category) => {
           return (
             <div key={category} className={classes.labelGroup}>
-              {workSheet[category].map((e, i) => {
-                return (
-                  <>
-                    {i === 0 && (
-                      <div key={`${category}_new`} className={classes.question}>
-                        <TextField
-                          id={e}
-                          label={category}
-                          placeholder="入力してください"
-                          fullWidth
-                        />
-                      </div>
-                    )}
-                    <div key={e} className={classes.question}>
-                      <TextField
-                        id={e}
-                        defaultValue={e}
-                        placeholder="入力してください"
-                        fullWidth
-                      />
-                    </div>
-                  </>
-                );
-              })}
+              <TextFieldList
+                label={category}
+                values={workSheet[category]}
+                handleChangeExsingText={handleEditText(category)}
+                handleChangeNewText={handleNewText(category)}
+              />
             </div>
           );
         })}
@@ -92,4 +90,4 @@ const Manage: React.FC<Props> = ({
   );
 };
 
-export default memo(Manage);
+export default Manage;

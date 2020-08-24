@@ -1,5 +1,6 @@
-import React, { memo } from "react";
+import React, { memo, useState, useCallback } from "react";
 import routeNames from "router/routeNames";
+import TextField from "components/common/atoms/TextField";
 import NavCard from "./NavCard";
 
 const cardProps = {
@@ -15,10 +16,21 @@ const cardProps = {
   contents: "コンテンツ",
 };
 
-const Home = () => (
-  <div className="App">
-    <NavCard {...cardProps} />
-  </div>
-);
+const Home = () => {
+  const [texts, setTexts] = useState([""]);
+  const handleChange = useCallback((e: any) => setTexts([e.target.value]), []);
+
+  return (
+    <div className="App">
+      <NavCard {...cardProps} />
+      <TextField
+        id="test"
+        name="name"
+        value={texts[0]}
+        handleChange={handleChange}
+      />
+    </div>
+  );
+};
 
 export default memo(Home);
