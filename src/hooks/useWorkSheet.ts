@@ -1,7 +1,7 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState, useCallback } from "react";
 import { FirebaseContext } from "contexts";
-import { getWorkSheet } from "util/workSheet";
-import { WorkSheetCollection } from "types/workSheet";
+import { getWorkSheet, updateWorkSheet } from "util/workSheet";
+import { WorkSheetCollection, WorkSheet } from "types/workSheet";
 
 const useWorkSheet = (id: string) => {
   const [workSheetCollection, setWorkSheetCollection] = useState<
@@ -10,28 +10,38 @@ const useWorkSheet = (id: string) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const firebaseRef = useRef(useContext(FirebaseContext));
+  const { db } = useContext(FirebaseContext);
+
+  const load = useCallback(async (loadEvent: () => Promise<any>) => {
+    setLoading(true);
+    try {
+      await loadEvent();
+      setError(null);
+    } catch (err) {
+      setError(err);
+    }
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
-    const { db } = firebaseRef.current;
     if (!db) throw new Error("firebase is not initialized");
+    load(async () => {
+      const workSheetData = await getWorkSheet(db, id);
+      setWorkSheetCollection(workSheetData);
+    });
+  }, [id, db, load]);
 
-    const load = async () => {
-      setLoading(true);
-      try {
-        const workSheetData = await getWorkSheet(db, id);
-        setWorkSheetCollection(workSheetData);
-        setError(null);
-      } catch (err) {
-        setError(err);
-      }
-      setLoading(false);
-    };
+  const updateWorkSheetCollection = useCallback(
+    (data: WorkSheet) => {
+      if (!db) throw new Error("firebase is not initialized");
+      load(async () => {
+        await updateWorkSheet(db, id, data);
+      });
+    },
+    [id, db, load]
+  );
 
-    load();
-  }, [id]);
-
-  return { workSheetCollection, loading, error };
+  return { workSheetCollection, updateWorkSheetCollection, loading, error };
 };
 
 export default useWorkSheet;

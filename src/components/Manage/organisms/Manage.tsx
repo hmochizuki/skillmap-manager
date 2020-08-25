@@ -42,8 +42,11 @@ type Props = {
   categoryFilter: Record<string, boolean>;
   changeCategoriesfilter: (category: string, filter: boolean) => void;
   changeWorkSheet: (category: string, index: number, value: string) => void;
-  addNewQuestion: (category: string, value: string) => void;
-  clickSubmitButton: (workSheet: WorkSheet) => void;
+  addNewTextField: (category: string) => void;
+  clickSubmitButton: (
+    categories: WorkSheetCollection["categories"],
+    workSheet: WorkSheet
+  ) => void;
 };
 
 const Manage: React.FC<Props> = ({
@@ -52,7 +55,7 @@ const Manage: React.FC<Props> = ({
   categoryFilter,
   changeCategoriesfilter,
   changeWorkSheet,
-  addNewQuestion,
+  addNewTextField,
   clickSubmitButton,
 }) => {
   const classes = useStyles();
@@ -62,13 +65,6 @@ const Manage: React.FC<Props> = ({
     filtered: categoryFilter[e],
     handleClick: () => changeCategoriesfilter(e, !categoryFilter[e]),
   }));
-
-  const handleNewText = useCallback(
-    (category: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      addNewQuestion(category, event.target.value);
-    },
-    [addNewQuestion]
-  );
 
   const handleEditText = useCallback(
     (category: string) => (index: number) => (
@@ -90,7 +86,7 @@ const Manage: React.FC<Props> = ({
                 label={category}
                 values={workSheet[category]}
                 handleChangeExsingText={handleEditText(category)}
-                handleChangeNewText={handleNewText(category)}
+                addNewTextField={() => addNewTextField(category)}
               />
             </div>
           );
@@ -99,7 +95,7 @@ const Manage: React.FC<Props> = ({
       <div className={classes.submitButton}>
         <PrimaryButton
           text="この内容で更新する"
-          onClick={() => clickSubmitButton(workSheet)}
+          onClick={() => clickSubmitButton(categories, workSheet)}
         />
       </div>
     </Paper>

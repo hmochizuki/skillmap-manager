@@ -11,6 +11,7 @@ type props = {
   helperText?: string;
   fullWidth?: boolean;
   handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   error?: boolean;
 };
 
@@ -24,6 +25,7 @@ const TextField: FC<props> = ({
   helperText,
   fullWidth,
   handleChange,
+  onFocus,
   error = false,
 }) => {
   return (
@@ -40,6 +42,7 @@ const TextField: FC<props> = ({
         shrink: true,
       }}
       onChange={handleChange}
+      onFocus={onFocus}
       fullWidth={fullWidth}
       error={error}
     />

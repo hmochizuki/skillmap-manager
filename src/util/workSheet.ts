@@ -23,5 +23,5 @@ export const updateWorkSheet = async (
 ): Promise<void> => {
   const workSheetRef = db.collection(collectionNames.workSheets).doc(id);
 
-  return workSheetRef.set(data, { merge: true });
+  return workSheetRef.set({ workSheet: data }, { merge: true });
 };

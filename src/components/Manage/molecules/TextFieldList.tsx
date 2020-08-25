@@ -17,14 +17,14 @@ type Props = {
   handleChangeExsingText: (
     index: number
   ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleChangeNewText: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  addNewTextField: () => void;
 };
 
 const TextFieldList: React.FC<Props> = ({
   label,
   values,
   handleChangeExsingText,
-  handleChangeNewText,
+  addNewTextField,
 }) => {
   const classes = useStyles();
 
@@ -32,6 +32,7 @@ const TextFieldList: React.FC<Props> = ({
     <>
       {values.map((value, i) => {
         const l = i === 0 ? label : "";
+        const onFocus = i === values.length - 1 ? addNewTextField : undefined;
 
         return (
           // eslint-disable-next-line react/no-array-index-key
@@ -44,20 +45,10 @@ const TextFieldList: React.FC<Props> = ({
                 value={value}
                 placeholder="入力してください"
                 handleChange={handleChangeExsingText(i)}
+                onFocus={onFocus}
                 fullWidth
               />
             </div>
-            {i === values.length - 1 && (
-              <div className={classes.text}>
-                <TextField
-                  id={`${label}_${values.length}`}
-                  name={`${label}_${values.length}`}
-                  placeholder="入力してください"
-                  handleChange={handleChangeNewText}
-                  fullWidth
-                />
-              </div>
-            )}
           </div>
         );
       })}
