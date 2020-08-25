@@ -1,8 +1,16 @@
-import React, { memo, useReducer, useEffect, useCallback } from "react";
+import React, {
+  memo,
+  useReducer,
+  useEffect,
+  useCallback,
+  useContext,
+} from "react";
 import { WorkSheet, WorkSheetCollection } from "types/workSheet";
 import { Action } from "types/reducer";
 import useWorkSheet from "hooks/useWorkSheet";
 import Progress from "components/common/atoms/Progress";
+import { updateWorkSheet } from "util/workSheet";
+import { FirebaseContext } from "contexts";
 import Presentation from "./organisms/Manage";
 
 enum ActionTypes {
@@ -89,6 +97,7 @@ const reducer: React.Reducer<
 
 const ManagerContainer = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const { db } = useContext(FirebaseContext);
 
   const { workSheetCollection } = useWorkSheet("AS_FE");
 
@@ -128,6 +137,11 @@ const ManagerContainer = () => {
     });
   }, []);
 
+  const clickSubmitButton = (workSheet: WorkSheet) => {
+    if (!db) return;
+    updateWorkSheet(db, "AS_FE", workSheet);
+  };
+
   return workSheetCollection ? (
     <Presentation
       workSheet={state.workSheet}
@@ -136,6 +150,7 @@ const ManagerContainer = () => {
       changeCategoriesfilter={changeCategoriesfilter}
       changeWorkSheet={changeWorkSheet}
       addNewQuestion={addNewQuestion}
+      clickSubmitButton={clickSubmitButton}
     />
   ) : (
     <Progress />

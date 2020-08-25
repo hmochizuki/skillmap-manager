@@ -1,11 +1,15 @@
 import React, { useCallback } from "react";
-import { makeStyles, createStyles } from "@material-ui/core";
+import { makeStyles, createStyles, Paper } from "@material-ui/core";
 import HeaderChips from "components/common/molecules/HeaderChips";
 import { WorkSheetCollection, WorkSheet } from "types/workSheet";
+import { PrimaryButton } from "components/common/atoms/Buttons";
 import TextFieldList from "../molecules/TextFieldList";
 
 const useStyles = makeStyles(() =>
   createStyles({
+    root: {
+      padding: "2vh 2vw",
+    },
     chips: {
       display: "flex",
       flexGrow: 3,
@@ -25,6 +29,10 @@ const useStyles = makeStyles(() =>
       padding: "0 2vw",
       marginBottom: "2vh",
     },
+    submitButton: {
+      display: "flex",
+      justifyContent: "flex-end",
+    },
   })
 );
 
@@ -35,6 +43,7 @@ type Props = {
   changeCategoriesfilter: (category: string, filter: boolean) => void;
   changeWorkSheet: (category: string, index: number, value: string) => void;
   addNewQuestion: (category: string, value: string) => void;
+  clickSubmitButton: (workSheet: WorkSheet) => void;
 };
 
 const Manage: React.FC<Props> = ({
@@ -44,6 +53,7 @@ const Manage: React.FC<Props> = ({
   changeCategoriesfilter,
   changeWorkSheet,
   addNewQuestion,
+  clickSubmitButton,
 }) => {
   const classes = useStyles();
 
@@ -70,7 +80,7 @@ const Manage: React.FC<Props> = ({
   );
 
   return (
-    <>
+    <Paper elevation={5} className={classes.root}>
       <HeaderChips chips={chips} edit />
       <section className={classes.questions}>
         {categories.map((category) => {
@@ -86,7 +96,13 @@ const Manage: React.FC<Props> = ({
           );
         })}
       </section>
-    </>
+      <div className={classes.submitButton}>
+        <PrimaryButton
+          text="この内容で更新する"
+          onClick={() => clickSubmitButton(workSheet)}
+        />
+      </div>
+    </Paper>
   );
 };
 

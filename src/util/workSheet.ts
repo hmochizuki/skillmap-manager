@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 import { collectionNames } from "config/collections";
-import { WorkSheetCollection } from "types/workSheet";
+import { WorkSheetCollection, WorkSheet } from "types/workSheet";
 
 export const getWorkSheet = async (
   db: firebase.firestore.Firestore,
@@ -19,10 +19,9 @@ export const getWorkSheet = async (
 export const updateWorkSheet = async (
   db: firebase.firestore.Firestore,
   id: string,
-  data: WorkSheetCollection,
-  merge: boolean
+  data: WorkSheet
 ): Promise<void> => {
   const workSheetRef = db.collection(collectionNames.workSheets).doc(id);
 
-  return workSheetRef.set(data, { merge });
+  return workSheetRef.set(data, { merge: true });
 };
