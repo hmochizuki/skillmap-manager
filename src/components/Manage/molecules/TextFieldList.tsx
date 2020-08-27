@@ -1,12 +1,18 @@
 import React, { memo } from "react";
 import { makeStyles, createStyles } from "@material-ui/core";
 import TextField from "components/common/atoms/TextField";
+import IconButton from "components/common/atoms/IconButton";
 
 const useStyles = makeStyles(() =>
   createStyles({
-    text: {
-      width: "40vw",
+    root: {
+      display: "flex",
+      alignItems: "center",
+    },
+    textField: {
+      marginRight: "1vw",
       marginBottom: "1vh",
+      width: "100%",
     },
   })
 );
@@ -18,6 +24,7 @@ type Props = {
     index: number
   ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
   addNewTextField: () => void;
+  removeTextField: (label: string, index: number) => () => void;
 };
 
 const TextFieldList: React.FC<Props> = ({
@@ -25,6 +32,7 @@ const TextFieldList: React.FC<Props> = ({
   values,
   handleChangeExsingText,
   addNewTextField,
+  removeTextField,
 }) => {
   const classes = useStyles();
 
@@ -33,11 +41,12 @@ const TextFieldList: React.FC<Props> = ({
       {values.map((value, i) => {
         const l = i === 0 ? label : "";
         const onFocus = i === values.length - 1 ? addNewTextField : undefined;
+        const showRemoveIcon = values.length > 1 && i < values.length - 1;
 
         return (
           // eslint-disable-next-line react/no-array-index-key
-          <div key={`${label}_${i}`}>
-            <div className={classes.text}>
+          <div key={`${label}_${i}`} className={classes.root}>
+            <div className={classes.textField}>
               <TextField
                 id={`${label}_${i}`}
                 name={`${label}_${i}`}
@@ -49,6 +58,13 @@ const TextFieldList: React.FC<Props> = ({
                 fullWidth
               />
             </div>
+            {showRemoveIcon ? (
+              <IconButton
+                iconName="delete"
+                label="delete worksheet"
+                onClick={removeTextField(label, i)}
+              />
+            ) : null}
           </div>
         );
       })}

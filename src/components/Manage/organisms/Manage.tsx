@@ -22,10 +22,9 @@ const useStyles = makeStyles(() =>
     },
     questions: {
       display: "flex",
-      flexWrap: "wrap",
+      flexDirection: "column",
     },
     labelGroup: {
-      display: "block",
       padding: "0 2vw",
       marginBottom: "2vh",
     },
@@ -43,6 +42,7 @@ type Props = {
   changeCategoriesfilter: (category: string, filter: boolean) => void;
   changeWorkSheet: (category: string, index: number, value: string) => void;
   addNewTextField: (category: string) => void;
+  removeWorkSheet: (label: string, index: number) => () => void;
   clickSubmitButton: (
     categories: WorkSheetCollection["categories"],
     workSheet: WorkSheet
@@ -56,6 +56,7 @@ const Manage: React.FC<Props> = ({
   changeCategoriesfilter,
   changeWorkSheet,
   addNewTextField,
+  removeWorkSheet,
   clickSubmitButton,
 }) => {
   const classes = useStyles();
@@ -87,6 +88,7 @@ const Manage: React.FC<Props> = ({
                 values={workSheet[category]}
                 handleChangeExsingText={handleEditText(category)}
                 addNewTextField={() => addNewTextField(category)}
+                removeTextField={removeWorkSheet}
               />
             </div>
           );

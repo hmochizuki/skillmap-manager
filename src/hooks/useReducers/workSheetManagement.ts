@@ -27,6 +27,11 @@ export const updateWorkSheet = createAction<{
   workSheet: WorkSheet;
 }>("UPDATE_WORKSHEET");
 
+export const removeWorkSheet = createAction<{
+  category: string;
+  index: number;
+}>("REMOVE_WORKSHEET");
+
 type State = {
   resource: {
     categories: WorkSheetCollection["categories"];
@@ -58,6 +63,7 @@ const reducer: React.Reducer<
   | ReturnType<typeof changeWorkSheet>
   | ReturnType<typeof setWorkSheetCollection>
   | ReturnType<typeof addNewTextField>
+  | ReturnType<typeof removeWorkSheet>
   | ReturnType<typeof updateWorkSheet>
   // TODO: 型定義
 > = (state: State, { type, payload }: Action<any>) => {
@@ -101,6 +107,18 @@ const reducer: React.Reducer<
       };
     case addNewTextField.type:
       state.form.workSheet[payload.category].push("");
+
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          workSheet: {
+            ...state.form.workSheet,
+          },
+        },
+      };
+    case removeWorkSheet.type:
+      state.form.workSheet[payload.category].splice(payload.index, 1);
 
       return {
         ...state,

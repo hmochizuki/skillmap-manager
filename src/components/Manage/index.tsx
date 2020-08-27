@@ -9,6 +9,7 @@ import {
   changeWorkSheet,
   addNewTextField,
   updateWorkSheet,
+  removeWorkSheet,
 } from "hooks/useReducers/workSheetManagement";
 import Presentation from "./organisms/Manage";
 
@@ -47,6 +48,12 @@ const ManagerContainer = () => {
     [dispatch]
   );
 
+  const memoizedRemoveWorkSheet = useCallback(
+    (category: string, index: number) => () =>
+      dispatch(removeWorkSheet({ category, index })),
+    [dispatch]
+  );
+
   const memoizedUpdateWorkSheet = useCallback(
     (categories: WorkSheetCollection["categories"], workSheet: WorkSheet) => {
       const fiteredWorkSheet = Object.keys(workSheet).reduce((acc, key) => {
@@ -67,6 +74,7 @@ const ManagerContainer = () => {
       changeCategoriesfilter={changeCategoriesfilter}
       changeWorkSheet={memoizedChangeWorkSheet}
       addNewTextField={memoizedAddNewTextField}
+      removeWorkSheet={memoizedRemoveWorkSheet}
       clickSubmitButton={memoizedUpdateWorkSheet}
     />
   ) : (

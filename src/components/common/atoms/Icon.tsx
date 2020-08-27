@@ -14,6 +14,7 @@ import Expand from "@material-ui/icons/ExpandMore";
 import AddCircle from "@material-ui/icons/AddCircle";
 import ExitToApp from "@material-ui/icons/ExitToApp";
 import Menu from "@material-ui/icons/Menu";
+import Delete from "@material-ui/icons/Delete";
 
 export type IconName =
   | "edit"
@@ -29,6 +30,7 @@ export type IconName =
   | "add"
   | "signout"
   | "menu"
+  | "delete"
   | "error";
 
 type Props = {
@@ -73,6 +75,8 @@ const Icon: React.FC<Props> = ({ name, size }) => {
       return <ExitToApp fontSize={size} className={classes.icon} />;
     case "menu":
       return <Menu fontSize={size} className={classes.icon} />;
+    case "delete":
+      return <Delete fontSize={size} className={classes.icon} />;
     default:
       return <Error fontSize={size} className={classes.icon} />;
   }
