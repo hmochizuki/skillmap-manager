@@ -9,6 +9,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     root: {
       padding: "2vh 2vw",
+      minWidth: "500px",
     },
     chips: {
       display: "flex",
@@ -39,7 +40,7 @@ type Props = {
   categories: WorkSheetCollection["categories"];
   workSheet: WorkSheet;
   categoryFilter: Record<string, boolean>;
-  changeCategoriesfilter: (category: string, filter: boolean) => void;
+  filterCategory: (category: string, filter: boolean) => () => void;
   changeWorkSheet: (category: string, index: number, value: string) => void;
   addNewTextField: (category: string) => void;
   removeWorkSheet: (label: string, index: number) => () => void;
@@ -53,7 +54,7 @@ const Manage: React.FC<Props> = ({
   categories,
   workSheet,
   categoryFilter,
-  changeCategoriesfilter,
+  filterCategory,
   changeWorkSheet,
   addNewTextField,
   removeWorkSheet,
@@ -64,7 +65,7 @@ const Manage: React.FC<Props> = ({
   const chips = categories.map((e) => ({
     label: e,
     filtered: categoryFilter[e],
-    handleClick: () => changeCategoriesfilter(e, !categoryFilter[e]),
+    handleClick: filterCategory(e, !categoryFilter[e]),
   }));
 
   const handleEditText = useCallback(

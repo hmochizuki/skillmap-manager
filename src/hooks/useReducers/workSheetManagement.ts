@@ -4,9 +4,11 @@ import { useReducer } from "react";
 
 const createAction = actionCreatorFactory("WORKSHEET_MANGE");
 
-export const changeCategoryFilter = createAction<Record<string, boolean>>(
-  "CHANGE_CATEGORY_FILTER"
+export const filterCategory = createAction<Record<string, boolean>>(
+  "FILTER_CATEGORY"
 );
+
+export const filterAllCategory = createAction<boolean>("FILTER_ALL_CATEGORY");
 
 export const setWorkSheetCollection = createAction<WorkSheetCollection>(
   "SET_WORKSHEET_COLLECTION"
@@ -58,7 +60,7 @@ const initialState: State = {
 
 const reducer: React.Reducer<
   State,
-  | ReturnType<typeof changeCategoryFilter>
+  | ReturnType<typeof filterCategory>
   | ReturnType<typeof changeWorkSheet>
   | ReturnType<typeof setWorkSheetCollection>
   | ReturnType<typeof addNewTextField>
@@ -71,7 +73,7 @@ const reducer: React.Reducer<
       return { ...acc, [key]: [...workSheet[key], ""] };
     }, {});
   switch (type) {
-    case changeCategoryFilter.type:
+    case filterCategory.type:
       return {
         ...state,
         categoryFilter: { ...state.categoryFilter, ...payload },

@@ -5,11 +5,11 @@ import Progress from "components/common/atoms/Progress";
 import {
   useWorkSheetReducer,
   setWorkSheetCollection,
-  changeCategoryFilter,
   changeWorkSheet,
   addNewTextField,
   updateWorkSheet,
   removeWorkSheet,
+  filterCategory,
 } from "hooks/useReducers/workSheetManagement";
 import Presentation from "./organisms/Manage";
 
@@ -27,10 +27,9 @@ const ManagerContainer = () => {
     }
   }, [workSheetCollection, dispatch]);
 
-  const changeCategoriesfilter = useCallback(
-    (category: string, filter: boolean) => {
-      dispatch(changeCategoryFilter({ [category]: filter }));
-    },
+  const memoizedFilterCategory = useCallback(
+    (category: string, filter: boolean) => () =>
+      dispatch(filterCategory({ [category]: filter })),
     [dispatch]
   );
 
@@ -71,7 +70,7 @@ const ManagerContainer = () => {
       workSheet={state.form.workSheet}
       categories={state.form.categories}
       categoryFilter={state.categoryFilter}
-      changeCategoriesfilter={changeCategoriesfilter}
+      filterCategory={memoizedFilterCategory}
       changeWorkSheet={memoizedChangeWorkSheet}
       addNewTextField={memoizedAddNewTextField}
       removeWorkSheet={memoizedRemoveWorkSheet}
