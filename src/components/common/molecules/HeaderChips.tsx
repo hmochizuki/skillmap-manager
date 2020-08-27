@@ -32,7 +32,6 @@ const HeaderChips: React.FC<Props> = ({ chips, edit }) => {
 
   return (
     <div className={classes.chips}>
-      <Chip size="medium" handleClick={() => {}} label="All" />
       {chips.map((e) => {
         const variant = e.filtered ? "outlined" : "default";
 

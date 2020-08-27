@@ -1,4 +1,4 @@
-import React, { useCallback, memo } from "react";
+import React, { useCallback, memo, useMemo } from "react";
 import { makeStyles, createStyles, Paper } from "@material-ui/core";
 import HeaderChips from "components/common/molecules/HeaderChips";
 import { WorkSheetCollection, WorkSheet } from "types/workSheet";
@@ -40,7 +40,7 @@ type Props = {
   categories: WorkSheetCollection["categories"];
   workSheet: WorkSheet;
   categoryFilter: Record<string, boolean>;
-  filterCategory: (category: string, filter: boolean) => () => void;
+  filterCategory: (category: string) => () => void;
   changeWorkSheet: (category: string, index: number, value: string) => void;
   addNewTextField: (category: string) => void;
   removeWorkSheet: (label: string, index: number) => () => void;
@@ -62,11 +62,15 @@ const Manage: React.FC<Props> = ({
 }) => {
   const classes = useStyles();
 
-  const chips = categories.map((e) => ({
-    label: e,
-    filtered: categoryFilter[e],
-    handleClick: filterCategory(e, !categoryFilter[e]),
-  }));
+  const chips = useMemo(
+    () =>
+      Object.keys(categoryFilter).map((category) => ({
+        label: category,
+        filtered: categoryFilter[category],
+        handleClick: filterCategory(category),
+      })),
+    [categoryFilter, filterCategory]
+  );
 
   const handleEditText = useCallback(
     (category: string) => (index: number) => (

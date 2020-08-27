@@ -4,11 +4,9 @@ import { useReducer } from "react";
 
 const createAction = actionCreatorFactory("WORKSHEET_MANGE");
 
-export const filterCategory = createAction<Record<string, boolean>>(
-  "FILTER_CATEGORY"
-);
-
-export const filterAllCategory = createAction<boolean>("FILTER_ALL_CATEGORY");
+export const filterCategory = createAction<{
+  category: string;
+}>("FILTER_CATEGORY");
 
 export const setWorkSheetCollection = createAction<WorkSheetCollection>(
   "SET_WORKSHEET_COLLECTION"
@@ -74,10 +72,29 @@ const reducer: React.Reducer<
     }, {});
   switch (type) {
     case filterCategory.type:
+      // eslint-disable-next-line no-case-declarations
+      const next = !state.categoryFilter[payload.category];
+      if (payload.category === "All") {
+        return {
+          ...state,
+          categoryFilter: Object.keys(state.categoryFilter).reduce(
+            (acc, key) => ({
+              ...acc,
+              [key]: next,
+            }),
+            {}
+          ),
+        };
+      }
+
       return {
         ...state,
-        categoryFilter: { ...state.categoryFilter, ...payload },
+        categoryFilter: {
+          ...state.categoryFilter,
+          [payload.category]: next,
+        },
       };
+
     case setWorkSheetCollection.type:
       return {
         ...state,
@@ -89,6 +106,15 @@ const reducer: React.Reducer<
           categories: payload.categories,
           workSheet: createFormWorkSheetFromCollection(payload.workSheet),
         },
+        categoryFilter: payload.categories.reduce(
+          (
+            acc: Record<string, boolean>,
+            category: string
+          ): Record<string, boolean> => {
+            return { ...acc, [category]: false };
+          },
+          { All: false }
+        ),
       };
     case changeWorkSheet.type:
       state.form.workSheet[payload.category].splice(
@@ -143,7 +169,7 @@ const reducer: React.Reducer<
         },
       };
     default:
-      throw new Error();
+      throw new Error(`${type} is not registerd`);
   }
 };
 

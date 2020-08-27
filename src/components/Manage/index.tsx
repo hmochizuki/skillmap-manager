@@ -28,8 +28,7 @@ const ManagerContainer = () => {
   }, [workSheetCollection, dispatch]);
 
   const memoizedFilterCategory = useCallback(
-    (category: string, filter: boolean) => () =>
-      dispatch(filterCategory({ [category]: filter })),
+    (category: string) => () => dispatch(filterCategory({ category })),
     [dispatch]
   );
 
