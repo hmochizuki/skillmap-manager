@@ -1,4 +1,24 @@
-import { memo } from "react";
-import { CircularProgress } from "@material-ui/core";
+import React, { memo } from "react";
+import { CircularProgress, makeStyles, createStyles } from "@material-ui/core";
 
-export default memo(CircularProgress);
+const useStyles = makeStyles(() =>
+  createStyles({
+    root: {
+      display: "flex",
+      justifyContent: "center",
+      alignContent: "center",
+    },
+  })
+);
+
+const Progress = () => {
+  const classes = useStyles();
+
+  return (
+    <div className={classes.root}>
+      <CircularProgress />
+    </div>
+  );
+};
+
+export default memo(Progress);
