@@ -81,7 +81,9 @@ const Manage: React.FC<Props> = ({
       <HeaderChips chips={chips} edit />
       <section className={classes.questions}>
         {categories.map((category) => {
-          return (
+          const filterd = categoryFilter[category];
+
+          return filterd ? null : (
             <div key={category} className={classes.labelGroup}>
               <TextFieldList
                 label={category}
