@@ -56,7 +56,6 @@ const initialState: State = {
   categoryFilter: {},
 };
 
-// @ts-ignore
 const reducer: React.Reducer<
   State,
   | ReturnType<typeof changeCategoryFilter>

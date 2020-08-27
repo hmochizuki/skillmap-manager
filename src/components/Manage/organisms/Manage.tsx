@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, memo } from "react";
 import { makeStyles, createStyles, Paper } from "@material-ui/core";
 import HeaderChips from "components/common/molecules/HeaderChips";
 import { WorkSheetCollection, WorkSheet } from "types/workSheet";
@@ -104,4 +104,4 @@ const Manage: React.FC<Props> = ({
   );
 };
 
-export default Manage;
+export default memo(Manage);
