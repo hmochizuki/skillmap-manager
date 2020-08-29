@@ -10,6 +10,7 @@ import {
   updateWorkSheet,
   removeWorkSheet,
   filterCategory,
+  editCategories,
 } from "hooks/useReducers/workSheetManagement";
 import Presentation from "./organisms/Manage";
 
@@ -49,6 +50,12 @@ const ManagerContainer = () => {
   const memoizedRemoveWorkSheet = useCallback(
     (category: string, index: number) => () =>
       dispatch(removeWorkSheet({ category, index })),
+    [dispatch]
+  );
+
+  const memoizedEditCategories = useCallback(
+    (index: number, value: string) =>
+      dispatch(editCategories({ index, value })),
     [dispatch]
   );
 

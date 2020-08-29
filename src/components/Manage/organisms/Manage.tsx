@@ -1,11 +1,12 @@
-import React, { useState, useCallback, memo, useMemo } from "react";
+import React, { useCallback, memo, useMemo } from "react";
 import { makeStyles, createStyles, Paper } from "@material-ui/core";
 import HeaderChips from "components/common/molecules/HeaderChips";
 import { WorkSheetCollection, WorkSheet } from "types/workSheet";
 import { PrimaryButton } from "components/common/atoms/Buttons";
 import IconButton from "components/common/atoms/IconButton";
-import Dialog from "components/common/molecules/Dialog";
+import useDialog from "hooks/useDialog";
 import TextFieldList from "../molecules/TextFieldList";
+import EditCategoriesDailog from "../molecules/EditCategoriesDailog";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -62,7 +63,7 @@ const Manage: React.FC<Props> = ({
   clickSubmitButton,
 }) => {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
+  const [open, handleDialog] = useDialog();
 
   const chips = useMemo(
     () =>
@@ -91,7 +92,7 @@ const Manage: React.FC<Props> = ({
           iconName="add"
           label="add"
           size="small"
-          onClick={() => setOpen(true)}
+          onClick={handleDialog(true)}
         />
       </div>
       <section className={classes.questions}>
@@ -117,11 +118,10 @@ const Manage: React.FC<Props> = ({
           onClick={() => clickSubmitButton(categories, workSheet)}
         />
       </div>
-      <Dialog
-        id="id"
-        title="タイトル"
+      <EditCategoriesDailog
+        categories={categories}
         open={open}
-        handleClose={() => setOpen(false)}
+        handleClose={handleDialog(false)}
       />
     </Paper>
   );

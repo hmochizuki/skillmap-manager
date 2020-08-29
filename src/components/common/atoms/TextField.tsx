@@ -10,9 +10,12 @@ type props = {
   placeholder?: string;
   helperText?: string;
   fullWidth?: boolean;
+  disabled?: boolean;
   handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   error?: boolean;
+  className?: string;
 };
 
 const TextField: FC<props> = ({
@@ -24,9 +27,12 @@ const TextField: FC<props> = ({
   placeholder,
   helperText,
   fullWidth,
+  disabled,
   handleChange,
   onFocus,
+  onBlur,
   error = false,
+  className,
 }) => {
   return (
     <BaseTextField
@@ -43,8 +49,11 @@ const TextField: FC<props> = ({
       }}
       onChange={handleChange}
       onFocus={onFocus}
+      onBlur={onBlur}
       fullWidth={fullWidth}
+      disabled={disabled}
       error={error}
+      className={className}
     />
   );
 };

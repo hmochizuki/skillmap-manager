@@ -10,7 +10,7 @@ type props = {
   size?: "small" | "large";
   onClick: () => void;
   iconName: IconName;
-  className?: any; // TODO
+  className?: string;
 };
 
 const useStyles = makeStyles(() =>

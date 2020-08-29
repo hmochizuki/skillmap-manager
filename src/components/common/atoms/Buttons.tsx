@@ -4,7 +4,7 @@ import React, { FC, memo } from "react";
 type props = {
   text: string;
   disabled?: boolean;
-  onClick: () => void;
+  onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 };
 
 const Primary: FC<props> = ({ text, disabled = false, onClick }) => {
