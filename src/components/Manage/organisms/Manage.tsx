@@ -1,8 +1,10 @@
-import React, { useCallback, memo, useMemo } from "react";
+import React, { useState, useCallback, memo, useMemo } from "react";
 import { makeStyles, createStyles, Paper } from "@material-ui/core";
 import HeaderChips from "components/common/molecules/HeaderChips";
 import { WorkSheetCollection, WorkSheet } from "types/workSheet";
 import { PrimaryButton } from "components/common/atoms/Buttons";
+import IconButton from "components/common/atoms/IconButton";
+import Dialog from "components/common/molecules/Dialog";
 import TextFieldList from "../molecules/TextFieldList";
 
 const useStyles = makeStyles(() =>
@@ -13,9 +15,8 @@ const useStyles = makeStyles(() =>
     },
     chips: {
       display: "flex",
-      flexGrow: 3,
-      flexWrap: "wrap",
       alignItems: "center",
+      justifyContent: "flex-start",
       marginBottom: "3vh",
     },
     chip: {
@@ -61,6 +62,7 @@ const Manage: React.FC<Props> = ({
   clickSubmitButton,
 }) => {
   const classes = useStyles();
+  const [open, setOpen] = useState(false);
 
   const chips = useMemo(
     () =>
@@ -83,7 +85,15 @@ const Manage: React.FC<Props> = ({
 
   return (
     <Paper elevation={5} className={classes.root}>
-      <HeaderChips chips={chips} edit />
+      <div className={classes.chips}>
+        <HeaderChips chips={chips} />
+        <IconButton
+          iconName="add"
+          label="add"
+          size="small"
+          onClick={() => setOpen(true)}
+        />
+      </div>
       <section className={classes.questions}>
         {categories.map((category) => {
           const filterd = categoryFilter[category];
@@ -107,6 +117,12 @@ const Manage: React.FC<Props> = ({
           onClick={() => clickSubmitButton(categories, workSheet)}
         />
       </div>
+      <Dialog
+        id="id"
+        title="タイトル"
+        open={open}
+        handleClose={() => setOpen(false)}
+      />
     </Paper>
   );
 };
