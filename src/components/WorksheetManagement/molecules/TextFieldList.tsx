@@ -2,6 +2,7 @@ import React, { memo } from "react";
 import { makeStyles, createStyles } from "@material-ui/core";
 import TextField from "components/common/atoms/TextField";
 import IconButton from "components/common/atoms/IconButton";
+import { Question } from "types/workSheet";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -19,7 +20,7 @@ const useStyles = makeStyles(() =>
 
 type Props = {
   label: string;
-  values: string[];
+  questions: Question[];
   handleChangeExsingText: (
     index: number
   ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -29,7 +30,7 @@ type Props = {
 
 const TextFieldList: React.FC<Props> = ({
   label,
-  values,
+  questions,
   handleChangeExsingText,
   addNewTextField,
   removeTextField,
@@ -38,10 +39,11 @@ const TextFieldList: React.FC<Props> = ({
 
   return (
     <>
-      {values.map((value, i) => {
+      {questions.map(({ value }, i) => {
         const l = i === 0 ? label : "";
-        const onFocus = i === values.length - 1 ? addNewTextField : undefined;
-        const showRemoveIcon = values.length > 1 && i < values.length - 1;
+        const onFocus =
+          i === questions.length - 1 ? addNewTextField : undefined;
+        const showRemoveIcon = questions.length > 1 && i < questions.length - 1;
 
         return (
           // eslint-disable-next-line react/no-array-index-key

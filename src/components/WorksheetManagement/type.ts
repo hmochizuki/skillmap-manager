@@ -4,7 +4,7 @@ export type WorksheetWithFilter = Array<Category & { filtered: boolean }>;
 
 export const emptyWorkSheetWithFilter: WorksheetWithFilter = [
   {
-    category: "",
+    name: "",
     questions: [],
     filtered: false,
   },

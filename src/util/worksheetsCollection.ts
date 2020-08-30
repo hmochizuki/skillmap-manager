@@ -1,4 +1,5 @@
 import firebase from "firebase/app";
+import shortid from "shortid";
 import { collectionNames } from "config/collections";
 import { WorksheetDocument, Worksheet } from "types/workSheet";
 
@@ -16,13 +17,30 @@ export const getWorksheetDocument = async (
   return workSheetData;
 };
 
+const generateId = (data: Record<string, unknown>) => {
+  if (data.id) return data;
+  const id = shortid.generate();
+
+  return { ...data, id };
+};
+
 export const updateWorksheetDocument = async (
   db: firebase.firestore.Firestore,
   id: string,
   data: Worksheet
 ): Promise<void> => {
+  const dataHasIds = data.map((category) => {
+    const categoryHasId = generateId(category);
+    const questionsHasId = category.questions.map((q) => generateId(q));
+
+    return { ...categoryHasId, questions: questionsHasId };
+  });
+
   const workSheetRef = db.collection(collectionNames.worksheets).doc(id);
   const updatedAt = new Date().getTime();
 
-  return workSheetRef.set({ worksheet: data, updatedAt }, { merge: true });
+  return workSheetRef.set(
+    { worksheet: dataHasIds, updatedAt },
+    { merge: true }
+  );
 };

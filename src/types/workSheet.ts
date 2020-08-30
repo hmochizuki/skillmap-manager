@@ -1,23 +1,19 @@
-import { firestore } from "firebase";
-
-export type WorkSheet<T extends string = string> = Record<string, Array<T>>;
-export type WorkSheetCollection<T extends string = string> = {
-  id: string;
-  categories: Array<T>;
-  workSheet: WorkSheet<T>;
-  createdAt: firestore.Timestamp;
-  updatedAt: firestore.Timestamp;
+export type Question = {
+  id?: string;
+  value: string;
 };
 
 export type Category = {
-  category: string;
-  questions: string[];
+  id?: string;
+  name: string;
+  questions: Question[];
 };
 
 export type Worksheet = Category[];
 
 export type WorksheetDocument = {
-  id: string;
+  id?: string;
+  team: string;
   worksheet: Category[];
   createdAt: number;
   updatedAt: number;

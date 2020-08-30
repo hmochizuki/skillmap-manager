@@ -68,7 +68,7 @@ const Manage: React.FC<Props> = ({
 
   const closeDialog = useCallback(
     (ws: WorksheetWithFilter) => () => {
-      const next = ws.filter((e) => e.category !== "");
+      const next = ws.filter((e) => e.name !== "");
       updateWorksheetState(next);
       handleDialog(false);
     },
@@ -77,10 +77,10 @@ const Manage: React.FC<Props> = ({
 
   const chips = useMemo(
     () =>
-      worksheetWithFilter.map(({ category, filtered }) => ({
-        label: category,
+      worksheetWithFilter.map(({ name, filtered }) => ({
+        label: name,
         filtered,
-        handleClick: filterCategory(category),
+        handleClick: filterCategory(name),
       })),
     [worksheetWithFilter, filterCategory]
   );
@@ -97,15 +97,15 @@ const Manage: React.FC<Props> = ({
         />
       </div>
       <section className={classes.questions}>
-        {worksheetWithFilter.map(({ category, questions, filtered }) => {
+        {worksheetWithFilter.map(({ name, questions, filtered }) => {
           return filtered ? null : (
-            <div key={category} className={classes.labelGroup}>
+            <div key={name} className={classes.labelGroup}>
               <TextFieldList
-                label={category}
-                values={questions}
-                handleChangeExsingText={editQuestion(category)}
-                addNewTextField={addNewQuestion(category)}
-                removeTextField={removeQuestion(category)}
+                label={name}
+                questions={questions}
+                handleChangeExsingText={editQuestion(name)}
+                addNewTextField={addNewQuestion(name)}
+                removeTextField={removeQuestion(name)}
               />
             </div>
           );

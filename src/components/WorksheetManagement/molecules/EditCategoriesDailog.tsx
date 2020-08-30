@@ -48,8 +48,8 @@ type Props = {
 };
 
 const newCategory = {
-  category: "",
-  questions: [""],
+  name: "",
+  questions: [{ value: "" }],
   filtered: false,
 };
 
@@ -70,7 +70,7 @@ const EditCategoiesDialog: React.FC<Props> = ({
   const editCategory = useCallback(
     (category: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
       const next = worksheetWithFilter.map((e) =>
-        e.category === category ? { ...e, category: event.target.value } : e
+        e.name === category ? { ...e, category: event.target.value } : e
       );
       setWorksheetWithFilter(next);
     },
@@ -79,7 +79,7 @@ const EditCategoiesDialog: React.FC<Props> = ({
 
   const removeCategory = useCallback(
     (category: string) => () => {
-      const next = worksheetWithFilter.filter((e) => e.category !== category);
+      const next = worksheetWithFilter.filter((e) => e.name !== category);
       setWorksheetWithFilter(next);
     },
     [worksheetWithFilter]
@@ -100,16 +100,16 @@ const EditCategoiesDialog: React.FC<Props> = ({
       handleClose={handleClose(worksheetWithFilter)}
     >
       <div className={classes.contents}>
-        {worksheetWithFilter.map(({ category }, i) => {
+        {worksheetWithFilter.map(({ name }, i) => {
           return (
             <Item
               // TODO: id を持たせるべきだった...
               // eslint-disable-next-line react/no-array-index-key
               key={i}
-              id={`${category}_${i}`}
-              value={category}
-              editCategory={editCategory(category)}
-              removeCategory={removeCategory(category)}
+              id={`${name}_${i}`}
+              value={name}
+              editCategory={editCategory(name)}
+              removeCategory={removeCategory(name)}
             />
           );
         })}

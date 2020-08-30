@@ -20,7 +20,7 @@ const ManagerContainer = () => {
         worksheetDocument.worksheet.map((category) => ({
           ...category,
           filtered: false,
-          questions: [...category.questions, ""],
+          questions: [...category.questions, { value: "" }],
         }))
       );
     }
@@ -29,7 +29,7 @@ const ManagerContainer = () => {
   const filterCategory = useCallback(
     (targetCategoty: string) => () => {
       const next = worksheet.map((e) =>
-        e.category === targetCategoty ? { ...e, filtered: !e.filtered } : e
+        e.name === targetCategoty ? { ...e, filtered: !e.filtered } : e
       );
       setWorksheet(next);
     },
@@ -41,9 +41,9 @@ const ManagerContainer = () => {
       event: React.ChangeEvent<HTMLInputElement>
     ) => {
       const next = worksheet.map((e) => {
-        if (e.category !== category) return e;
+        if (e.name !== category) return e;
         const questions = e.questions.map((q, i) =>
-          i === index ? event.target.value : q
+          i === index ? { value: event.target.value } : q
         );
 
         return { ...e, questions };
@@ -56,18 +56,19 @@ const ManagerContainer = () => {
   const addNewQuestion = useCallback(
     (category: string) => () => {
       const next = worksheet.map((e) => {
-        if (e.category !== category) return e;
+        if (e.name !== category) return e;
 
-        return { ...e, questions: [...e.questions, ""] };
+        return { ...e, questions: [...e.questions, { value: "" }] };
       });
       setWorksheet(next);
     },
     [worksheet]
   );
+
   const removeQuestion = useCallback(
     (category: string) => (index: number) => () => {
       const next = worksheet.map((e) => {
-        if (e.category !== category) return e;
+        if (e.name !== category) return e;
         const questions = e.questions.filter((_, i) => i !== index);
 
         return { ...e, questions };
@@ -81,8 +82,8 @@ const ManagerContainer = () => {
     (worksheetWithFilter: WorksheetWithFilter) => () => {
       const ws: Worksheet = worksheetWithFilter.map((e) => {
         return {
-          category: e.category,
-          questions: e.questions.filter((q) => q !== ""),
+          name: e.name,
+          questions: e.questions.filter((q) => q.value !== ""),
         };
       });
       updateWorksheetDocument(ws);

@@ -1,10 +1,9 @@
 import React, { memo } from "react";
-import { WorkSheet } from "types/workSheet";
 import Presentation from "./organisms/Answer";
 
 const categories = ["React", "Redux", "Others"];
 
-const workSheet: WorkSheet = {
+const workSheet = {
   React: [
     "react-create-app でアプリを作った経験がある",
     "react-create-app でアプリを作った経験があるよ",
