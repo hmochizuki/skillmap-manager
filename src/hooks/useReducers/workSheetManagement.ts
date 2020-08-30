@@ -32,6 +32,10 @@ export const removeWorkSheet = createAction<{
   index: number;
 }>("REMOVE_WORKSHEET");
 
+export const updateCategories = createAction<{
+  categories: WorkSheetCollection["categories"];
+}>("UPDATE_CATEGORIES");
+
 type State = {
   resource: {
     categories: WorkSheetCollection["categories"];
@@ -64,6 +68,7 @@ const reducer: React.Reducer<
   | ReturnType<typeof addNewTextField>
   | ReturnType<typeof removeWorkSheet>
   | ReturnType<typeof updateWorkSheet>
+  | ReturnType<typeof updateCategories>
   // TODO: 型定義
 > = (state: State, { type, payload }: Action<any>) => {
   const createFormWorkSheetFromCollection = (workSheet: WorkSheet) =>
@@ -167,6 +172,10 @@ const reducer: React.Reducer<
           categories: payload.categories,
           workSheet: createFormWorkSheetFromCollection(payload.workSheet),
         },
+      };
+    case updateCategories.type:
+      return {
+        ...state,
       };
     default:
       throw new Error(`${type} is not registerd`);

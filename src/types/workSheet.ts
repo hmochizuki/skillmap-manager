@@ -8,3 +8,17 @@ export type WorkSheetCollection<T extends string = string> = {
   createdAt: firestore.Timestamp;
   updatedAt: firestore.Timestamp;
 };
+
+export type Category = {
+  category: string;
+  questions: string[];
+};
+
+export type Worksheet = Category[];
+
+export type WorksheetDocument = {
+  id: string;
+  worksheet: Category[];
+  createdAt: number;
+  updatedAt: number;
+};

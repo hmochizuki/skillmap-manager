@@ -1,12 +1,12 @@
-import React, { useCallback, memo, useMemo } from "react";
+import React, { memo, useMemo, useCallback } from "react";
 import { makeStyles, createStyles, Paper } from "@material-ui/core";
 import HeaderChips from "components/common/molecules/HeaderChips";
-import { WorkSheetCollection, WorkSheet } from "types/workSheet";
 import { PrimaryButton } from "components/common/atoms/Buttons";
 import IconButton from "components/common/atoms/IconButton";
 import useDialog from "hooks/useDialog";
 import TextFieldList from "../molecules/TextFieldList";
 import EditCategoriesDailog from "../molecules/EditCategoriesDailog";
+import { WorksheetWithFilter } from "../type";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -39,49 +39,50 @@ const useStyles = makeStyles(() =>
 );
 
 type Props = {
-  categories: WorkSheetCollection["categories"];
-  workSheet: WorkSheet;
-  categoryFilter: Record<string, boolean>;
+  worksheetWithFilter: WorksheetWithFilter;
   filterCategory: (category: string) => () => void;
-  changeWorkSheet: (category: string, index: number, value: string) => void;
-  addNewTextField: (category: string) => void;
-  removeWorkSheet: (label: string, index: number) => () => void;
-  clickSubmitButton: (
-    categories: WorkSheetCollection["categories"],
-    workSheet: WorkSheet
-  ) => void;
+  editQuestion: (
+    category: string
+  ) => (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => void;
+  addNewQuestion: (category: string) => () => void;
+  removeQuestion: (category: string) => (index: number) => () => void;
+  updateWorksheetDoc: (worksheetWithFilter: WorksheetWithFilter) => () => void;
+  updateWorksheetState: (ws: WorksheetWithFilter) => void;
 };
 
 const Manage: React.FC<Props> = ({
-  categories,
-  workSheet,
-  categoryFilter,
+  worksheetWithFilter,
   filterCategory,
-  changeWorkSheet,
-  addNewTextField,
-  removeWorkSheet,
-  clickSubmitButton,
+  editQuestion,
+  addNewQuestion,
+  removeQuestion,
+  updateWorksheetDoc,
+  updateWorksheetState,
 }) => {
   const classes = useStyles();
   const [open, handleDialog] = useDialog();
 
-  const chips = useMemo(
-    () =>
-      Object.keys(categoryFilter).map((category) => ({
-        label: category,
-        filtered: categoryFilter[category],
-        handleClick: filterCategory(category),
-      })),
-    [categoryFilter, filterCategory]
+  const openDialog = useCallback(() => {
+    handleDialog(true);
+  }, [handleDialog]);
+
+  const closeDialog = useCallback(
+    (ws: WorksheetWithFilter) => () => {
+      const next = ws.filter((e) => e.category !== "");
+      updateWorksheetState(next);
+      handleDialog(false);
+    },
+    [updateWorksheetState, handleDialog]
   );
 
-  const handleEditText = useCallback(
-    (category: string) => (index: number) => (
-      event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-      changeWorkSheet(category, index, event.target.value);
-    },
-    [changeWorkSheet]
+  const chips = useMemo(
+    () =>
+      worksheetWithFilter.map(({ category, filtered }) => ({
+        label: category,
+        filtered,
+        handleClick: filterCategory(category),
+      })),
+    [worksheetWithFilter, filterCategory]
   );
 
   return (
@@ -92,21 +93,19 @@ const Manage: React.FC<Props> = ({
           iconName="add"
           label="add"
           size="small"
-          onClick={handleDialog(true)}
+          onClick={openDialog}
         />
       </div>
       <section className={classes.questions}>
-        {categories.map((category) => {
-          const filterd = categoryFilter[category];
-
-          return filterd ? null : (
+        {worksheetWithFilter.map(({ category, questions, filtered }) => {
+          return filtered ? null : (
             <div key={category} className={classes.labelGroup}>
               <TextFieldList
                 label={category}
-                values={workSheet[category]}
-                handleChangeExsingText={handleEditText(category)}
-                addNewTextField={() => addNewTextField(category)}
-                removeTextField={removeWorkSheet}
+                values={questions}
+                handleChangeExsingText={editQuestion(category)}
+                addNewTextField={addNewQuestion(category)}
+                removeTextField={removeQuestion(category)}
               />
             </div>
           );
@@ -115,13 +114,13 @@ const Manage: React.FC<Props> = ({
       <div className={classes.submitButton}>
         <PrimaryButton
           text="この内容で更新する"
-          onClick={() => clickSubmitButton(categories, workSheet)}
+          onClick={updateWorksheetDoc(worksheetWithFilter)}
         />
       </div>
       <EditCategoriesDailog
-        categories={categories}
+        worksheet={worksheetWithFilter}
         open={open}
-        handleClose={handleDialog(false)}
+        handleClose={closeDialog}
       />
     </Paper>
   );

@@ -1,9 +1,9 @@
-import React, { memo, useState, FC, useMemo, useCallback } from "react";
+import React, { memo, useState, FC, useCallback, useEffect } from "react";
 import { makeStyles, createStyles } from "@material-ui/core";
 import TextField from "components/common/atoms/TextField";
-import { WorkSheetCollection } from "types/workSheet";
 import IconButton from "components/common/atoms/IconButton";
 import Dialog from "components/common/molecules/Dialog";
+import { WorksheetWithFilter, emptyWorkSheetWithFilter } from "../type";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -25,25 +25,15 @@ const useStyles = makeStyles(() =>
 
 // TODO: 共通化
 // eslint-disable-next-line react/display-name
-const Item: FC<any> = memo(({ value, editCategory, removeCategory }) => {
+const Item: FC<any> = memo(({ id, value, editCategory, removeCategory }) => {
   const classes = useStyles();
-  const [disabled, setDisabled] = useState(true);
 
   return (
     <div className={classes.item}>
       <TextField
-        id={value}
-        name="categories"
+        id={id}
         value={value}
-        disabled={disabled}
-        onBlur={() => setDisabled(true)}
-        handleChange={(e) => editCategory(e.target.value)}
-        className={classes.element}
-      />
-      <IconButton
-        label={value}
-        iconName="edit"
-        onClick={() => setDisabled(false)}
+        handleChange={editCategory}
         className={classes.element}
       />
       <IconButton label={value} iconName="delete" onClick={removeCategory} />
@@ -52,40 +42,53 @@ const Item: FC<any> = memo(({ value, editCategory, removeCategory }) => {
 });
 
 type Props = {
-  categories: WorkSheetCollection["categories"];
+  worksheet: WorksheetWithFilter;
   open: boolean;
-  handleClose: () => void;
+  handleClose: (ws: WorksheetWithFilter) => () => void;
+};
+
+const newCategory = {
+  category: "",
+  questions: [""],
+  filtered: false,
 };
 
 const EditCategoiesDialog: React.FC<Props> = ({
-  categories,
+  worksheet,
   open,
   handleClose,
 }) => {
   const classes = useStyles();
-  const [form, setForm] = useState(categories);
+  const [worksheetWithFilter, setWorksheetWithFilter] = useState(
+    emptyWorkSheetWithFilter
+  );
+
+  useEffect(() => {
+    setWorksheetWithFilter(worksheet);
+  }, [worksheet]);
+
   const editCategory = useCallback(
-    (index: number) => (value: string) => {
-      setForm(form.map((c, i) => (i === index ? value : c)));
+    (category: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const next = worksheetWithFilter.map((e) =>
+        e.category === category ? { ...e, category: event.target.value } : e
+      );
+      setWorksheetWithFilter(next);
     },
-    [form]
+    [worksheetWithFilter]
   );
+
   const removeCategory = useCallback(
-    (index: number) => () => {
-      setForm(form.filter((c, i) => i !== index));
+    (category: string) => () => {
+      const next = worksheetWithFilter.filter((e) => e.category !== category);
+      setWorksheetWithFilter(next);
     },
-    [form]
+    [worksheetWithFilter]
   );
+
   const addCategory = useCallback(() => {
-    setForm([...form, ""]);
-  }, [form]);
-  const primaryButton = useMemo(
-    () => ({
-      label: "保存する",
-      handleClick: () => {},
-    }),
-    []
-  );
+    const next = [...worksheetWithFilter, newCategory];
+    setWorksheetWithFilter(next);
+  }, [worksheetWithFilter]);
 
   return (
     // @ts-ignore
@@ -93,18 +96,20 @@ const EditCategoiesDialog: React.FC<Props> = ({
       id="editCategoies"
       title="カテゴリーの編集"
       discription="カテゴリーを削除した場合、紐づく質問ごと削除することになります。"
-      primaryButton={primaryButton}
       open={open}
-      handleClose={handleClose}
+      handleClose={handleClose(worksheetWithFilter)}
     >
       <div className={classes.contents}>
-        {form.map((category, i) => {
+        {worksheetWithFilter.map(({ category }, i) => {
           return (
             <Item
-              key={categories}
+              // TODO: id を持たせるべきだった...
+              // eslint-disable-next-line react/no-array-index-key
+              key={i}
+              id={`${category}_${i}`}
               value={category}
-              editCategory={editCategory(i)}
-              removeCategory={removeCategory(i)}
+              editCategory={editCategory(category)}
+              removeCategory={removeCategory(category)}
             />
           );
         })}

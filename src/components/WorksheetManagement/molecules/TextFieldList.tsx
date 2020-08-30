@@ -23,8 +23,8 @@ type Props = {
   handleChangeExsingText: (
     index: number
   ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
-  addNewTextField: () => void;
-  removeTextField: (label: string, index: number) => () => void;
+  addNewTextField?: () => void;
+  removeTextField: (index: number) => () => void;
 };
 
 const TextFieldList: React.FC<Props> = ({
@@ -62,7 +62,7 @@ const TextFieldList: React.FC<Props> = ({
               <IconButton
                 iconName="delete"
                 label="delete worksheet"
-                onClick={removeTextField(label, i)}
+                onClick={removeTextField(i)}
               />
             ) : null}
           </div>

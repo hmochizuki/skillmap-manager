@@ -3,7 +3,7 @@ import { TextField as BaseTextField } from "@material-ui/core";
 
 type props = {
   id: string;
-  name: string;
+  name?: string;
   value?: string;
   label?: string;
   defaultValue?: string;
