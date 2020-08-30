@@ -1,18 +1,28 @@
 import { useContext, useEffect, useState, useCallback } from "react";
 import { FirebaseContext } from "contexts";
-import { getWorkSheet, updateWorkSheet } from "util/workSheet";
-import { WorkSheetCollection, WorkSheet } from "types/workSheet";
+import { WorksheetDocument, Worksheet } from "types/workSheet";
+import {
+  getWorksheetDocument,
+  updateWorksheetDocument as update,
+} from "util/worksheetsCollection";
 
-const useWorkSheet = (id: string) => {
-  const [workSheetCollection, setWorkSheetCollection] = useState<
-    WorkSheetCollection
+type Return = [
+  WorksheetDocument | undefined,
+  (date: Worksheet) => void,
+  boolean,
+  Error | null
+];
+
+const useWorksheet = (id: string): Return => {
+  const [worksheetDocument, setWorksheetDocument] = useState<
+    WorksheetDocument
   >();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   const { db } = useContext(FirebaseContext);
 
-  const load = useCallback(async (loadEvent: () => Promise<any>) => {
+  const load = useCallback(async (loadEvent: () => Promise<void>) => {
     setLoading(true);
     try {
       await loadEvent();
@@ -26,22 +36,22 @@ const useWorkSheet = (id: string) => {
   useEffect(() => {
     if (!db) throw new Error("firebase is not initialized");
     load(async () => {
-      const workSheetData = await getWorkSheet(db, id);
-      setWorkSheetCollection(workSheetData);
+      const workSheetData = await getWorksheetDocument(db, id);
+      setWorksheetDocument(workSheetData);
     });
   }, [id, db, load]);
 
-  const updateWorkSheetCollection = useCallback(
-    (data: WorkSheet) => {
+  const updateWorksheetDocument = useCallback(
+    (data: Worksheet) => {
       if (!db) throw new Error("firebase is not initialized");
       load(async () => {
-        await updateWorkSheet(db, id, data);
+        await update(db, id, data);
       });
     },
     [id, db, load]
   );
 
-  return { workSheetCollection, updateWorkSheetCollection, loading, error };
+  return [worksheetDocument, updateWorksheetDocument, loading, error];
 };
 
-export default useWorkSheet;
+export default useWorksheet;
