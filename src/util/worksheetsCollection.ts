@@ -29,7 +29,12 @@ export const updateWorksheetDocument = async (
   id: string,
   data: Worksheet
 ): Promise<void> => {
-  const dataHasIds = data.map((category) => {
+  const filterdData = data.map((category) => ({
+    ...category,
+    questions: category.questions.filter(({ value }) => value !== ""),
+  }));
+
+  const dataHasIds = filterdData.map((category) => {
     const categoryHasId = generateId(category);
     const questionsHasId = category.questions.map((q) => generateId(q));
 

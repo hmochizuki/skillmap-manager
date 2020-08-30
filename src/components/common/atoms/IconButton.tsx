@@ -8,7 +8,7 @@ type props = {
   label: string;
   disabled?: boolean;
   size?: "small" | "large";
-  onClick: () => void;
+  onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   iconName: IconName;
   className?: string;
 };

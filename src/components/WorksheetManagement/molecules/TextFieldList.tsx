@@ -1,8 +1,7 @@
 import React, { memo } from "react";
 import { makeStyles, createStyles } from "@material-ui/core";
-import TextField from "components/common/atoms/TextField";
-import IconButton from "components/common/atoms/IconButton";
 import { Question } from "types/workSheet";
+import DeletableTextField from "./DeletableTextField";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -22,10 +21,10 @@ type Props = {
   label: string;
   questions: Question[];
   handleChangeExsingText: (
-    index: number
+    questionId: string
   ) => (event: React.ChangeEvent<HTMLInputElement>) => void;
   addNewTextField?: () => void;
-  removeTextField: (index: number) => () => void;
+  removeTextField: (questionId: string) => () => void;
 };
 
 const TextFieldList: React.FC<Props> = ({
@@ -41,30 +40,25 @@ const TextFieldList: React.FC<Props> = ({
     <>
       {questions.map(({ id, value }, i) => {
         const l = i === 0 ? label : "";
-        const onFocus =
+        const handleFocus =
           i === questions.length - 1 ? addNewTextField : undefined;
-        const showRemoveIcon = questions.length > 1 && i < questions.length - 1;
+        const deletable = questions.length > 1 && i < questions.length - 1;
 
         return (
           <div key={id} className={classes.root}>
             <div className={classes.textField}>
-              <TextField
+              <DeletableTextField
                 id={id}
                 label={l}
                 value={value}
                 placeholder="入力してください"
-                handleChange={handleChangeExsingText(i)}
-                onFocus={onFocus}
+                handleChange={handleChangeExsingText(id)}
+                handleDelete={removeTextField(id)}
+                handleFocus={handleFocus}
+                deletable={deletable}
                 fullWidth
               />
             </div>
-            {showRemoveIcon ? (
-              <IconButton
-                iconName="delete"
-                label="delete worksheet"
-                onClick={removeTextField(i)}
-              />
-            ) : null}
           </div>
         );
       })}

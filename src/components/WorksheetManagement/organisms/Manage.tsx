@@ -42,12 +42,12 @@ type Props = {
   worksheetWithFilter: WorksheetWithFilter;
   filterCategory: (id: string) => () => void;
   editQuestion: (
-    category: string
-  ) => (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => void;
-  addNewQuestion: (category: string) => () => void;
-  removeQuestion: (category: string) => (index: number) => () => void;
+    categoryId: string
+  ) => (questionId: string) => (e: React.ChangeEvent<HTMLInputElement>) => void;
+  addNewQuestion: (categoryId: string) => () => void;
+  removeQuestion: (categoryId: string) => (questionId: string) => () => void;
   updateWorksheetDoc: (worksheetWithFilter: WorksheetWithFilter) => () => void;
-  updateWorksheetState: (ws: WorksheetWithFilter) => void;
+  updateWorksheetState: (worksheetWithFilter: WorksheetWithFilter) => void;
 };
 
 const Manage: React.FC<Props> = ({

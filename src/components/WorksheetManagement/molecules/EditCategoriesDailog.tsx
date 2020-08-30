@@ -1,10 +1,10 @@
 import React, { memo, useState, FC, useCallback, useEffect } from "react";
 import { makeStyles, createStyles } from "@material-ui/core";
-import TextField from "components/common/atoms/TextField";
 import IconButton from "components/common/atoms/IconButton";
 import Dialog from "components/common/molecules/Dialog";
 import shortid from "shortid";
 import { WorksheetWithFilter, emptyWorkSheetWithFilter } from "../type";
+import DeletableTextField from "./DeletableTextField";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -13,34 +13,10 @@ const useStyles = makeStyles(() =>
       flexDirection: "column",
     },
     item: {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "flex-end",
       marginBottom: "1vh",
-    },
-    element: {
-      marginRight: "1vw",
     },
   })
 );
-
-// TODO: 共通化
-// eslint-disable-next-line react/display-name
-const Item: FC<any> = memo(({ id, value, editCategory, removeCategory }) => {
-  const classes = useStyles();
-
-  return (
-    <div className={classes.item}>
-      <TextField
-        id={id}
-        value={value}
-        handleChange={editCategory}
-        className={classes.element}
-      />
-      <IconButton label={value} iconName="delete" onClick={removeCategory} />
-    </div>
-  );
-});
 
 type Props = {
   worksheet: WorksheetWithFilter;
@@ -48,12 +24,12 @@ type Props = {
   handleClose: (ws: WorksheetWithFilter) => () => void;
 };
 
-const newCategory = {
+const getNewCategory = () => ({
   id: shortid.generate(),
   name: "",
   questions: [{ id: shortid.generate(), value: "" }],
   filtered: false,
-};
+});
 
 const EditCategoiesDialog: React.FC<Props> = ({
   worksheet,
@@ -92,7 +68,7 @@ const EditCategoiesDialog: React.FC<Props> = ({
   );
 
   const addCategory = useCallback(() => {
-    const next = [...worksheetWithFilter, newCategory];
+    const next = [...worksheetWithFilter, getNewCategory()];
     setWorksheetWithFilter(next);
   }, [worksheetWithFilter]);
 
@@ -108,13 +84,14 @@ const EditCategoiesDialog: React.FC<Props> = ({
       <div className={classes.contents}>
         {worksheetWithFilter.map(({ id, name }) => {
           return (
-            <Item
-              key={id}
-              id={id}
-              value={name}
-              editCategory={editCategory(id)}
-              removeCategory={removeCategory(id)}
-            />
+            <div key={id} className={classes.item}>
+              <DeletableTextField
+                id={id}
+                value={name}
+                handleChange={editCategory(id)}
+                handleDelete={removeCategory(id)}
+              />
+            </div>
           );
         })}
         <IconButton label="" iconName="add" onClick={addCategory} />

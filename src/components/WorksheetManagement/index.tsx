@@ -43,13 +43,13 @@ const ManagerContainer = () => {
   );
 
   const editQuestion = useCallback(
-    (categoryId: string) => (index: number) => (
+    (categoryId: string) => (questionId: string) => (
       event: React.ChangeEvent<HTMLInputElement>
     ) => {
       const next = worksheet.map((category) => {
         if (category.id !== categoryId) return category;
-        const questions = category.questions.map((q, i) =>
-          i === index ? { ...q, value: event.target.value } : q
+        const questions = category.questions.map((q) =>
+          q.id === questionId ? { ...q, value: event.target.value } : q
         );
 
         return { ...category, questions };
@@ -78,10 +78,10 @@ const ManagerContainer = () => {
   );
 
   const removeQuestion = useCallback(
-    (categoryId: string) => (index: number) => () => {
+    (categoryId: string) => (questionId: string) => () => {
       const next = worksheet.map((category) => {
         if (category.id !== categoryId) return category;
-        const questions = category.questions.filter((_, i) => i !== index);
+        const questions = category.questions.filter((q) => q.id !== questionId);
 
         return { ...category, questions };
       });
