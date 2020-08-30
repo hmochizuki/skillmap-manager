@@ -3,6 +3,7 @@ import { makeStyles, createStyles } from "@material-ui/core";
 import TextField from "components/common/atoms/TextField";
 import IconButton from "components/common/atoms/IconButton";
 import Dialog from "components/common/molecules/Dialog";
+import shortid from "shortid";
 import { WorksheetWithFilter, emptyWorkSheetWithFilter } from "../type";
 
 const useStyles = makeStyles(() =>
@@ -48,8 +49,9 @@ type Props = {
 };
 
 const newCategory = {
+  id: shortid.generate(),
   name: "",
-  questions: [{ value: "" }],
+  questions: [{ id: shortid.generate(), value: "" }],
   filtered: false,
 };
 
@@ -68,9 +70,11 @@ const EditCategoiesDialog: React.FC<Props> = ({
   }, [worksheet]);
 
   const editCategory = useCallback(
-    (category: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const next = worksheetWithFilter.map((e) =>
-        e.name === category ? { ...e, category: event.target.value } : e
+    (categoryId: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const next = worksheetWithFilter.map((category) =>
+        category.id === categoryId
+          ? { ...category, name: event.target.value }
+          : category
       );
       setWorksheetWithFilter(next);
     },
@@ -78,8 +82,10 @@ const EditCategoiesDialog: React.FC<Props> = ({
   );
 
   const removeCategory = useCallback(
-    (category: string) => () => {
-      const next = worksheetWithFilter.filter((e) => e.name !== category);
+    (categoryId: string) => () => {
+      const next = worksheetWithFilter.filter(
+        (category) => category.id !== categoryId
+      );
       setWorksheetWithFilter(next);
     },
     [worksheetWithFilter]
@@ -100,16 +106,14 @@ const EditCategoiesDialog: React.FC<Props> = ({
       handleClose={handleClose(worksheetWithFilter)}
     >
       <div className={classes.contents}>
-        {worksheetWithFilter.map(({ name }, i) => {
+        {worksheetWithFilter.map(({ id, name }) => {
           return (
             <Item
-              // TODO: id を持たせるべきだった...
-              // eslint-disable-next-line react/no-array-index-key
-              key={i}
-              id={`${name}_${i}`}
+              key={id}
+              id={id}
               value={name}
-              editCategory={editCategory(name)}
-              removeCategory={removeCategory(name)}
+              editCategory={editCategory(id)}
+              removeCategory={removeCategory(id)}
             />
           );
         })}

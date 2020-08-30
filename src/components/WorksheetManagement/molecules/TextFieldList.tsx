@@ -39,19 +39,17 @@ const TextFieldList: React.FC<Props> = ({
 
   return (
     <>
-      {questions.map(({ value }, i) => {
+      {questions.map(({ id, value }, i) => {
         const l = i === 0 ? label : "";
         const onFocus =
           i === questions.length - 1 ? addNewTextField : undefined;
         const showRemoveIcon = questions.length > 1 && i < questions.length - 1;
 
         return (
-          // eslint-disable-next-line react/no-array-index-key
-          <div key={`${label}_${i}`} className={classes.root}>
+          <div key={id} className={classes.root}>
             <div className={classes.textField}>
               <TextField
-                id={`${label}_${i}`}
-                name={`${label}_${i}`}
+                id={id}
                 label={l}
                 value={value}
                 placeholder="入力してください"

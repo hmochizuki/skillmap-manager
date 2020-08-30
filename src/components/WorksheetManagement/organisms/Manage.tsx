@@ -40,7 +40,7 @@ const useStyles = makeStyles(() =>
 
 type Props = {
   worksheetWithFilter: WorksheetWithFilter;
-  filterCategory: (category: string) => () => void;
+  filterCategory: (id: string) => () => void;
   editQuestion: (
     category: string
   ) => (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -77,10 +77,10 @@ const Manage: React.FC<Props> = ({
 
   const chips = useMemo(
     () =>
-      worksheetWithFilter.map(({ name, filtered }) => ({
+      worksheetWithFilter.map(({ id, name, filtered }) => ({
         label: name,
         filtered,
-        handleClick: filterCategory(name),
+        handleClick: filterCategory(id),
       })),
     [worksheetWithFilter, filterCategory]
   );
@@ -97,15 +97,15 @@ const Manage: React.FC<Props> = ({
         />
       </div>
       <section className={classes.questions}>
-        {worksheetWithFilter.map(({ name, questions, filtered }) => {
+        {worksheetWithFilter.map(({ id, name, questions, filtered }) => {
           return filtered ? null : (
-            <div key={name} className={classes.labelGroup}>
+            <div key={id} className={classes.labelGroup}>
               <TextFieldList
                 label={name}
                 questions={questions}
-                handleChangeExsingText={editQuestion(name)}
-                addNewTextField={addNewQuestion(name)}
-                removeTextField={removeQuestion(name)}
+                handleChangeExsingText={editQuestion(id)}
+                addNewTextField={addNewQuestion(id)}
+                removeTextField={removeQuestion(id)}
               />
             </div>
           );

@@ -1,10 +1,10 @@
 export type Question = {
-  id?: string;
+  id: string;
   value: string;
 };
 
 export type Category = {
-  id?: string;
+  id: string;
   name: string;
   questions: Question[];
 };
@@ -12,7 +12,7 @@ export type Category = {
 export type Worksheet = Category[];
 
 export type WorksheetDocument = {
-  id?: string;
+  id: string;
   team: string;
   worksheet: Category[];
   createdAt: number;

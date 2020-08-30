@@ -2,6 +2,7 @@ import React, { memo, useEffect, useCallback, useState } from "react";
 import useWorksheet from "hooks/useWorksheet";
 import Progress from "components/common/atoms/Progress";
 import { Worksheet } from "types/workSheet";
+import shortid from "shortid";
 import Presentation from "./organisms/Manage";
 import { WorksheetWithFilter, emptyWorkSheetWithFilter } from "./type";
 
@@ -20,16 +21,21 @@ const ManagerContainer = () => {
         worksheetDocument.worksheet.map((category) => ({
           ...category,
           filtered: false,
-          questions: [...category.questions, { value: "" }],
+          questions: [
+            ...category.questions,
+            { id: shortid.generate(), value: "" },
+          ],
         }))
       );
     }
   }, [worksheetDocument]);
 
   const filterCategory = useCallback(
-    (targetCategoty: string) => () => {
-      const next = worksheet.map((e) =>
-        e.name === targetCategoty ? { ...e, filtered: !e.filtered } : e
+    (categoryId: string) => () => {
+      const next = worksheet.map((category) =>
+        category.id === categoryId
+          ? { ...category, filtered: !category.filtered }
+          : category
       );
       setWorksheet(next);
     },
@@ -37,16 +43,16 @@ const ManagerContainer = () => {
   );
 
   const editQuestion = useCallback(
-    (category: string) => (index: number) => (
+    (categoryId: string) => (index: number) => (
       event: React.ChangeEvent<HTMLInputElement>
     ) => {
-      const next = worksheet.map((e) => {
-        if (e.name !== category) return e;
-        const questions = e.questions.map((q, i) =>
-          i === index ? { value: event.target.value } : q
+      const next = worksheet.map((category) => {
+        if (category.id !== categoryId) return category;
+        const questions = category.questions.map((q, i) =>
+          i === index ? { ...q, value: event.target.value } : q
         );
 
-        return { ...e, questions };
+        return { ...category, questions };
       });
       setWorksheet(next);
     },
@@ -54,11 +60,17 @@ const ManagerContainer = () => {
   );
 
   const addNewQuestion = useCallback(
-    (category: string) => () => {
-      const next = worksheet.map((e) => {
-        if (e.name !== category) return e;
+    (categoryId: string) => () => {
+      const next = worksheet.map((category) => {
+        if (category.id !== categoryId) return category;
 
-        return { ...e, questions: [...e.questions, { value: "" }] };
+        return {
+          ...category,
+          questions: [
+            ...category.questions,
+            { id: shortid.generate(), value: "" },
+          ],
+        };
       });
       setWorksheet(next);
     },
@@ -66,12 +78,12 @@ const ManagerContainer = () => {
   );
 
   const removeQuestion = useCallback(
-    (category: string) => (index: number) => () => {
-      const next = worksheet.map((e) => {
-        if (e.name !== category) return e;
-        const questions = e.questions.filter((_, i) => i !== index);
+    (categoryId: string) => (index: number) => () => {
+      const next = worksheet.map((category) => {
+        if (category.id !== categoryId) return category;
+        const questions = category.questions.filter((_, i) => i !== index);
 
-        return { ...e, questions };
+        return { ...category, questions };
       });
       setWorksheet(next);
     },
@@ -80,10 +92,11 @@ const ManagerContainer = () => {
 
   const updateWorksheetDoc = useCallback(
     (worksheetWithFilter: WorksheetWithFilter) => () => {
-      const ws: Worksheet = worksheetWithFilter.map((e) => {
+      const ws: Worksheet = worksheetWithFilter.map((category) => {
         return {
-          name: e.name,
-          questions: e.questions.filter((q) => q.value !== ""),
+          id: category.id,
+          name: category.name,
+          questions: category.questions.filter((q) => q.value !== ""),
         };
       });
       updateWorksheetDocument(ws);
