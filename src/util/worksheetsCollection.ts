@@ -7,10 +7,7 @@ export const getWorksheetDocument = async (
   db: firebase.firestore.Firestore,
   id: string
 ): Promise<WorksheetDocument> => {
-  const workSheetDoc = await db
-    .collection(collectionNames.worksheets)
-    .doc(id)
-    .get();
+  const workSheetDoc = await db.collection(collectionNames.teams).doc(id).get();
 
   const workSheetData = workSheetDoc.data() as WorksheetDocument;
 
@@ -34,7 +31,7 @@ export const updateWorksheetDocument = async (
     return { ...categoryHasId, questions: questionsHasId };
   });
 
-  const workSheetRef = db.collection(collectionNames.worksheets).doc(id);
+  const workSheetRef = db.collection(collectionNames.teams).doc(id);
   const updatedAt = new Date().getTime();
 
   return workSheetRef.set(

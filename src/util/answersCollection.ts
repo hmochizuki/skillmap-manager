@@ -23,20 +23,28 @@ export const updateAnswerDocument = async (
   teamId: string,
   data: Required<Worksheet>
 ): Promise<void> => {
-  const answerRef = db.collection(collectionNames.answers).doc(userId);
+  const answerRef = db
+    .collection(collectionNames.teams)
+    .doc(teamId)
+    .collection(collectionNames.users)
+    .doc(userId);
   const updatedAt = new Date().getTime();
   const now = new Date();
+  const yearMonth = `${now.getFullYear()}${(now.getMonth() + 2)
+    .toString()
+    .padStart(2, "0")}`;
 
   const updatingData: Answer = {
-    teamId,
-    yearMonth: `${now.getFullYear()}${(now.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}`,
-    worksheet: data,
+    [yearMonth]: data,
   };
 
-  return answerRef.update({
-    answers: firebase.firestore.FieldValue.arrayUnion(updatingData),
-    updatedAt,
-  });
+  return answerRef.set(
+    {
+      answers: updatingData,
+      updatedAt,
+    },
+    {
+      merge: true,
+    }
+  );
 };
