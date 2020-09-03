@@ -12,7 +12,7 @@ import {
 } from "components/WorksheetManagement/type";
 import Progress from "components/common/atoms/Progress";
 import { FirebaseContext, UserContext } from "contexts";
-import { updateAnswerDocument } from "util/answersCollection";
+import { updateAnswerDocument } from "firestore/services/answersCollection";
 import Presentation from "./organisms/Answer";
 
 const AnswerContainer = () => {

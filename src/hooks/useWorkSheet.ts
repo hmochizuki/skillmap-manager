@@ -1,22 +1,20 @@
 import { useContext, useEffect, useState, useCallback } from "react";
 import { FirebaseContext } from "contexts";
-import { WorksheetDocument, Worksheet } from "types/workSheet";
+import { TeamDocument, Worksheet } from "firestore/types/workSheet";
 import {
   getWorksheetDocument,
   updateWorksheetDocument as update,
-} from "util/worksheetsCollection";
+} from "firestore/services/worksheetsCollection";
 
 type Return = [
-  WorksheetDocument | undefined,
+  TeamDocument | undefined,
   (date: Worksheet) => void,
   boolean,
   Error | null
 ];
 
 const useWorksheet = (id: string): Return => {
-  const [worksheetDocument, setWorksheetDocument] = useState<
-    WorksheetDocument
-  >();
+  const [worksheetDocument, setWorksheetDocument] = useState<TeamDocument>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 

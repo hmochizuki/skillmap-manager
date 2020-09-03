@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { makeStyles, createStyles } from "@material-ui/core";
-import { Question } from "types/workSheet";
+import { Question } from "firestore/types/workSheet";
 import DeletableTextField from "./DeletableTextField";
 
 const useStyles = makeStyles(() =>

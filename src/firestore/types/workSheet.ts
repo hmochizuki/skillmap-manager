@@ -7,12 +7,13 @@ export type Question = {
 export type Category = {
   id: string;
   name: string;
+  point?: number;
   questions: Question[];
 };
 
 export type Worksheet = Category[];
 
-export type WorksheetDocument = {
+export type TeamDocument = {
   id: string;
   team: string;
   worksheet: Category[];

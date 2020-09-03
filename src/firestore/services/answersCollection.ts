@@ -1,7 +1,7 @@
 import firebase from "firebase/app";
-import { collectionNames } from "config/collections";
-import { Worksheet } from "types/workSheet";
-import { AnswerDocument, Answer } from "types/Answer";
+import { collectionNames } from "firestore/types/collections";
+import { Worksheet } from "firestore/types/workSheet";
+import { AnswerDocument, Answer } from "firestore/types/Answer";
 
 export const getAnswerDocument = async (
   db: firebase.firestore.Firestore,

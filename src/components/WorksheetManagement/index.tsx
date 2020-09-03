@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useCallback, useState } from "react";
 import useWorksheet from "hooks/useWorksheet";
 import Progress from "components/common/atoms/Progress";
-import { Worksheet } from "types/workSheet";
+import { Worksheet } from "firestore/types/workSheet";
 import shortid from "shortid";
 import Presentation from "./organisms/Manage";
 import { WorksheetWithFilter, emptyWorkSheetWithFilter } from "./type";
