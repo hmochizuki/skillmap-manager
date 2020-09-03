@@ -6,7 +6,7 @@ import shortid from "shortid";
 import Presentation from "./organisms/Manage";
 import { WorksheetWithFilter, emptyWorkSheetWithFilter } from "./type";
 
-const ManagerContainer = () => {
+const ManageContainer = () => {
   const [worksheetDocument, updateWorksheetDocument, loading] = useWorksheet(
     "AS_FE"
   );
@@ -123,4 +123,4 @@ const ManagerContainer = () => {
   );
 };
 
-export default memo(ManagerContainer);
+export default memo(ManageContainer);

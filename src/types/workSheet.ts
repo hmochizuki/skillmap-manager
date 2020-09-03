@@ -1,6 +1,7 @@
 export type Question = {
   id: string;
   value: string;
+  checked?: boolean;
 };
 
 export type Category = {

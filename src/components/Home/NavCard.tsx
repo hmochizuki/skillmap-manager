@@ -3,7 +3,6 @@ import Card from "components/common/molecules/Card";
 import IconButton from "components/common/atoms/IconButton";
 import { useHistory } from "react-router";
 import { PrimaryButton } from "components/common/atoms/Buttons";
-import { Link } from "react-router-dom";
 import { makeStyles, createStyles } from "@material-ui/core";
 
 type Props = {
@@ -22,7 +21,7 @@ type Props = {
 const useStyles = makeStyles(() =>
   createStyles({
     icon: {
-      padding: "14px",
+      marginTop: "7px",
     },
   })
 );
@@ -38,15 +37,13 @@ const NavCard: React.FC<Props> = ({ header, navigateTo, media, contents }) => {
   const headers = {
     ...header,
     rightIcon: (
-      <Link to={navigateTo}>
-        <IconButton
-          label="navigation to edit skillmap"
-          iconName="navigation"
-          size="large"
-          onClick={navigate}
-          className={classes.icon}
-        />
-      </Link>
+      <IconButton
+        label="navigation to edit skillmap"
+        iconName="navigation"
+        size="large"
+        onClick={navigate}
+        className={classes.icon}
+      />
     ),
   };
 

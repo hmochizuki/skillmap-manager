@@ -1,9 +1,19 @@
-import React, { memo, useState, useCallback } from "react";
+import React, { memo } from "react";
 import routeNames from "router/routeNames";
-import TextField from "components/common/atoms/TextField";
+import { Container, makeStyles, createStyles } from "@material-ui/core";
 import NavCard from "./NavCard";
 
-const cardProps = {
+const useStyles = makeStyles(() =>
+  createStyles({
+    root: {
+      display: "flex",
+      justifyContent: "space-evenly",
+      alignItems: "center",
+    },
+  })
+);
+
+const worksheetManagement = {
   header: {
     title: "ワークシートを編集",
     subTitle: "サブタイトル",
@@ -16,20 +26,27 @@ const cardProps = {
   contents: "コンテンツ",
 };
 
+const worksheetAnswer = {
+  header: {
+    title: "ワークシートに回答",
+    subTitle: "サブタイトル",
+  },
+  navigateTo: routeNames.workSheetAnswer,
+  media: {
+    title: "イメージタイトル",
+    path: "",
+  },
+  contents: "コンテンツ",
+};
+
 const Home = () => {
-  const [texts, setTexts] = useState([""]);
-  const handleChange = useCallback((e: any) => setTexts([e.target.value]), []);
+  const classes = useStyles();
 
   return (
-    <div className="App">
-      <NavCard {...cardProps} />
-      <TextField
-        id="test"
-        name="name"
-        value={texts[0]}
-        handleChange={handleChange}
-      />
-    </div>
+    <Container className={classes.root}>
+      <NavCard {...worksheetManagement} />
+      <NavCard {...worksheetAnswer} />
+    </Container>
   );
 };
 

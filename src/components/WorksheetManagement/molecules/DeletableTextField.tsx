@@ -10,7 +10,6 @@ const useStyles = makeStyles(() =>
       display: "flex",
       justifyContent: "center",
       alignItems: "flex-end",
-      // marginBottom: "1vh",
     },
     textField: {
       marginRight: "1vw",

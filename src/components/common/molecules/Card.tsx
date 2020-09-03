@@ -11,17 +11,6 @@ const useStyles = makeStyles(() =>
   createStyles({
     root: {
       maxWidth: 345,
-      position: "relative",
-    },
-    headerRight: {
-      position: "absolute",
-      top: 0,
-      right: 0,
-    },
-    headerLeft: {
-      position: "absolute",
-      top: 0,
-      left: 0,
     },
     media: {
       height: 0,
@@ -61,13 +50,12 @@ export default function RecipeReviewCard({
 
   return (
     <Card className={classes.root}>
-      <CardHeader title={header.title} subheader={header.subTitle} />
-      {header.leftIcon && (
-        <div className={classes.headerLeft}>{header.leftIcon}</div>
-      )}
-      {header.rightIcon && (
-        <div className={classes.headerRight}>{header.rightIcon}</div>
-      )}
+      <CardHeader
+        title={header.title}
+        subheader={header.subTitle}
+        avatar={header.leftIcon}
+        action={header.rightIcon}
+      />
       {media && (
         <CardMedia
           className={classes.media}

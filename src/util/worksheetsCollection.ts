@@ -1,7 +1,7 @@
 import firebase from "firebase/app";
-import shortid from "shortid";
 import { collectionNames } from "config/collections";
 import { WorksheetDocument, Worksheet } from "types/workSheet";
+import { generateId } from "./gengerateId";
 
 export const getWorksheetDocument = async (
   db: firebase.firestore.Firestore,
@@ -15,13 +15,6 @@ export const getWorksheetDocument = async (
   const workSheetData = workSheetDoc.data() as WorksheetDocument;
 
   return workSheetData;
-};
-
-const generateId = (data: Record<string, unknown>) => {
-  if (data.id) return data;
-  const id = shortid.generate();
-
-  return { ...data, id };
 };
 
 export const updateWorksheetDocument = async (
