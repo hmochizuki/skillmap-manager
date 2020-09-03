@@ -46,7 +46,7 @@ type Props = {
   ) => (questionId: string) => (e: React.ChangeEvent<HTMLInputElement>) => void;
   addNewQuestion: (categoryId: string) => () => void;
   removeQuestion: (categoryId: string) => (questionId: string) => () => void;
-  updateWorksheetDoc: (worksheetWithFilter: WorksheetWithFilter) => () => void;
+  updateWorksheet: (worksheetWithFilter: WorksheetWithFilter) => () => void;
   updateWorksheetState: (worksheetWithFilter: WorksheetWithFilter) => void;
 };
 
@@ -56,7 +56,7 @@ const Manage: React.FC<Props> = ({
   editQuestion,
   addNewQuestion,
   removeQuestion,
-  updateWorksheetDoc,
+  updateWorksheet,
   updateWorksheetState,
 }) => {
   const classes = useStyles();
@@ -114,7 +114,7 @@ const Manage: React.FC<Props> = ({
       <div className={classes.submitButton}>
         <PrimaryButton
           text="この内容で更新する"
-          onClick={updateWorksheetDoc(worksheetWithFilter)}
+          onClick={updateWorksheet(worksheetWithFilter)}
         />
       </div>
       <EditCategoriesDailog

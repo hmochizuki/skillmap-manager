@@ -1,40 +1,31 @@
-import React, {
-  memo,
-  useState,
-  useEffect,
-  useCallback,
-  useContext,
-} from "react";
-import useWorksheet from "hooks/useWorksheet";
+import React, { memo, useState, useEffect, useCallback } from "react";
+import useWorksheetToAnswer from "hooks/useWorksheetToAnswer";
 import {
   emptyWorkSheetWithFilter,
   WorksheetWithFilter,
 } from "components/WorksheetManagement/type";
 import Progress from "components/common/atoms/Progress";
-import { FirebaseContext, UserContext } from "contexts";
-import { updateAnswerDocument } from "firestore/services/answersCollection";
 import Presentation from "./organisms/Answer";
 
 const AnswerContainer = () => {
-  const { db } = useContext(FirebaseContext);
-  const { user } = useContext(UserContext);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [worksheetDocument, _, loading] = useWorksheet("AS_FE");
+  const [teamDocument, answerToWorksheet, loading] = useWorksheetToAnswer(
+    "AS_FE"
+  );
   const [worksheetWithFilter, setWorksheetWithFilter] = useState(
     emptyWorkSheetWithFilter
   );
 
   useEffect(() => {
-    if (worksheetDocument) {
+    if (teamDocument) {
       setWorksheetWithFilter(
-        worksheetDocument.worksheet.map((category) => ({
+        teamDocument.worksheet.map((category) => ({
           ...category,
           filtered: false,
           questions: category.questions.map((q) => ({ ...q, checked: false })),
         }))
       );
     }
-  }, [worksheetDocument]);
+  }, [teamDocument]);
 
   const filterCategory = useCallback(
     (categoryId: string) => () => {
@@ -66,12 +57,10 @@ const AnswerContainer = () => {
   );
 
   const updateAnswer = (worksheet: WorksheetWithFilter) => () => {
-    if (!db) throw new Error("firebase is not initialized");
-    if (!user) throw new Error("not authorized");
-    updateAnswerDocument(db, user.uid, "AS_FE", worksheet);
+    answerToWorksheet(worksheet);
   };
 
-  return worksheetDocument && !loading ? (
+  return teamDocument && !loading ? (
     <Presentation
       worksheetWithFilter={worksheetWithFilter}
       filterCategory={filterCategory}

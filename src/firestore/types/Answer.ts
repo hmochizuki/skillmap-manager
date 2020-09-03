@@ -1,4 +1,4 @@
-import { Category } from "./workSheet";
+import { Category } from "./Team";
 
 export type Answer = Record<string, Required<Category[]>>;
 

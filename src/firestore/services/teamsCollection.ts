@@ -1,20 +1,23 @@
 import firebase from "firebase/app";
 import { collectionNames } from "firestore/types/collections";
-import { TeamDocument, Worksheet } from "firestore/types/workSheet";
+import { TeamDocument, Worksheet } from "firestore/types/Team";
 import { generateId } from "../../util/gengerateId";
 
 export const getWorksheetDocument = async (
   db: firebase.firestore.Firestore,
-  id: string
+  teamId: string
 ): Promise<TeamDocument> => {
-  const workSheetDoc = await db.collection(collectionNames.teams).doc(id).get();
+  const workSheetDoc = await db
+    .collection(collectionNames.teams)
+    .doc(teamId)
+    .get();
 
   const workSheetData = workSheetDoc.data() as TeamDocument;
 
   return workSheetData;
 };
 
-export const updateWorksheetDocument = async (
+export const updateWorksheet = async (
   db: firebase.firestore.Firestore,
   id: string,
   data: Worksheet

@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState, useCallback } from "react";
 import { FirebaseContext } from "contexts";
-import { TeamDocument, Worksheet } from "firestore/types/workSheet";
+import { TeamDocument, Worksheet } from "firestore/types/Team";
 import {
   getWorksheetDocument,
-  updateWorksheetDocument as update,
-} from "firestore/services/worksheetsCollection";
+  updateWorksheet as update,
+} from "firestore/services/teamsCollection";
 
 type Return = [
   TeamDocument | undefined,
@@ -13,8 +13,8 @@ type Return = [
   Error | null
 ];
 
-const useWorksheet = (id: string): Return => {
-  const [worksheetDocument, setWorksheetDocument] = useState<TeamDocument>();
+const useWorksheetToAnswer = (id: string): Return => {
+  const [teamDocument, setTeamDocument] = useState<TeamDocument>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -34,12 +34,12 @@ const useWorksheet = (id: string): Return => {
   useEffect(() => {
     if (!db) throw new Error("firebase is not initialized");
     load(async () => {
-      const workSheetData = await getWorksheetDocument(db, id);
-      setWorksheetDocument(workSheetData);
+      const worksheetData = await getWorksheetDocument(db, id);
+      setTeamDocument(worksheetData);
     });
   }, [id, db, load]);
 
-  const updateWorksheetDocument = useCallback(
+  const updateWorksheet = useCallback(
     (data: Worksheet) => {
       if (!db) throw new Error("firebase is not initialized");
       load(async () => {
@@ -49,7 +49,7 @@ const useWorksheet = (id: string): Return => {
     [id, db, load]
   );
 
-  return [worksheetDocument, updateWorksheetDocument, loading, error];
+  return [teamDocument, updateWorksheet, loading, error];
 };
 
-export default useWorksheet;
+export default useWorksheetToAnswer;

@@ -85,7 +85,7 @@ const Answer: React.FC<Props> = ({
         })}
         <div className={classes.submitButton}>
           <PrimaryButton
-            text="この内容で更新する"
+            text="この内容で回答する"
             onClick={updateAnswerDocument(worksheetWithFilter)}
           />
         </div>

@@ -1,13 +1,13 @@
 import React, { memo, useEffect, useCallback, useState } from "react";
-import useWorksheet from "hooks/useWorksheet";
+import useWorksheetToEdit from "hooks/useWorksheetToEdit";
 import Progress from "components/common/atoms/Progress";
-import { Worksheet } from "firestore/types/workSheet";
+import { Worksheet } from "firestore/types/Team";
 import shortid from "shortid";
 import Presentation from "./organisms/Manage";
 import { WorksheetWithFilter, emptyWorkSheetWithFilter } from "./type";
 
 const ManageContainer = () => {
-  const [worksheetDocument, updateWorksheetDocument, loading] = useWorksheet(
+  const [teamDocument, updateTeamDocment, loading] = useWorksheetToEdit(
     "AS_FE"
   );
 
@@ -16,9 +16,9 @@ const ManageContainer = () => {
   );
 
   useEffect(() => {
-    if (worksheetDocument) {
+    if (teamDocument) {
       setWorksheet(
-        worksheetDocument.worksheet.map((category) => ({
+        teamDocument.worksheet.map((category) => ({
           ...category,
           filtered: false,
           questions: [
@@ -28,7 +28,7 @@ const ManageContainer = () => {
         }))
       );
     }
-  }, [worksheetDocument]);
+  }, [teamDocument]);
 
   const filterCategory = useCallback(
     (categoryId: string) => () => {
@@ -90,7 +90,7 @@ const ManageContainer = () => {
     [worksheet]
   );
 
-  const updateWorksheetDoc = useCallback(
+  const updateWorksheet = useCallback(
     (worksheetWithFilter: WorksheetWithFilter) => () => {
       const ws: Worksheet = worksheetWithFilter.map((category) => {
         return {
@@ -99,23 +99,23 @@ const ManageContainer = () => {
           questions: category.questions.filter((q) => q.value !== ""),
         };
       });
-      updateWorksheetDocument(ws);
+      updateTeamDocment(ws);
     },
-    [updateWorksheetDocument]
+    [updateTeamDocment]
   );
 
   const updateWorksheetState = useCallback((ws: WorksheetWithFilter) => {
     setWorksheet(ws);
   }, []);
 
-  return worksheetDocument && !loading ? (
+  return teamDocument && !loading ? (
     <Presentation
       worksheetWithFilter={worksheet}
       filterCategory={filterCategory}
       editQuestion={editQuestion}
       addNewQuestion={addNewQuestion}
       removeQuestion={removeQuestion}
-      updateWorksheetDoc={updateWorksheetDoc}
+      updateWorksheet={updateWorksheet}
       updateWorksheetState={updateWorksheetState}
     />
   ) : (

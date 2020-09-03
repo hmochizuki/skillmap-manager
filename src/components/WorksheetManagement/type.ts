@@ -1,4 +1,4 @@
-import { Category } from "firestore/types/workSheet";
+import { Category } from "firestore/types/Team";
 import shortid from "shortid";
 
 export type WorksheetWithFilter = Array<Category & { filtered: boolean }>;
