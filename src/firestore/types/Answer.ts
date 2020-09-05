@@ -1,10 +1,8 @@
-import { Category } from "./Team";
-
-export type Answer = Record<string, Required<Category[]>>;
+import { Worksheet } from "./Team";
 
 export type AnswerDocument = {
-  id: string;
-  answers: Answer[];
+  yearMonth: string;
+  answer: Worksheet;
   createdAt: number;
   updatedAt: number;
 };

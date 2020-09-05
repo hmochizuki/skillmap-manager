@@ -5,26 +5,30 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   Radar,
+  ResponsiveContainer,
 } from "recharts";
+import { Worksheet } from "firestore/types/Team";
 
 type Props = {
-  data: Array<{ label: string; point: number }>;
+  data: Required<Worksheet>;
 };
 
 const Manage: React.FC<Props> = ({ data }) => {
   return (
-    <RadarChart outerRadius={90} width={730} height={250} data={data}>
-      <PolarGrid />
-      <PolarAngleAxis dataKey="label" />
-      <PolarRadiusAxis angle={90} domain={[0, 100]} />
-      <Radar
-        name="point"
-        dataKey="point"
-        stroke="#8884d8"
-        fill="#8884d8"
-        fillOpacity={0.6}
-      />
-    </RadarChart>
+    <ResponsiveContainer width={730} height={250}>
+      <RadarChart outerRadius={90} data={data}>
+        <PolarGrid />
+        <PolarAngleAxis dataKey="name" />
+        <PolarRadiusAxis angle={90} domain={[0, 100]} />
+        <Radar
+          name="private-map"
+          dataKey="point"
+          stroke="#8884d8"
+          fill="#8884d8"
+          fillOpacity={0.6}
+        />
+      </RadarChart>
+    </ResponsiveContainer>
   );
 };
 

@@ -1,23 +1,26 @@
 import firebase from "firebase/app";
 import { collectionNames } from "firestore/types/collections";
 import { Worksheet } from "firestore/types/Team";
-import { AnswerDocument, Answer } from "firestore/types/Answer";
+import { AnswerDocument } from "firestore/types/Answer";
+import { getYearMonth } from "util/getYearMonth";
 
-export const getAnswerDocument = async (
+export const getAllAnswersDocument = async (
   db: firebase.firestore.Firestore,
   teamId: string,
   userId: string
-): Promise<AnswerDocument> => {
-  const workSheetDoc = await db
+): Promise<AnswerDocument[]> => {
+  const answerRef = db
     .collection(collectionNames.teams)
     .doc(teamId)
     .collection(collectionNames.users)
     .doc(userId)
-    .get();
+    .collection(collectionNames.answers);
 
-  const answersDod = workSheetDoc.data() as AnswerDocument;
+  const answersCollection = await answerRef.get();
+  const allAnswers: any[] = [];
+  answersCollection.forEach((e) => allAnswers.push(e.data()));
 
-  return answersDod;
+  return allAnswers as AnswerDocument[];
 };
 
 const calculatePoint = (worksheet: Required<Worksheet>) =>
@@ -35,28 +38,25 @@ export const updateAnswerDocument = async (
   userId: string,
   data: Required<Worksheet>
 ): Promise<void> => {
+  const yearMonth = getYearMonth();
+
   const answerRef = db
     .collection(collectionNames.teams)
     .doc(teamId)
     .collection(collectionNames.users)
-    .doc(userId);
-  const updatedAt = new Date().getTime();
-  const now = new Date();
-  const yearMonth = `${now.getFullYear()}${(now.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}`;
+    .doc(userId)
+    .collection(collectionNames.answers)
+    .doc(yearMonth);
 
-  const updatingData: Answer = {
-    [yearMonth]: calculatePoint(data),
+  const updatedAt = new Date().getTime();
+
+  const updatingData: Omit<AnswerDocument, "createdAt"> = {
+    yearMonth,
+    updatedAt,
+    answer: calculatePoint(data),
   };
 
-  return answerRef.set(
-    {
-      answers: updatingData,
-      updatedAt,
-    },
-    {
-      merge: true,
-    }
-  );
+  return answerRef.set(updatingData, {
+    merge: true,
+  });
 };
