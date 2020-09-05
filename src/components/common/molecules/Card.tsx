@@ -1,6 +1,6 @@
-import React from "react";
+import React, { FC, memo } from "react";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
+import BaseCard from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
@@ -40,16 +40,11 @@ type Props = {
   };
 };
 
-export default function RecipeReviewCard({
-  header,
-  media,
-  contents,
-  footerItems,
-}: Props) {
+const Card: FC<Props> = ({ header, media, contents, footerItems }) => {
   const classes = useStyles();
 
   return (
-    <Card className={classes.root}>
+    <BaseCard className={classes.root}>
       <CardHeader
         title={header.title}
         subheader={header.subTitle}
@@ -77,6 +72,8 @@ export default function RecipeReviewCard({
           </CardActions>
         </>
       )}
-    </Card>
+    </BaseCard>
   );
-}
+};
+
+export default memo(Card);

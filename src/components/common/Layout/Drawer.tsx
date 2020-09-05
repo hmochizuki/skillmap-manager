@@ -10,6 +10,7 @@ import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import Icon from "components/common/atoms/Icon";
 import { drawerWidth } from "components/common/layout/constants";
+import theme from "components/theme";
 
 const settingMenus = [
   {
@@ -29,50 +30,51 @@ type Props = {
   open: boolean;
 };
 
+const useStyles = makeStyles((t: Theme) =>
+  createStyles({
+    root: {
+      display: "flex",
+    },
+    drawer: {
+      width: drawerWidth,
+      flexShrink: 0,
+      whiteSpace: "nowrap",
+    },
+    drawerOpen: {
+      width: drawerWidth,
+      transition: t.transitions.create("width", {
+        easing: t.transitions.easing.sharp,
+        duration: t.transitions.duration.enteringScreen,
+      }),
+    },
+    drawerClose: {
+      transition: t.transitions.create("width", {
+        easing: t.transitions.easing.sharp,
+        duration: t.transitions.duration.leavingScreen,
+      }),
+      overflowX: "hidden",
+      width: t.spacing(7) + 1,
+      [t.breakpoints.up("sm")]: {
+        width: t.spacing(9) + 1,
+      },
+    },
+    toolbar: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "flex-end",
+      padding: t.spacing(0, 1),
+      // necessary for content to be below app bar
+      ...t.mixins.toolbar,
+    },
+    content: {
+      flexGrow: 1,
+      padding: t.spacing(3),
+    },
+  })
+);
+
 const Drawer: React.FC<Props> = ({ handleDrawerClose, open }) => {
-  const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-      root: {
-        display: "flex",
-      },
-      drawer: {
-        width: drawerWidth,
-        flexShrink: 0,
-        whiteSpace: "nowrap",
-      },
-      drawerOpen: {
-        width: drawerWidth,
-        transition: theme.transitions.create("width", {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.enteringScreen,
-        }),
-      },
-      drawerClose: {
-        transition: theme.transitions.create("width", {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
-        overflowX: "hidden",
-        width: theme.spacing(7) + 1,
-        [theme.breakpoints.up("sm")]: {
-          width: theme.spacing(9) + 1,
-        },
-      },
-      toolbar: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "flex-end",
-        padding: theme.spacing(0, 1),
-        // necessary for content to be below app bar
-        ...theme.mixins.toolbar,
-      },
-      content: {
-        flexGrow: 1,
-        padding: theme.spacing(3),
-      },
-    })
-  );
-  const classes = useStyles();
+  const classes = useStyles(theme);
   const history = useHistory();
 
   const contentMenus = [

@@ -1,10 +1,11 @@
 import React, { FC, useContext } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { UserContext } from "contexts";
+import theme from "components/theme";
 import AppBar from "./AppBar";
 import Drawer from "./Drawer";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((t: Theme) =>
   createStyles({
     root: {
       display: "flex",
@@ -13,19 +14,19 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       alignItems: "center",
       justifyContent: "flex-end",
-      padding: theme.spacing(0, 1),
+      padding: t.spacing(0, 1),
       // necessary for content to be below app bar
-      ...theme.mixins.toolbar,
+      ...t.mixins.toolbar,
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(3),
+      padding: t.spacing(3),
     },
   })
 );
 
 const Layout: FC = ({ children }) => {
-  const classes = useStyles();
+  const classes = useStyles(theme);
   const { user } = useContext(UserContext);
   const [open, setOpen] = React.useState(false);
 

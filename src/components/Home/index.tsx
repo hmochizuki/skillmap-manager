@@ -21,7 +21,7 @@ const worksheetManagement = {
   navigateTo: routeNames.workSheetManage,
   media: {
     title: "イメージタイトル",
-    path: "",
+    path: "/src/img/worksheetToEdit.png",
   },
   contents: "コンテンツ",
 };
@@ -34,7 +34,7 @@ const worksheetAnswer = {
   navigateTo: routeNames.workSheetAnswer,
   media: {
     title: "イメージタイトル",
-    path: "",
+    path: "/src/img/worksheetToEdit.png",
   },
   contents: "コンテンツ",
 };

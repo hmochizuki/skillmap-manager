@@ -7,25 +7,26 @@ import clsx from "clsx";
 import { Link, useHistory } from "react-router-dom";
 import routeNames from "router/routeNames";
 import { UserContext, FirebaseContext } from "contexts";
+import theme from "components/theme";
 import IconButton from "../atoms/IconButton";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((t: Theme) =>
   createStyles({
     appBar: {
-      zIndex: theme.zIndex.drawer + 1,
-      transition: theme.transitions.create(["width", "margin"], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
+      zIndex: t.zIndex.drawer + 1,
+      transition: t.transitions.create(["width", "margin"], {
+        easing: t.transitions.easing.sharp,
+        duration: t.transitions.duration.leavingScreen,
       }),
     },
     appBarShift: {
       marginLeft: drawerWidth,
       width: `calc(100% - ${drawerWidth}px)`,
-      transition: theme.transitions.create(["width", "margin"], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
+      transition: t.transitions.create(["width", "margin"], {
+        easing: t.transitions.easing.sharp,
+        duration: t.transitions.duration.enteringScreen,
       }),
     },
     menuButton: {
@@ -53,7 +54,7 @@ type Props = {
 };
 
 const AppBar: React.FC<Props> = ({ handleDrawerOpen, open }) => {
-  const classes = useStyles();
+  const classes = useStyles(theme);
   const { auth } = useContext(FirebaseContext);
   const { user } = useContext(UserContext);
   const history = useHistory();
