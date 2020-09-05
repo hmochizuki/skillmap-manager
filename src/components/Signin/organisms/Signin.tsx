@@ -50,7 +50,7 @@ const Signin: React.FC = () => {
   return (
     <>
       <div className={classes.titleArea}>
-        <PageTitle title="Singin" />
+        <PageTitle>Singin</PageTitle>
         <Typography className={classes.subTitle}>
           Please signin or create your account
         </Typography>

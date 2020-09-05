@@ -2,18 +2,18 @@ import React, { FC, memo } from "react";
 import { Typography } from "@material-ui/core";
 import Icon, { IconName } from "./Icon";
 
-type props = {
+type Props = {
   iconName?: IconName;
-  title: string;
+  className?: string;
 };
 
-const PageTitle: FC<props> = ({ iconName, title }) => {
+const PageTitle: FC<Props> = ({ iconName, children, className }) => {
   return (
-    <Typography variant="h3" noWrap>
-      {iconName && <Icon name={iconName} size="large" />}
-      {title}
+    <Typography variant="h5" noWrap className={className}>
+      {iconName && <Icon name={iconName} />}
+      {children}
     </Typography>
   );
 };
 
-export default memo(PageTitle);
+export default memo<FC<Props>>(PageTitle);
