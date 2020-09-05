@@ -73,7 +73,6 @@ const EditCategoiesDialog: React.FC<Props> = ({
   }, [worksheetWithFilter]);
 
   return (
-    // @ts-ignore
     <Dialog
       id="editCategoies"
       title="カテゴリーの編集"

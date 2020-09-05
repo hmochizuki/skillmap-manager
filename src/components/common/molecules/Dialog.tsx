@@ -62,4 +62,4 @@ const Dialog: FC<Props> = ({
   );
 };
 
-export default memo(Dialog);
+export default memo<FC<Props>>(Dialog);
