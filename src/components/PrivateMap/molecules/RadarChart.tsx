@@ -7,22 +7,24 @@ import {
   Radar,
   ResponsiveContainer,
 } from "recharts";
-import { Worksheet } from "firestore/types/Team";
 
 type Props = {
-  data: Required<Worksheet>;
+  // data: Array<Record<string, string | number>>;
+  data: any;
+  angleAxisKey: string;
+  radarDataKey: string;
 };
 
-const Manage: React.FC<Props> = ({ data }) => {
+const Manage: React.FC<Props> = ({ data, angleAxisKey, radarDataKey }) => {
   return (
     <ResponsiveContainer width={730} height={250}>
       <RadarChart outerRadius={90} data={data}>
         <PolarGrid />
-        <PolarAngleAxis dataKey="name" />
+        <PolarAngleAxis dataKey={angleAxisKey} />
         <PolarRadiusAxis angle={90} domain={[0, 100]} />
         <Radar
           name="private-map"
-          dataKey="point"
+          dataKey={radarDataKey}
           stroke="#8884d8"
           fill="#8884d8"
           fillOpacity={0.6}

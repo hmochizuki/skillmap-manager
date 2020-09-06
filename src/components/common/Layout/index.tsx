@@ -2,8 +2,8 @@ import React, { FC, useContext } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { UserContext } from "contexts";
 import theme from "components/theme";
-import AppBar from "./AppBar";
-import Drawer from "./Drawer";
+import AppBar from "components/common/layout/AppBar";
+import Drawer from "components/common/layout/Drawer";
 
 const useStyles = makeStyles((t: Theme) =>
   createStyles({

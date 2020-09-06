@@ -5,55 +5,11 @@ import {
   blue,
   red,
   orange,
-  yellow,
   green,
   pink,
+  teal,
+  indigo,
 } from "@material-ui/core/colors";
-
-// const data = [
-//   {
-//     ym: "2020/01",
-//     React: 10,
-//     Redux: 10,
-//     Others: 10,
-//   },
-//   {
-//     ym: "2020/02",
-//     React: 10,
-//     Redux: 20,
-//     Others: 30,
-//   },
-//   {
-//     ym: "2020/03",
-//     React: 40,
-//     Redux: 50,
-//     Others: 60,
-//   },
-//   {
-//     ym: "2020/04",
-//     React: 70,
-//     Redux: 80,
-//     Others: 90,
-//   },
-//   {
-//     ym: "2020/05",
-//     React: 70,
-//     Redux: 60,
-//     Others: 50,
-//   },
-//   {
-//     ym: "2020/06",
-//     React: 90,
-//     Redux: 80,
-//     Others: 70,
-//   },
-//   {
-//     ym: "2020/07",
-//     React: 70,
-//     Redux: 20,
-//     Others: 80,
-//   },
-// ];
 
 type Props = {
   xDataKey: string;
@@ -61,14 +17,16 @@ type Props = {
   data: Array<Record<string, string | number>>;
 };
 
+// TODO: theme に含める
 const colors = [
   purple[500],
   blue[500],
   red[500],
   orange[500],
-  yellow[500],
+  teal[500],
   green[500],
   pink[500],
+  indigo[500],
 ];
 
 const HistryChart: FC<Props> = ({ xDataKey, yDataKeys, data }) => {
@@ -99,8 +57,6 @@ const HistryChart: FC<Props> = ({ xDataKey, yDataKeys, data }) => {
           />
         );
       })}
-      {/* <Line type="monotone" dataKey="Redux" stroke="#82ca9d" />
-      <Line type="monotone" dataKey="Others" stroke="#ccc" /> */}
     </LineChart>
   );
 };
