@@ -1,8 +1,7 @@
 import React, { memo, FC } from "react";
 import { Typography, makeStyles, createStyles, Paper } from "@material-ui/core";
 import PageTitle from "components/common/atoms/PageTitle";
-import { AnswerDocument } from "firestore/types/Answer";
-import { Worksheet } from "firestore/types/Team";
+import { AnsweredWorksheet } from "firestore/types/Answer";
 import RadarChart from "../molecules/RadarChart";
 import HistoryChart from "../molecules/HistoryChart";
 
@@ -18,24 +17,17 @@ const useStyles = makeStyles(() =>
 
 type Props = {
   dataForHistory: Array<Record<string, number> & Record<"yearMonth", string>>;
-  dataForMonthly: Required<Worksheet>;
-  categoris?: string[];
-  answers: AnswerDocument[];
+  dataForMonthly: AnsweredWorksheet;
+  categoris: string[];
 };
 
-const PrivateMap: FC<Props> = ({ dataForHistory, dataForMonthly, answers }) => {
+const PrivateMap: FC<Props> = ({
+  dataForHistory,
+  dataForMonthly,
+  categoris,
+}) => {
   const classes = useStyles();
   const xDataKey = "yearMonth";
-
-  const getCategoryNames = (answerDoc: AnswerDocument): string[] => {
-    // @ts-ignore
-    return answerDoc.answer.reduce((acc, category) => {
-      return [...acc, category.name];
-    }, []);
-  };
-
-  // @ts-ignore
-  const yDataKeys: string[] = getCategoryNames(answers[answers.length - 1]);
 
   return (
     <>
@@ -45,8 +37,6 @@ const PrivateMap: FC<Props> = ({ dataForHistory, dataForMonthly, answers }) => {
           <Typography variant="h6" noWrap>
             MonthlyChart
           </Typography>
-          {/*
-          @ts-ignore */}
           <RadarChart
             data={dataForMonthly}
             angleAxisKey="name"
@@ -62,7 +52,7 @@ const PrivateMap: FC<Props> = ({ dataForHistory, dataForMonthly, answers }) => {
           <HistoryChart
             xDataKey={xDataKey}
             data={dataForHistory}
-            yDataKeys={yDataKeys}
+            yDataKeys={categoris}
           />
         </div>
       </Paper>

@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, FC } from "react";
 import {
   RadarChart,
   PolarGrid,
@@ -9,13 +9,12 @@ import {
 } from "recharts";
 
 type Props = {
-  // data: Array<Record<string, string | number>>;
-  data: any;
+  data: Array<Record<string, string | number | any>>;
   angleAxisKey: string;
   radarDataKey: string;
 };
 
-const Manage: React.FC<Props> = ({ data, angleAxisKey, radarDataKey }) => {
+const Manage: FC<Props> = ({ data, angleAxisKey, radarDataKey }) => {
   return (
     <ResponsiveContainer width={730} height={250}>
       <RadarChart outerRadius={90} data={data}>
@@ -34,4 +33,4 @@ const Manage: React.FC<Props> = ({ data, angleAxisKey, radarDataKey }) => {
   );
 };
 
-export default memo(Manage);
+export default memo<FC<Props>>(Manage);
