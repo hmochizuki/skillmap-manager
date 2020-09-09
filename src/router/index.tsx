@@ -7,6 +7,7 @@ import Signin from "components/Signin";
 import { UserContext } from "contexts";
 import WorksheetManagement from "components/WorksheetManagement";
 import WorksheetAnswer from "components/WorksheetAnswer";
+import TeamMap from "components/TeamMap";
 import routeNames from "./routeNames";
 
 const Router: FC = () => {
@@ -28,6 +29,7 @@ const Router: FC = () => {
           <Redirect to={routeNames.workSheetManage} />
           <Route path={routeNames.skillmap}>
             <Route path={routeNames.privateMap} component={PrivateMap} />
+            <Route path={routeNames.teamMap} component={TeamMap} />
           </Route>
           <Redirect to={routeNames.home} />
         </>

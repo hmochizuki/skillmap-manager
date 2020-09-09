@@ -3,6 +3,7 @@ import { collectionNames } from "firestore/types/collections";
 import { Worksheet } from "firestore/types/Team";
 import { AnswerDocument } from "firestore/types/Answer";
 import { getYearMonth } from "util/getYearMonth";
+import { FULL_SCORE } from "config/business";
 
 export const getAllAnswersDocument = async (
   db: firebase.firestore.Firestore,
@@ -29,7 +30,7 @@ const calculatePoint = (worksheet: Required<Worksheet>) =>
     point:
       (category.questions.reduce((acc, q) => (q.checked ? acc + 1 : acc), 0) /
         category.questions.length) *
-      100,
+      FULL_SCORE,
   }));
 
 export const updateAnswerDocument = async (
@@ -56,7 +57,5 @@ export const updateAnswerDocument = async (
     answer: calculatePoint(data),
   };
 
-  return answerRef.set(updatingData, {
-    merge: true,
-  });
+  return answerRef.set(updatingData, { merge: true });
 };

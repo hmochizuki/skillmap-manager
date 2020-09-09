@@ -8,6 +8,7 @@ const routeNames = {
   workSheetAnswer: `${workSheet}/answer`,
   skillmap,
   privateMap: `${skillmap}/private`,
+  teamMap: `${skillmap}/team`,
   signin: "/signin",
 };
 

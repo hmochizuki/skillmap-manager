@@ -103,9 +103,12 @@ const Drawer: React.FC<Props> = ({ handleDrawerClose, open }) => {
       },
     },
     {
-      title: "TeamGraphs",
+      title: "TeamMap",
       icon: <Icon name="teamSkillmap" />,
-      text: "TeamGraphs",
+      text: "TeamMap",
+      handleClick: () => {
+        history.push(routeNames.teamMap);
+      },
     },
     {
       title: "TimelineGraphs",
