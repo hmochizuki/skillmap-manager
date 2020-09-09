@@ -10,6 +10,7 @@ import {
   teal,
   indigo,
 } from "@material-ui/core/colors";
+import { FULL_SCORE } from "config/business";
 
 type Props = {
   xDataKey: string;
@@ -44,7 +45,7 @@ const HistryChart: FC<Props> = ({ xDataKey, yDataKeys, data }) => {
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey={xDataKey} />
-      <YAxis domain={[0, 100]} />
+      <YAxis domain={[0, FULL_SCORE]} />
       <Legend layout="vertical" align="right" verticalAlign="middle" />
       {yDataKeys.map((key, i) => {
         return (
