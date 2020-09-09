@@ -41,6 +41,8 @@ type Return = [
   AnsweredWorksheet,
   Array<Record<string, number | string>>,
   string[],
+  string,
+  (targetYearMonth: string) => void,
   boolean,
   Error | null
 ];
@@ -83,6 +85,12 @@ const usePrivateMap = (teamId: string): Return => {
       return ans.yearMonth === targetYearMonth;
     }) as AnswerDocument;
 
+    if (!target) {
+      setError(new Error(`answerDocument of ${targetYearMonth} is not find`));
+
+      return [];
+    }
+
     return target.answer;
   }, [answerDocuments, targetYearMonth]);
 
@@ -94,7 +102,15 @@ const usePrivateMap = (teamId: string): Return => {
     answerDocuments,
   ]);
 
-  return [dataForMonthly, dataForHistory, categoris, loading, error];
+  return [
+    dataForMonthly,
+    dataForHistory,
+    categoris,
+    targetYearMonth,
+    setTargetYearMonth,
+    loading,
+    error,
+  ];
 };
 
 export default usePrivateMap;

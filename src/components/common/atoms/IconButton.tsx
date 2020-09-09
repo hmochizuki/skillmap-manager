@@ -5,7 +5,7 @@ import { makeStyles, createStyles } from "@material-ui/core";
 import clsx from "clsx";
 
 type props = {
-  label: string;
+  label?: string;
   disabled?: boolean;
   size?: "small" | "large";
   onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;

@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 import { makeStyles, createStyles } from "@material-ui/core";
 import LeftClose from "@material-ui/icons/ChevronLeft";
+import RightClose from "@material-ui/icons/ChevronRight";
 import CheckBox from "@material-ui/icons/CheckBox";
 import Account from "@material-ui/icons/AccountBox";
 import Settings from "@material-ui/icons/Settings";
@@ -25,6 +26,7 @@ export type IconName =
   | "settings"
   | "help"
   | "leftClose"
+  | "rightClose"
   | "navigation"
   | "expand"
   | "add"
@@ -65,6 +67,8 @@ const Icon: React.FC<Props> = ({ name, size }) => {
       return <Help fontSize={size} className={classes.icon} />;
     case "leftClose":
       return <LeftClose fontSize={size} className={classes.icon} />;
+    case "rightClose":
+      return <RightClose fontSize={size} className={classes.icon} />;
     case "navigation":
       return <Navigation fontSize={size} className={classes.icon} />;
     case "expand":

@@ -7,6 +7,7 @@ import {
   Radar,
   ResponsiveContainer,
 } from "recharts";
+import { FULL_SCORE } from "config/business";
 
 type Props = {
   data: Array<Record<string, string | number | any>>;
@@ -16,11 +17,11 @@ type Props = {
 
 const Manage: FC<Props> = ({ data, angleAxisKey, radarDataKey }) => {
   return (
-    <ResponsiveContainer width={730} height={250}>
+    <ResponsiveContainer width={500} height={250}>
       <RadarChart outerRadius={90} data={data}>
         <PolarGrid />
         <PolarAngleAxis dataKey={angleAxisKey} />
-        <PolarRadiusAxis angle={90} domain={[0, 100]} />
+        <PolarRadiusAxis angle={80} domain={[0, FULL_SCORE]} />
         <Radar
           name="private-map"
           dataKey={radarDataKey}

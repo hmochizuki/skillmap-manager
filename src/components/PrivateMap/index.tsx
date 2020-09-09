@@ -8,6 +8,8 @@ const PrivateMapContainer = () => {
     dataForMonthly,
     dataForHistory,
     categoris,
+    targetYearMonth,
+    setTargetYearMonth,
     loading,
     error,
   ] = usePrivateMap("AS_FE");
@@ -17,6 +19,8 @@ const PrivateMapContainer = () => {
       dataForMonthly={dataForMonthly}
       dataForHistory={dataForHistory}
       categoris={categoris}
+      targetYearMonth={targetYearMonth}
+      setTargetYearMonth={setTargetYearMonth}
     />
   ) : (
     <Progress />
