@@ -37,7 +37,7 @@ export const updateAnswerDocument = async (
   db: firebase.firestore.Firestore,
   teamId: string,
   userId: string,
-  data: Required<Worksheet>
+  data: Worksheet
 ): Promise<void> => {
   const yearMonth = getYearMonth();
 

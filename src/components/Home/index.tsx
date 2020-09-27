@@ -7,8 +7,13 @@ const useStyles = makeStyles(() =>
   createStyles({
     root: {
       display: "flex",
+      flexDirection: "column",
+    },
+    row: {
+      display: "flex",
       justifyContent: "space-evenly",
       alignItems: "center",
+      marginBottom: "3vh",
     },
   })
 );
@@ -39,13 +44,31 @@ const worksheetAnswer = {
   contents: "コンテンツ",
 };
 
+const privateMap = {
+  header: {
+    title: "自分のスキルを分析",
+    subTitle: "サブタイトル",
+  },
+  navigateTo: routeNames.privateMap,
+  media: {
+    title: "イメージタイトル",
+    path: "/src/img/worksheetToEdit.png",
+  },
+  contents: "コンテンツ",
+};
+
 const Home = () => {
   const classes = useStyles();
 
   return (
     <Container className={classes.root}>
-      <NavCard {...worksheetManagement} />
-      <NavCard {...worksheetAnswer} />
+      <Container className={classes.row}>
+        <NavCard {...worksheetManagement} />
+        <NavCard {...worksheetAnswer} />
+      </Container>
+      <Container className={classes.row}>
+        <NavCard {...privateMap} />
+      </Container>
     </Container>
   );
 };

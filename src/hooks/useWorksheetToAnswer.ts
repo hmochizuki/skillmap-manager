@@ -3,6 +3,7 @@ import { FirebaseContext, UserContext } from "contexts";
 import { TeamDocument, Worksheet } from "firestore/types/Team";
 import { getWorksheetDocument } from "firestore/services/teamsCollection";
 import { updateAnswerDocument } from "firestore/services/answersCollection";
+import { updateSkillmapDocument } from "firestore/services/skillmapCollection";
 
 type Return = [
   TeamDocument | null,
@@ -44,6 +45,7 @@ const useWorksheetToAnswer = (teamId: string): Return => {
       if (!user) throw new Error("not authorized");
       load(async () => {
         await updateAnswerDocument(db, teamId, user.uid, data);
+        await updateSkillmapDocument(db, teamId, user.uid, data);
       });
     },
     [teamId, user, db, load]
