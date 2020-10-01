@@ -20,8 +20,10 @@ import {
   ZAxis,
   Legend,
   Scatter,
+  LabelList,
 } from "recharts";
 import { FULL_SCORE } from "config/business";
+import { getYearMonth } from "util/getYearMonth";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -52,6 +54,8 @@ type Props = {
     z: Axis;
   };
   data: Record<"category", number | string>[];
+  yearMonth: string;
+  setYearMonth: (ym: string) => void;
 };
 
 const colors = [
@@ -65,8 +69,21 @@ const colors = [
   indigo[500],
 ];
 
-const TeamMap: FC<Props> = ({ data, axis: { x, y, z } }) => {
+const TeamMap: FC<Props> = ({
+  data,
+  axis: { x, y, z },
+  yearMonth,
+  setYearMonth,
+}) => {
   const classes = useStyles();
+
+  const changeTargetYeahMonth = (addMonth: number) => () => {
+    const d = yearMonth.split("-").map((e) => parseInt(e, 10));
+    // @ts-ignore
+    const prev = new Date(d[0], (d[1] - 1).toString().padStart(2, "0"));
+    prev.setMonth(prev.getMonth() + addMonth);
+    setYearMonth(getYearMonth(prev));
+  };
 
   return (
     <>
@@ -76,9 +93,15 @@ const TeamMap: FC<Props> = ({ data, axis: { x, y, z } }) => {
       <Paper elevation={5} className={classes.paper}>
         <div className={classes.graphChart}>
           <Typography variant="h6" noWrap>
-            <IconButton iconName="leftClose" onClick={() => {}} />
-            MonthlyChart[2020/09]
-            <IconButton iconName="rightClose" onClick={() => {}} />
+            <IconButton
+              iconName="leftClose"
+              onClick={changeTargetYeahMonth(-1)}
+            />
+            MonthlyChart[{yearMonth}]
+            <IconButton
+              iconName="rightClose"
+              onClick={changeTargetYeahMonth(1)}
+            />
           </Typography>
 
           <ScatterChart
@@ -114,7 +137,9 @@ const TeamMap: FC<Props> = ({ data, axis: { x, y, z } }) => {
                 name={d.category}
                 data={[d]}
                 fill={colors[i]}
-              />
+              >
+                <LabelList dataKey="category" position="top" />
+              </Scatter>
             ))}
           </ScatterChart>
         </div>
