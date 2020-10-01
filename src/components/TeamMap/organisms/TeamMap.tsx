@@ -21,6 +21,7 @@ import {
   Legend,
   Scatter,
 } from "recharts";
+import { FULL_SCORE } from "config/business";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -39,48 +40,19 @@ const useStyles = makeStyles(() =>
   })
 );
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-type Props = {};
+type Axis = {
+  key: string;
+  label: string;
+};
 
-const data01 = [
-  {
-    x: 50,
-    y: 60,
-    z: 200,
-  },
-];
-
-const data02 = [
-  {
-    x: 30,
-    y: 300,
-    z: 400,
-  },
-];
-
-const data03 = [
-  {
-    x: 75,
-    y: 200,
-    z: 350,
-  },
-];
-
-const data04 = [
-  {
-    x: 30,
-    y: 130,
-    z: 120,
-  },
-];
-
-const data05 = [
-  {
-    x: 10,
-    y: 10,
-    z: 120,
-  },
-];
+type Props = {
+  axis: {
+    x: Axis;
+    y: Axis;
+    z: Axis;
+  };
+  data: Record<"category", number | string>[];
+};
 
 const colors = [
   purple[500],
@@ -93,7 +65,7 @@ const colors = [
   indigo[500],
 ];
 
-const TeamMap: FC<Props> = ({}) => {
+const TeamMap: FC<Props> = ({ data, axis: { x, y, z } }) => {
   const classes = useStyles();
 
   return (
@@ -117,41 +89,36 @@ const TeamMap: FC<Props> = ({}) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               type="number"
-              dataKey="x"
-              name="平均"
-              domain={[0, 100]}
-              label={{ value: "平均", position: "insideBottom" }}
+              dataKey={x.key}
+              name={x.label}
+              domain={[0, FULL_SCORE]}
+              label={{ value: x.label, position: "insideBottom" }}
             />
             <YAxis
               type="number"
-              dataKey="y"
-              name="分散"
+              dataKey={y.key}
+              name={y.label}
               domain={[0, "dataMax"]}
-              label={{ value: "分散", position: "insideLeft" }}
+              label={{ value: y.label, position: "insideLeft" }}
             />
-            <ZAxis type="number" dataKey="z" name="score" range={[100, 1000]} />
-            {/* <Tooltip /> */}
+            <ZAxis
+              type="number"
+              dataKey={z.key}
+              name={z.label}
+              range={[100, 1000]}
+            />
             <Legend />
-            <Scatter name="React" data={data01} fill={colors[0]} />
-            <Scatter name="Redux" data={data02} fill={colors[1]} />
-            <Scatter name="Firebase" data={data03} fill={colors[2]} />
-            <Scatter name="React-Native" data={data04} fill={colors[3]} />
-            <Scatter name="Others" data={data05} fill={colors[4]} />
+            {data.map((d, i) => (
+              <Scatter
+                key={d.category}
+                name={d.category}
+                data={[d]}
+                fill={colors[i]}
+              />
+            ))}
           </ScatterChart>
         </div>
       </Paper>
-      {/* <Paper elevation={5} className={classes.paper}>
-        <div className={classes.graphChart}>
-          <Typography variant="h6" noWrap>
-            HistoryChart
-          </Typography>
-          <HistoryChart
-            xDataKey={xDataKey}
-            data={dataForHistory}
-            yDataKeys={categoris}
-          />
-        </div>
-      </Paper> */}
     </>
   );
 };

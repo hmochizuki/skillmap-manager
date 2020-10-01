@@ -3,6 +3,22 @@ import { collectionNames } from "firestore/types/collections";
 import { SkillmapDocument, Score } from "firestore/types/Skillmap";
 import { Worksheet } from "firestore/types/Team";
 
+export const getAllSkillmapDocument = async (
+  db: firebase.firestore.Firestore,
+  teamId: string
+): Promise<SkillmapDocument[]> => {
+  const skillmapRef = db
+    .collection(collectionNames.teams)
+    .doc(teamId)
+    .collection(collectionNames.skillmap);
+
+  const skillmapCollection = await skillmapRef.get();
+  const allSkillamp: any[] = [];
+  skillmapCollection.forEach((e) => allSkillamp.push(e.data()));
+
+  return allSkillamp as SkillmapDocument[];
+};
+
 export const updateSkillmapDocument = async (
   db: firebase.firestore.Firestore,
   teamId: string,
@@ -23,7 +39,14 @@ export const updateSkillmapDocument = async (
     const skillmapDoc = await transaction.get(skillmapRef);
     if (!skillmapDoc) return new Error("Skillmap document is not exsit!");
 
-    const pre = skillmapDoc.data() as SkillmapDocument;
+    const pre =
+      (skillmapDoc.data() as SkillmapDocument) ||
+      ({
+        yearMonth,
+        answeredUsers: [],
+        scores: [],
+        updatedAt: 0,
+      } as SkillmapDocument);
 
     const isMultipleAnswer = pre.answeredUsers.some((u) => u === userId);
 
@@ -64,10 +87,15 @@ export const updateSkillmapDocument = async (
       };
     });
 
-    return transaction.update(skillmapRef, {
-      scores,
-      answeredUsers,
-      updatedAt,
-    });
+    return transaction.set(
+      skillmapRef,
+      {
+        yearMonth,
+        scores,
+        answeredUsers,
+        updatedAt,
+      },
+      { merge: true }
+    );
   });
 };
