@@ -6,6 +6,7 @@ import Layout from "components/common/layout";
 import { UserContext, FirebaseContext } from "contexts";
 import "./App.css";
 import Router from "router";
+import { getUserDocument, createUser } from "firestore/services/userCollection";
 
 const App: FC = () => {
   const [user, setUser] = useState<firebase.User | null>(null);
@@ -16,14 +17,22 @@ const App: FC = () => {
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  const subscribeUser = auth.onAuthStateChanged(async (firebaseUser) => {
+  // onAuthStateChanged は返り値として、unsubscribe する関数を返す
+  const unsubscribeUser = auth.onAuthStateChanged(async (firebaseUser) => {
     if (firebaseUser) {
-      setUser(firebaseUser);
+      if (credential && credential.user) {
+        const { uid } = credential.user;
+        const userDoc = await getUserDocument(db, uid);
+        if (!userDoc)
+          await createUser(db, uid, credential.user.displayName || "");
+
+        setUser(firebaseUser);
+      }
     } else setUser(null);
   });
 
   useEffect(() => {
-    return subscribeUser();
+    return unsubscribeUser();
   });
 
   return (

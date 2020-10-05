@@ -37,8 +37,11 @@ const Signin: React.FC = () => {
       },
     ],
     callbacks: {
-      signInSuccessWithAuthResult: (authResult, redirectUrl) => {
-        setCredential(authResult as firebase.auth.UserCredential);
+      signInSuccessWithAuthResult: (
+        authResult: firebase.auth.UserCredential,
+        redirectUrl
+      ) => {
+        setCredential(authResult);
         const dest = redirectUrl || routeNames.home;
         history.replace(dest);
 
