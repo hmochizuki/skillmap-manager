@@ -15,15 +15,13 @@ export const getUserDocument = async (
 
 export const createUser = async (
   db: firebase.firestore.Firestore,
-  userId: string,
-  name: string
+  data: Pick<UserDocument, "id" | "name">
 ): Promise<void> => {
-  const userRef = db.collection(collectionNames.users).doc(userId);
+  const userRef = db.collection(collectionNames.users).doc(data.id);
   const now = new Date().getTime();
 
   return userRef.set({
-    id: userId,
-    name,
+    data,
     team: ["AS_FE"],
     createdAt: now,
     updatedAt: now,

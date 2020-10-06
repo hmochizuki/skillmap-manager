@@ -18,17 +18,21 @@ const App: FC = () => {
   const db = firebase.firestore();
 
   // onAuthStateChanged は返り値として、unsubscribe する関数を返す
+  // eslint-disable-next-line consistent-return
   const unsubscribeUser = auth.onAuthStateChanged(async (firebaseUser) => {
-    if (firebaseUser) {
-      if (credential && credential.user) {
-        const { uid } = credential.user;
-        const userDoc = await getUserDocument(db, uid);
-        if (!userDoc)
-          await createUser(db, uid, credential.user.displayName || "");
+    if (!firebaseUser) return setUser(null);
 
-        setUser(firebaseUser);
-      }
-    } else setUser(null);
+    if (credential && credential.user) {
+      const { uid } = credential.user;
+      const userDoc = await getUserDocument(db, uid);
+      setUser(firebaseUser);
+      const userData = {
+        id: uid,
+        name: credential.user.displayName || "",
+      };
+
+      return userDoc || createUser(db, userData);
+    }
   });
 
   useEffect(() => {
