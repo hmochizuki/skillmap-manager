@@ -12,7 +12,7 @@ const PrivateMapContainer = () => {
     setTargetYearMonth,
     loading,
     error,
-  ] = usePrivateMap("AS_FE");
+  ] = usePrivateMap();
 
   return !loading && !error ? (
     <Presentation

@@ -7,9 +7,7 @@ import Presentation from "./organisms/Manage";
 import { WorksheetWithFilter, emptyWorkSheetWithFilter } from "./type";
 
 const ManageContainer = () => {
-  const [teamDocument, updateTeamDocment, loading] = useWorksheetToEdit(
-    "AS_FE"
-  );
+  const [teamDocument, updateTeamDocment, loading] = useWorksheetToEdit();
 
   const [worksheet, setWorksheet] = useState<WorksheetWithFilter>(
     emptyWorkSheetWithFilter

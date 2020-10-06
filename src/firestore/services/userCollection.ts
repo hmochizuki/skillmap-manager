@@ -22,7 +22,7 @@ export const createUser = async (
 
   return userRef.set({
     data,
-    team: ["AS_FE"],
+    team: [],
     createdAt: now,
     updatedAt: now,
   });

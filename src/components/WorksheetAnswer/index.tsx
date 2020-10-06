@@ -8,9 +8,7 @@ import Progress from "components/common/atoms/Progress";
 import Presentation from "./organisms/Answer";
 
 const AnswerContainer = () => {
-  const [teamDocument, answerToWorksheet, loading] = useWorksheetToAnswer(
-    "AS_FE"
-  );
+  const [teamDocument, answerToWorksheet, loading] = useWorksheetToAnswer();
   const [worksheetWithFilter, setWorksheetWithFilter] = useState(
     emptyWorkSheetWithFilter
   );

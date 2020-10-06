@@ -3,13 +3,14 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import { CssBaseline } from "@material-ui/core";
 import Layout from "components/common/layout";
-import { UserContext, FirebaseContext } from "contexts";
+import { UserContext, FirebaseContext, TeamContext } from "contexts";
 import "./App.css";
 import Router from "router";
 import { getUserDocument, createUser } from "firestore/services/userCollection";
 
 const App: FC = () => {
   const [user, setUser] = useState<firebase.User | null>(null);
+  const [team, setTeam] = useState<string | null>("AS_FE");
   const [
     credential,
     setCredential,
@@ -43,10 +44,12 @@ const App: FC = () => {
     <>
       <FirebaseContext.Provider value={{ auth, db }}>
         <UserContext.Provider value={{ user, credential, setCredential }}>
-          <CssBaseline />
-          <Layout>
-            <Router />
-          </Layout>
+          <TeamContext.Provider value={{ teamId: team, setTeam }}>
+            <CssBaseline />
+            <Layout>
+              <Router />
+            </Layout>
+          </TeamContext.Provider>
         </UserContext.Provider>
       </FirebaseContext.Provider>
     </>

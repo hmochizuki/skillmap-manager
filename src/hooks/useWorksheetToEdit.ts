@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, useCallback } from "react";
-import { FirebaseContext } from "contexts";
+import { FirebaseContext, TeamContext } from "contexts";
 import { TeamDocument, Worksheet } from "firestore/types/Team";
 import {
   getWorksheetDocument,
@@ -13,12 +13,13 @@ type Return = [
   Error | null
 ];
 
-const useWorksheetToAnswer = (id: string): Return => {
+const useWorksheetToAnswer = (): Return => {
   const [teamDocument, setTeamDocument] = useState<TeamDocument>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   const { db } = useContext(FirebaseContext);
+  const { teamId } = useContext(TeamContext);
 
   const load = useCallback(async (loadEvent: () => Promise<void>) => {
     setLoading(true);
@@ -33,20 +34,22 @@ const useWorksheetToAnswer = (id: string): Return => {
 
   useEffect(() => {
     if (!db) throw new Error("firebase is not initialized");
+    if (!teamId) throw new Error("not authorized");
     load(async () => {
-      const worksheetData = await getWorksheetDocument(db, id);
+      const worksheetData = await getWorksheetDocument(db, teamId);
       setTeamDocument(worksheetData);
     });
-  }, [id, db, load]);
+  }, [teamId, db, load]);
 
   const updateWorksheet = useCallback(
     (data: Worksheet) => {
       if (!db) throw new Error("firebase is not initialized");
+      if (!teamId) throw new Error("not authorized");
       load(async () => {
-        await update(db, id, data);
+        await update(db, teamId, data);
       });
     },
-    [id, db, load]
+    [teamId, db, load]
   );
 
   return [teamDocument, updateWorksheet, loading, error];

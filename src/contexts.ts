@@ -21,3 +21,13 @@ export const UserContext = createContext<UserContextValue>({
   credential: null,
   setCredential: () => undefined,
 });
+
+type TeamContextValue = {
+  teamId: string | null;
+  setTeam: (team: string) => void;
+};
+
+export const TeamContext = createContext<TeamContextValue>({
+  teamId: null,
+  setTeam: () => undefined,
+});

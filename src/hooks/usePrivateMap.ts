@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, useCallback, useMemo } from "react";
-import { FirebaseContext, UserContext } from "contexts";
+import { FirebaseContext, UserContext, TeamContext } from "contexts";
 import { getAllAnswersDocument } from "firestore/services/answersCollection";
 import { AnswerDocument, AnsweredWorksheet } from "firestore/types/Answer";
 import { getYearMonth } from "util/getYearMonth";
@@ -47,7 +47,7 @@ type Return = [
   Error | null
 ];
 
-const usePrivateMap = (teamId: string): Return => {
+const usePrivateMap = (): Return => {
   const [answerDocuments, setAnswerDocuments] = useState<
     AnswerDocument[] | null
   >(null);
@@ -59,6 +59,7 @@ const usePrivateMap = (teamId: string): Return => {
 
   const { db } = useContext(FirebaseContext);
   const { user } = useContext(UserContext);
+  const { teamId } = useContext(TeamContext);
 
   const load = useCallback(async (loadEvent: () => Promise<void>) => {
     setLoading(true);
@@ -72,7 +73,7 @@ const usePrivateMap = (teamId: string): Return => {
   }, []);
 
   useEffect(() => {
-    if (!db || !user) return;
+    if (!db || !user || !teamId) return;
     load(async () => {
       const answerDocs = await getAllAnswersDocument(db, teamId, user.uid);
       setAnswerDocuments(answerDocs);
