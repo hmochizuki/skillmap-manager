@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
 import { Link, useHistory } from "react-router-dom";
 import routeNames from "router/routeNames";
-import { UserContext, FirebaseContext } from "contexts";
+import { UserContext, FirebaseContext, TeamContext } from "contexts";
 import theme from "components/theme";
 import IconButton from "../atoms/IconButton";
 
@@ -57,6 +57,7 @@ const AppBar: React.FC<Props> = ({ handleDrawerOpen, open }) => {
   const classes = useStyles(theme);
   const { auth } = useContext(FirebaseContext);
   const { user } = useContext(UserContext);
+  const { teamId } = useContext(TeamContext);
   const history = useHistory();
   const signOut = useCallback(() => {
     if (auth && user) auth.signOut();
@@ -71,7 +72,8 @@ const AppBar: React.FC<Props> = ({ handleDrawerOpen, open }) => {
       })}
     >
       <Toolbar>
-        {user && (
+        {/* TODO: このロジック集約したい */}
+        {user && teamId && (
           <IconButton
             label="appBarMenu"
             iconName="menu"

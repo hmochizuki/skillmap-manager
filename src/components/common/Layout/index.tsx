@@ -1,6 +1,6 @@
 import React, { FC, useContext } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import { UserContext } from "contexts";
+import { TeamContext, UserContext } from "contexts";
 import theme from "components/theme";
 import AppBar from "components/common/layout/AppBar";
 import Drawer from "components/common/layout/Drawer";
@@ -28,6 +28,7 @@ const useStyles = makeStyles((t: Theme) =>
 const Layout: FC = ({ children }) => {
   const classes = useStyles(theme);
   const { user } = useContext(UserContext);
+  const { teamId } = useContext(TeamContext);
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerClose = () => {
@@ -41,7 +42,10 @@ const Layout: FC = ({ children }) => {
   return (
     <div className={classes.root}>
       <AppBar handleDrawerOpen={handleDrawerOpen} open={open} />
-      {user && <Drawer handleDrawerClose={handleDrawerClose} open={open} />}
+      {/* このロジック集約したい */}
+      {user && teamId && (
+        <Drawer handleDrawerClose={handleDrawerClose} open={open} />
+      )}
       <main className={classes.content}>
         <div className={classes.toolbar} />
         {children}

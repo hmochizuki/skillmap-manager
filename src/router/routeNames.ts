@@ -1,5 +1,6 @@
 const workSheet = "/worksheet";
 const skillmap = "/skillmap";
+const team = "/team";
 
 const routeNames = {
   home: "/",
@@ -10,6 +11,7 @@ const routeNames = {
   privateMap: `${skillmap}/private`,
   teamMap: `${skillmap}/team`,
   signin: "/signin",
+  teamSelect: `${team}/select`,
 };
 
 export default routeNames;

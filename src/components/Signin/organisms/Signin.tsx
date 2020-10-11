@@ -7,8 +7,6 @@ import {
 } from "@material-ui/core";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "firebase";
-import { useHistory } from "react-router";
-import routeNames from "router/routeNames";
 import PageTitle from "components/common/atoms/PageTitle";
 import { UserContext, FirebaseContext } from "contexts";
 
@@ -25,7 +23,6 @@ const useStyles = makeStyles(() =>
 
 const Signin: React.FC = () => {
   const classes = useStyles();
-  const history = useHistory();
   const { auth } = useContext(FirebaseContext);
   const { setCredential } = useContext(UserContext);
   const uiConfig: firebaseui.auth.Config = {
@@ -38,12 +35,9 @@ const Signin: React.FC = () => {
     ],
     callbacks: {
       signInSuccessWithAuthResult: (
-        authResult: firebase.auth.UserCredential,
-        redirectUrl
+        authResult: firebase.auth.UserCredential
       ) => {
         setCredential(authResult);
-        const dest = redirectUrl || routeNames.home;
-        history.replace(dest);
 
         return false;
       },
