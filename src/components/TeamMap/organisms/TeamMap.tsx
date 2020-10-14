@@ -91,7 +91,7 @@ const TeamMap: FC<Props> = ({
               onClick={changeTargetYeahMonth(1)}
             />
           </Typography>
-          <ScatterChart data={data} axis={axis} />
+          <ScatterChart dataKey="category" data={data} axis={axis} />
         </div>
         <Box>
           <Typography>User Filter</Typography>

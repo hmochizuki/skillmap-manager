@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { ReactElement } from "react";
 import {
   purple,
   blue,
@@ -45,14 +45,21 @@ type Axis = {
   label: string;
 };
 
-const ScatterChart: FC<{
-  data: { category: string; show: boolean }[];
+type Props<Key extends string> = {
+  data: (Record<Key, string> & { show: boolean })[];
+  dataKey: Key;
   axis: {
     x: Axis;
     y: Axis;
     z: Axis;
   };
-}> = ({ data, axis: { x, y, z } }) => {
+};
+
+const ScatterChart = <Key extends string>({
+  data,
+  dataKey,
+  axis: { x, y, z },
+}: Props<Key>): ReactElement<Props<Key>> => {
   return (
     <BaseScatterChart
       width={730}
@@ -78,13 +85,13 @@ const ScatterChart: FC<{
       <Legend />
       {data.map((d, i) => (
         <Scatter
-          key={d.category}
-          name={d.category}
+          key={d[dataKey]}
+          name={d[dataKey]}
           data={[d]}
           fill={colors[i]}
           hide={!d.show}
         >
-          <LabelList dataKey="category" position="top" />
+          <LabelList dataKey={dataKey} position="top" />
         </Scatter>
       ))}
     </BaseScatterChart>
