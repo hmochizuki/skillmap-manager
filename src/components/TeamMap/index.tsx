@@ -7,13 +7,13 @@ import Presentation from "./organisms/TeamMap";
 const TeamMapContainer = () => {
   const [scores, yearMonth, setTargetYearMonth, loading, error] = useTeamMap();
 
-  const [data, setData] = useState<(Score & { hide: boolean })[]>([]);
+  const [data, setData] = useState<(Score & { show: boolean })[]>([]);
 
   useEffect(() => {
     setData(
       scores.map((score) => ({
         ...score,
-        hide: false,
+        show: true,
       }))
     );
   }, [scores]);
@@ -22,7 +22,7 @@ const TeamMapContainer = () => {
     (categoryId: string) => () => {
       setData(
         data.map((d) =>
-          d.categoryId === categoryId ? { ...d, hide: !d.hide } : d
+          d.categoryId === categoryId ? { ...d, show: !d.show } : d
         )
       );
     },

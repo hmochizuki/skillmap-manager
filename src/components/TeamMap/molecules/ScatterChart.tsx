@@ -46,7 +46,7 @@ type Axis = {
 };
 
 const ScatterChart: FC<{
-  data: { category: string; hide: boolean }[];
+  data: { category: string; show: boolean }[];
   axis: {
     x: Axis;
     y: Axis;
@@ -82,7 +82,7 @@ const ScatterChart: FC<{
           name={d.category}
           data={[d]}
           fill={colors[i]}
-          hide={d.hide}
+          hide={!d.show}
         >
           <LabelList dataKey="category" position="top" />
         </Scatter>

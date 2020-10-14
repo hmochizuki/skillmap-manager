@@ -51,7 +51,7 @@ type Axis = {
 };
 
 type Props = {
-  data: (Score & { hide: boolean })[];
+  data: (Score & { show: boolean })[];
   yearMonth: string;
   setYearMonth: (ym: string) => void;
   filterCategory: (categoryId: string) => () => void;
@@ -105,6 +105,7 @@ const TeamMap: FC<Props> = ({
               key={d.categoryId}
               id={d.categoryId}
               label={d.category}
+              checked={d.show}
               onClick={filterCategory(d.categoryId)}
             />
           ))}
