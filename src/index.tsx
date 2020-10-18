@@ -12,7 +12,11 @@ import * as serviceWorker from "./serviceWorker";
 firebase.initializeApp(firebaseConfig);
 
 ReactDOM.render(
-  <React.StrictMode>
+  <>
+    {/* StrictMode を使うと、material-ui に不具合の不具合でいくつかのコンポーネントが使用できない(ex. Dialog)
+      ref: https://github.com/mui-org/material-ui/issues/13394
+    */}
+    {/*  <React.StrictMode> */}
     {/* TODO: 型定義...
     // @ts-ignore  */}
     <ThemeProvider thema={thema}>
@@ -22,7 +26,8 @@ ReactDOM.render(
         </CssBaseline>
       </BrowserRouter>
     </ThemeProvider>
-  </React.StrictMode>,
+    {/* </React.StrictMode> */}
+  </>,
   document.getElementById("root")
 );
 
