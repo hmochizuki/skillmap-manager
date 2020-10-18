@@ -4,8 +4,6 @@ import {
   createStyles,
   Typography,
   Paper,
-  List,
-  ListItem,
   Box,
 } from "@material-ui/core";
 import PageTitle from "components/common/atoms/PageTitle";
@@ -18,6 +16,7 @@ import { createTeamDocument } from "firestore/services/teamsCollection";
 import Progress from "components/common/atoms/Progress";
 import { joinTeam } from "firestore/services/userCollection";
 import { Tabs, TabPanel } from "components/common/molecules/Tabs";
+import TeamList from "../molecules/TeamList";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -106,32 +105,10 @@ const TeamSelecting: React.FC<Props> = ({ joinedTeams, otherTeams }) => {
       <Paper elevation={5} square>
         <Tabs value={value} tabs={tabs} onChange={changeTabs} />
         <TabPanel value={value} index={0}>
-          <List>
-            {joinedTeams.map((team) => (
-              <ListItem
-                key={team}
-                button
-                onClick={selectJoinedTeam(team)}
-                className={classes.team}
-              >
-                <Typography>{team}</Typography>
-              </ListItem>
-            ))}
-          </List>
+          <TeamList teams={joinedTeams} onClick={selectJoinedTeam} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <List>
-            {otherTeams.map((team) => (
-              <ListItem
-                key={team}
-                button
-                onClick={selectOtherTeam(team)}
-                className={classes.team}
-              >
-                <Typography>{team}</Typography>
-              </ListItem>
-            ))}
-          </List>
+          <TeamList teams={otherTeams} onClick={selectOtherTeam} />
         </TabPanel>
         <TabPanel value={value} index={2}>
           <Box className={classes.createNewTeam}>
