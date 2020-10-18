@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, useCallback, useMemo } from "react";
-import { FirebaseContext } from "contexts";
+import { FirebaseContext, TeamContext } from "contexts";
 import { getYearMonth } from "util/getYearMonth";
 import { SkillmapDocument, Score } from "firestore/types/Skillmap";
 import { getAllSkillmapDocument } from "firestore/services/skillmapCollection";
@@ -12,7 +12,8 @@ type Return = [
   Error | null
 ];
 
-const useTeamMap = (teamId: string): Return => {
+const useTeamMap = (): Return => {
+  const { teamId } = useContext(TeamContext);
   const [skillmapDocuments, setSkillmapDocuments] = useState<
     SkillmapDocument[] | null
   >(null);
@@ -36,7 +37,7 @@ const useTeamMap = (teamId: string): Return => {
   }, []);
 
   useEffect(() => {
-    if (!db) return;
+    if (!db || !teamId) return;
     load(async () => {
       const skillmapDocs = await getAllSkillmapDocument(db, teamId);
       setSkillmapDocuments(skillmapDocs);

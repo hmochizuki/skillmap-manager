@@ -19,9 +19,7 @@ const axis = {
 };
 
 const TeamMapContainer = () => {
-  const [data, yearMonth, setTargetYearMonth, loading, error] = useTeamMap(
-    "AS_FE"
-  );
+  const [data, yearMonth, setTargetYearMonth, loading, error] = useTeamMap();
 
   return data && !error && !loading ? (
     <Presentation
