@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useMemo, useState } from "react";
+import React, { memo, useMemo, useState } from "react";
 import {
   makeStyles,
   createStyles,
@@ -7,14 +7,8 @@ import {
   Box,
 } from "@material-ui/core";
 import PageTitle from "components/common/atoms/PageTitle";
-import { FirebaseContext, TeamContext, UserContext } from "contexts";
-import { useHistory } from "react-router";
-import routeNames from "router/routeNames";
 import TextField from "components/common/atoms/TextField";
 import { PrimaryButton } from "components/common/atoms/Buttons";
-import { createTeamDocument } from "firestore/services/teamsCollection";
-import Progress from "components/common/atoms/Progress";
-import { joinTeam } from "firestore/services/userCollection";
 import { Tabs, TabPanel } from "components/common/molecules/Tabs";
 import TeamList from "../molecules/TeamList";
 
@@ -22,14 +16,6 @@ const useStyles = makeStyles(() =>
   createStyles({
     title: {
       marginBottom: "1vh",
-    },
-    paper: {
-      margin: "auto",
-      padding: "0 10px",
-    },
-    team: {
-      justifyContent: "center",
-      "&:not(:last-child)": { borderBottom: "1px #ccc solid" },
     },
     createNewTeam: {
       display: "flex",
@@ -48,33 +34,19 @@ const useStyles = makeStyles(() =>
 type Props = {
   joinedTeams: string[];
   otherTeams: string[];
+  selectJoinedTeam: (teamId: string) => () => void;
+  selectOtherTeam: (teamId: string) => () => void;
+  createNewTeam: (teamId: string) => () => void;
 };
 
-const TeamSelecting: React.FC<Props> = ({ joinedTeams, otherTeams }) => {
+const TeamSelecting: React.FC<Props> = ({
+  joinedTeams,
+  otherTeams,
+  selectJoinedTeam,
+  selectOtherTeam,
+  createNewTeam,
+}) => {
   const classes = useStyles();
-  const { db } = useContext(FirebaseContext);
-  const { user } = useContext(UserContext);
-  const { setTeamId } = useContext(TeamContext);
-  const history = useHistory();
-
-  const selectJoinedTeam = useCallback(
-    (teamId) => () => {
-      setTeamId(teamId);
-      history.push(routeNames.home);
-    },
-    [setTeamId, history]
-  );
-
-  const selectOtherTeam = useCallback(
-    (teamId) => () => {
-      if (!db || !user) return new Error("firebase is not initilized");
-      setTeamId(teamId);
-      joinTeam(db, user.uid, teamId);
-
-      return history.push(routeNames.home);
-    },
-    [db, user, setTeamId, history]
-  );
 
   const [value, setValue] = useState(0);
   const [newTeamId, setNewTeamId] = useState("");
@@ -94,8 +66,6 @@ const TeamSelecting: React.FC<Props> = ({ joinedTeams, otherTeams }) => {
   const changeTabs = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
-
-  if (!db) return <Progress />;
 
   return (
     <>
@@ -125,12 +95,7 @@ const TeamSelecting: React.FC<Props> = ({ joinedTeams, otherTeams }) => {
             />
             <PrimaryButton
               text="このチームIDで作成する"
-              onClick={() => {
-                createTeamDocument(db, newTeamId).then(() => {
-                  setTeamId(newTeamId);
-                  history.replace(routeNames.home);
-                });
-              }}
+              onClick={createNewTeam(newTeamId)}
             />
           </Box>
         </TabPanel>
