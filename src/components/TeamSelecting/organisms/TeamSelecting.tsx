@@ -32,13 +32,6 @@ const useStyles = makeStyles(() =>
       justifyContent: "center",
       "&:not(:last-child)": { borderBottom: "1px #ccc solid" },
     },
-    tabPanel: {
-      padding: "15px",
-    },
-    content: {
-      display: "flex",
-      justifyContent: "center",
-    },
     createNewTeam: {
       display: "flex",
       flexDirection: "column",
@@ -111,7 +104,7 @@ const TeamSelecting: React.FC<Props> = ({ joinedTeams, otherTeams }) => {
         チームを選択する
       </PageTitle>
       <Paper elevation={5} square>
-        <Tabs value={0} tabs={tabs} onChange={changeTabs} />
+        <Tabs value={value} tabs={tabs} onChange={changeTabs} />
         <TabPanel value={value} index={0}>
           <List>
             {joinedTeams.map((team) => (

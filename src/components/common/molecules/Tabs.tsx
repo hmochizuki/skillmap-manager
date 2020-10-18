@@ -12,21 +12,6 @@ const useStyles = makeStyles(() =>
     tabPanel: {
       padding: "15px",
     },
-    content: {
-      display: "flex",
-      justifyContent: "center",
-    },
-    createNewTeam: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-    },
-    textField: {
-      width: "400px",
-    },
-    text: {
-      textAlign: "center",
-    },
   })
 );
 
