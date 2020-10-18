@@ -8,6 +8,7 @@ import { Link, useHistory } from "react-router-dom";
 import routeNames from "router/routeNames";
 import { UserContext, FirebaseContext, TeamContext } from "contexts";
 import theme from "components/theme";
+import { Box } from "@material-ui/core";
 import IconButton from "../atoms/IconButton";
 
 const drawerWidth = 240;
@@ -31,6 +32,11 @@ const useStyles = makeStyles((t: Theme) =>
     },
     menuButton: {
       marginRight: 36,
+    },
+    userInfo: {
+      width: "100%",
+      marginRight: "15px",
+      textAlign: "right",
     },
     signoutButton: {
       marginRight: 0,
@@ -78,7 +84,7 @@ const AppBar: React.FC<Props> = ({ handleDrawerOpen, open }) => {
     >
       <Toolbar>
         {/* TODO: このロジック集約したい */}
-        {user && teamId && (
+        {isSignedIn ? (
           <IconButton
             label="appBarMenu"
             iconName="menu"
@@ -87,19 +93,25 @@ const AppBar: React.FC<Props> = ({ handleDrawerOpen, open }) => {
               [classes.hide]: open,
             })}
           />
-        )}
+        ) : null}
         <Link to={routeNames.home} className={classes.title}>
           <Typography variant="h6" noWrap>
             Skill Map Manager
           </Typography>
         </Link>
         {isSignedIn ? (
-          <IconButton
-            label="appBarSignout"
-            iconName="signout"
-            onClick={signOut}
-            className={clsx(classes.icon, classes.signoutButton)}
-          />
+          <>
+            <Box className={classes.userInfo}>
+              <Typography>{user?.displayName}</Typography>
+              <Typography>{teamId}</Typography>
+            </Box>
+            <IconButton
+              label="appBarSignout"
+              iconName="signout"
+              onClick={signOut}
+              className={clsx(classes.icon, classes.signoutButton)}
+            />
+          </>
         ) : null}
       </Toolbar>
     </BaseAppBar>
