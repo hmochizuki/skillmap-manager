@@ -1,7 +1,7 @@
 export type UserDocument = {
   id: string;
   name: string;
-  team: string[];
+  teams: string[];
   createdAt: number;
   updatedAt: number;
 };

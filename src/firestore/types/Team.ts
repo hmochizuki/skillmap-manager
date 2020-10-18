@@ -15,7 +15,6 @@ export type Worksheet = Category[];
 
 export type TeamDocument = {
   id: string;
-  team: string;
   worksheet: Category[];
   createdAt: number;
   updatedAt: number;

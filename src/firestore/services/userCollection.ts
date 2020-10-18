@@ -22,8 +22,32 @@ export const createUser = async (
 
   return userRef.set({
     data,
-    team: [],
+    teams: [],
     createdAt: now,
     updatedAt: now,
+  });
+};
+
+export const joinTeam = async (
+  db: firebase.firestore.Firestore,
+  userId: string,
+  teamdId: string
+) => {
+  const userRef = db.collection(collectionNames.users).doc(userId);
+
+  return db.runTransaction(async (transaction) => {
+    const data = (await transaction.get(userRef)).data();
+
+    if (!data)
+      return Promise.reject(
+        new Error(`user is not exists, that id is ${userId}`)
+      );
+
+    const next = {
+      ...data,
+      teams: [...data.teams, teamdId],
+    };
+
+    return transaction.set(userRef, next);
   });
 };
