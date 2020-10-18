@@ -20,41 +20,30 @@ const useStyles = makeStyles(() =>
 
 const worksheetManagement = {
   header: {
-    title: "ワークシートを編集",
-    subTitle: "サブタイトル",
+    title: "ワークシートを編集する",
   },
   navigateTo: routeNames.workSheetManage,
-  media: {
-    title: "イメージタイトル",
-    path: "/src/img/worksheetToEdit.png",
-  },
-  contents: "コンテンツ",
 };
 
 const worksheetAnswer = {
   header: {
-    title: "ワークシートに回答",
-    subTitle: "サブタイトル",
+    title: "ワークシートに回答する",
   },
   navigateTo: routeNames.workSheetAnswer,
-  media: {
-    title: "イメージタイトル",
-    path: "/src/img/worksheetToEdit.png",
-  },
-  contents: "コンテンツ",
 };
 
 const privateMap = {
   header: {
-    title: "自分のスキルを分析",
-    subTitle: "サブタイトル",
+    title: "自分のスキルを分析する",
   },
   navigateTo: routeNames.privateMap,
-  media: {
-    title: "イメージタイトル",
-    path: "/src/img/worksheetToEdit.png",
+};
+
+const teamMap = {
+  header: {
+    title: "チームのスキルを分析する",
   },
-  contents: "コンテンツ",
+  navigateTo: routeNames.privateMap,
 };
 
 const Home = () => {
@@ -68,6 +57,7 @@ const Home = () => {
       </Container>
       <Container className={classes.row}>
         <NavCard {...privateMap} />
+        <NavCard {...teamMap} />
       </Container>
     </Container>
   );

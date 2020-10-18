@@ -12,7 +12,7 @@ import routeNames from "router/routeNames";
 
 const App: FC = () => {
   const [user, setUser] = useState<firebase.User | null>(null);
-  const [team, setTeam] = useState<string | null>(null);
+  const [teamId, setTeamId] = useState<string | null>(null);
   const [
     credential,
     setCredential,
@@ -52,7 +52,7 @@ const App: FC = () => {
     <>
       <FirebaseContext.Provider value={{ auth, db }}>
         <UserContext.Provider value={{ user, credential, setCredential }}>
-          <TeamContext.Provider value={{ teamId: team, setTeam }}>
+          <TeamContext.Provider value={{ teamId, setTeamId }}>
             <CssBaseline />
             <Layout>
               <Router />

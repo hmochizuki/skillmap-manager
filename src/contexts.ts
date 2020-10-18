@@ -24,10 +24,10 @@ export const UserContext = createContext<UserContextValue>({
 
 type TeamContextValue = {
   teamId: string | null;
-  setTeam: (team: string) => void;
+  setTeamId: (team: string | null) => void;
 };
 
 export const TeamContext = createContext<TeamContextValue>({
   teamId: null,
-  setTeam: () => undefined,
+  setTeamId: () => undefined,
 });

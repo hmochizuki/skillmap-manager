@@ -55,26 +55,26 @@ const TeamSelecting: React.FC<Props> = ({ joinedTeams, otherTeams }) => {
   const classes = useStyles();
   const { db } = useContext(FirebaseContext);
   const { user } = useContext(UserContext);
-  const { setTeam } = useContext(TeamContext);
+  const { setTeamId } = useContext(TeamContext);
   const history = useHistory();
 
   const selectJoinedTeam = useCallback(
     (teamId) => () => {
-      setTeam(teamId);
+      setTeamId(teamId);
       history.push(routeNames.home);
     },
-    [setTeam, history]
+    [setTeamId, history]
   );
 
   const selectOtherTeam = useCallback(
     (teamId) => () => {
       if (!db || !user) return new Error("firebase is not initilized");
-      setTeam(teamId);
+      setTeamId(teamId);
       joinTeam(db, user.uid, teamId);
 
       return history.push(routeNames.home);
     },
-    [db, user, setTeam, history]
+    [db, user, setTeamId, history]
   );
 
   const [value, setValue] = useState(0);
@@ -150,7 +150,7 @@ const TeamSelecting: React.FC<Props> = ({ joinedTeams, otherTeams }) => {
               text="このチームIDで作成する"
               onClick={() => {
                 createTeamDocument(db, newTeamId).then(() => {
-                  setTeam(newTeamId);
+                  setTeamId(newTeamId);
                   history.replace(routeNames.home);
                 });
               }}

@@ -11,15 +11,18 @@ type Props = {
     subTitle?: string;
   };
   navigateTo: string;
-  media: {
+  media?: {
     title: string;
     path: string;
   };
-  contents: string;
+  contents?: string;
 };
 
 const useStyles = makeStyles(() =>
   createStyles({
+    card: {
+      width: "400px",
+    },
     icon: {
       marginTop: "7px",
     },
@@ -57,6 +60,7 @@ const NavCard: React.FC<Props> = ({ header, navigateTo, media, contents }) => {
       media={media}
       contents={contents}
       footerItems={footer}
+      className={classes.card}
     />
   );
 };

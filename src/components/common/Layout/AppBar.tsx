@@ -1,4 +1,4 @@
-import React, { memo, useContext, useCallback } from "react";
+import React, { memo, useContext, useCallback, useMemo } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import BaseAppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -57,12 +57,17 @@ const AppBar: React.FC<Props> = ({ handleDrawerOpen, open }) => {
   const classes = useStyles(theme);
   const { auth } = useContext(FirebaseContext);
   const { user } = useContext(UserContext);
-  const { teamId } = useContext(TeamContext);
+  const { teamId, setTeamId } = useContext(TeamContext);
   const history = useHistory();
+
+  const isSignedIn = useMemo(() => user && teamId, [user, teamId]);
   const signOut = useCallback(() => {
-    if (auth && user) auth.signOut();
+    if (auth && user && teamId) {
+      auth.signOut();
+      setTeamId(null);
+    }
     history.replace(routeNames.home);
-  }, [auth, user, history]);
+  }, [auth, user, teamId, setTeamId, history]);
 
   return (
     <BaseAppBar
@@ -88,12 +93,14 @@ const AppBar: React.FC<Props> = ({ handleDrawerOpen, open }) => {
             Skill Map Manager
           </Typography>
         </Link>
-        <IconButton
-          label="appBarSignout"
-          iconName="signout"
-          onClick={signOut}
-          className={clsx(classes.icon, classes.signoutButton)}
-        />
+        {isSignedIn ? (
+          <IconButton
+            label="appBarSignout"
+            iconName="signout"
+            onClick={signOut}
+            className={clsx(classes.icon, classes.signoutButton)}
+          />
+        ) : null}
       </Toolbar>
     </BaseAppBar>
   );

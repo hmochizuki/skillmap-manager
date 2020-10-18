@@ -6,6 +6,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Typography from "@material-ui/core/Typography";
+import clsx from "clsx";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -33,18 +34,25 @@ type Props = {
     title: string;
     path: string;
   };
-  contents: string;
+  contents?: string;
   footerItems?: {
     left?: JSX.Element[];
     right?: JSX.Element;
   };
+  className?: string;
 };
 
-const Card: FC<Props> = ({ header, media, contents, footerItems }) => {
+const Card: FC<Props> = ({
+  header,
+  media,
+  contents,
+  footerItems,
+  className,
+}) => {
   const classes = useStyles();
 
   return (
-    <BaseCard className={classes.root}>
+    <BaseCard className={clsx(classes.root, className)}>
       <CardHeader
         title={header.title}
         subheader={header.subTitle}
