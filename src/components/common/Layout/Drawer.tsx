@@ -4,7 +4,7 @@ import routeNames from "router/routeNames";
 import clsx from "clsx";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import BaseDrawer from "@material-ui/core/Drawer";
-import List from "components/common/atoms/List";
+import IconList from "components/common/atoms/IconList";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
@@ -137,9 +137,9 @@ const Drawer: React.FC<Props> = ({ handleDrawerClose, open }) => {
         </IconButton>
       </div>
       <Divider />
-      <List items={contentMenus} />
+      <IconList items={contentMenus} />
       <Divider />
-      <List items={settingMenus} />
+      <IconList items={settingMenus} />
     </BaseDrawer>
   );
 };
