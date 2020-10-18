@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useState } from "react";
+import React, { memo, useCallback, useContext, useMemo, useState } from "react";
 import {
   makeStyles,
   createStyles,
@@ -6,8 +6,6 @@ import {
   Paper,
   List,
   ListItem,
-  Tabs,
-  Tab,
   Box,
 } from "@material-ui/core";
 import PageTitle from "components/common/atoms/PageTitle";
@@ -19,6 +17,7 @@ import { PrimaryButton } from "components/common/atoms/Buttons";
 import { createTeamDocument } from "firestore/services/teamsCollection";
 import Progress from "components/common/atoms/Progress";
 import { joinTeam } from "firestore/services/userCollection";
+import { Tabs, TabPanel } from "components/common/molecules/Tabs";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -54,24 +53,6 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const TabPanel: React.FC<{
-  value: number;
-  index: number;
-}> = ({ children, value, index }) => {
-  const classes = useStyles();
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`tabpanel-${index}`}
-      aria-labelledby={`tab-${index}`}
-    >
-      {value === index && <Box className={classes.tabPanel}>{children}</Box>}
-    </div>
-  );
-};
-
 type Props = {
   joinedTeams: string[];
   otherTeams: string[];
@@ -106,7 +87,18 @@ const TeamSelecting: React.FC<Props> = ({ joinedTeams, otherTeams }) => {
   const [value, setValue] = useState(0);
   const [newTeamId, setNewTeamId] = useState("");
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  const tabs = useMemo(
+    () => [
+      {
+        label: "参加済みのチームから選択する",
+        disabled: joinedTeams.length === 0,
+      },
+      { label: "他のチームに参加する" },
+      { label: "新しくチームを作成する" },
+    ],
+    [joinedTeams]
+  );
+
   const changeTabs = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
@@ -119,19 +111,7 @@ const TeamSelecting: React.FC<Props> = ({ joinedTeams, otherTeams }) => {
         チームを選択する
       </PageTitle>
       <Paper elevation={5} square>
-        <Tabs
-          value={value}
-          indicatorColor="primary"
-          textColor="primary"
-          onChange={changeTabs}
-        >
-          <Tab
-            label="参加済みのチームから選択する"
-            disabled={joinedTeams.length === 0}
-          />
-          <Tab label="他のチームに参加する" />
-          <Tab label="新しくチームを作成する" />
-        </Tabs>
+        <Tabs value={0} tabs={tabs} onChange={changeTabs} />
         <TabPanel value={value} index={0}>
           <List>
             {joinedTeams.map((team) => (
@@ -176,12 +156,10 @@ const TeamSelecting: React.FC<Props> = ({ joinedTeams, otherTeams }) => {
             <PrimaryButton
               text="このチームIDで作成する"
               onClick={() => {
-                createTeamDocument(db, newTeamId)
-                  .then(() => {
-                    setTeam(newTeamId);
-                    history.replace(routeNames.home);
-                  })
-                  .catch((e) => console.log("rejected", { e }));
+                createTeamDocument(db, newTeamId).then(() => {
+                  setTeam(newTeamId);
+                  history.replace(routeNames.home);
+                });
               }}
             />
           </Box>
