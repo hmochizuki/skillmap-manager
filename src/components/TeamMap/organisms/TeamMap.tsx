@@ -1,5 +1,11 @@
 import React, { memo, FC } from "react";
-import { Typography, makeStyles, createStyles, Paper } from "@material-ui/core";
+import {
+  Typography,
+  makeStyles,
+  createStyles,
+  Paper,
+  Box,
+} from "@material-ui/core";
 import PageTitle from "components/common/atoms/PageTitle";
 import {
   purple,
@@ -24,6 +30,26 @@ import {
 } from "recharts";
 import { FULL_SCORE } from "config/business";
 import { getYearMonth } from "util/getYearMonth";
+import Checkbox from "components/common/atoms/Checkbox";
+
+const colors = [
+  purple[500],
+  blue[500],
+  red[500],
+  orange[500],
+  teal[500],
+  green[500],
+  pink[500],
+  indigo[500],
+  purple[200],
+  blue[200],
+  red[200],
+  orange[200],
+  teal[200],
+  green[200],
+  pink[200],
+  indigo[200],
+];
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -56,24 +82,17 @@ type Props = {
   data: Record<"category", number | string>[];
   yearMonth: string;
   setYearMonth: (ym: string) => void;
+  categoryFilter: { id: string; name: string; filtered: boolean }[];
+  filterCategory: (categoryId: string) => () => void;
 };
-
-const colors = [
-  purple[500],
-  blue[500],
-  red[500],
-  orange[500],
-  teal[500],
-  green[500],
-  pink[500],
-  indigo[500],
-];
 
 const TeamMap: FC<Props> = ({
   data,
   axis: { x, y, z },
   yearMonth,
   setYearMonth,
+  categoryFilter,
+  filterCategory,
 }) => {
   const classes = useStyles();
 
@@ -143,6 +162,23 @@ const TeamMap: FC<Props> = ({
             ))}
           </ScatterChart>
         </div>
+        <Box>
+          <Typography>User Filter</Typography>
+
+          <Checkbox id="aaa" label="hogehoge" onClick={() => {}} />
+          <Checkbox id="bbb" label="pekepek" onClick={() => {}} />
+        </Box>
+        <Box>
+          <Typography>Category Filter</Typography>
+          {categoryFilter.map((category) => (
+            <Checkbox
+              key={category.id}
+              id={category.id}
+              label={category.name}
+              onClick={filterCategory(category.id)}
+            />
+          ))}
+        </Box>
       </Paper>
     </>
   );

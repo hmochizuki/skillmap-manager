@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import Progress from "components/common/atoms/Progress";
 import useTeamMap from "hooks/useTeamMap";
 import Presentation from "./organisms/TeamMap";
@@ -21,12 +21,51 @@ const axis = {
 const TeamMapContainer = () => {
   const [data, yearMonth, setTargetYearMonth, loading, error] = useTeamMap();
 
+  const [categoryFilter, setCategoryFilter] = useState<
+    { id: string; name: string; filtered: boolean }[]
+  >([]);
+
+  useEffect(() => {
+    setCategoryFilter(
+      data.map((d) => ({
+        id: d.categoryId,
+        name: d.category,
+        filtered: false,
+      }))
+    );
+  }, [data]);
+
+  const filteredData = useMemo(
+    () =>
+      data.filter((d) =>
+        categoryFilter.some(
+          (filter) => filter.id === d.categoryId && filter.filtered === false
+        )
+      ),
+    [data, categoryFilter]
+  );
+
+  const filterCategory = useCallback(
+    (categoryId: string) => () => {
+      setCategoryFilter(
+        categoryFilter.map((filter) =>
+          filter.id === categoryId
+            ? { ...filter, filtered: !filter.filtered }
+            : filter
+        )
+      );
+    },
+    [categoryFilter]
+  );
+
   return data && !error && !loading ? (
     <Presentation
-      data={data}
+      data={filteredData}
       axis={axis}
       yearMonth={yearMonth}
       setYearMonth={setTargetYearMonth}
+      categoryFilter={categoryFilter}
+      filterCategory={filterCategory}
     />
   ) : (
     <Progress />
