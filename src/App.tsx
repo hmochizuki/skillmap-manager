@@ -6,7 +6,11 @@ import Layout from "components/common/layout";
 import { UserContext, FirebaseContext, TeamContext } from "contexts";
 import "./App.css";
 import Router from "router";
-import { getUserDocument, createUser } from "firestore/services/userCollection";
+import {
+  getUserDocument,
+  createUser,
+  updateUserDocument,
+} from "firestore/services/userCollection";
 import { useHistory } from "react-router";
 import routeNames from "router/routeNames";
 
@@ -32,13 +36,14 @@ const App: FC = () => {
       const userDoc = await getUserDocument(db, uid);
       setUser(firebaseUser);
 
-      if (!userDoc) {
-        const userData = {
-          id: uid,
-          name: credential.user.displayName || "",
-        };
-        createUser(db, userData);
-      }
+      const userData = {
+        id: uid,
+        name: credential.user.displayName || "",
+        email: credential.user.email || "",
+      };
+
+      // eslint-disable-next-line no-unused-expressions
+      userDoc ? updateUserDocument(db, userData) : createUser(db, userData);
 
       history.replace(routeNames.teamSelect);
     }

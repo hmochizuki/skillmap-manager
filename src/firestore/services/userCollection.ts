@@ -13,15 +13,28 @@ export const getUserDocument = async (
   return user;
 };
 
+export const updateUserDocument = async (
+  db: firebase.firestore.Firestore,
+  data: Omit<UserDocument, "teams" | "createdAt" | "updatedAt">
+): Promise<void> => {
+  const userRef = await db.collection(collectionNames.users).doc(data.id);
+  const now = new Date().getTime();
+
+  return userRef.update({
+    ...data,
+    updatedAt: now,
+  });
+};
+
 export const createUser = async (
   db: firebase.firestore.Firestore,
-  data: Pick<UserDocument, "id" | "name">
+  data: Omit<UserDocument, "teams" | "createdAt" | "updatedAt">
 ): Promise<void> => {
   const userRef = db.collection(collectionNames.users).doc(data.id);
   const now = new Date().getTime();
 
   return userRef.set({
-    data,
+    ...data,
     teams: [],
     createdAt: now,
     updatedAt: now,
