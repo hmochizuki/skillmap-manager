@@ -76,6 +76,9 @@ module.exports = {
     '@typescript-eslint/no-unnecessary-type-assertion': 'error',
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/prefer-interface': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
+    '@typescript-eslint/no-empty-function': 'off',
+    '@typescript-eslint/ban-types': "warn",
 
     // airbnb
     'no-restricted-syntax': [
