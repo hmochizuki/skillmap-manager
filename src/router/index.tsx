@@ -26,7 +26,6 @@ const Router: FC = () => {
           component={WorksheetManagement}
         />
         <Route path={routeNames.workSheetAnswer} component={WorksheetAnswer} />
-        <Redirect to={routeNames.workSheetManage} />
 
         <Route path={routeNames.privateMap} component={PrivateMap} />
         <Route path={routeNames.teamMap} component={TeamMap} />
