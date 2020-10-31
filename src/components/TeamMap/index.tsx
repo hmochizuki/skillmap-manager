@@ -1,54 +1,39 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import Progress from "components/common/atoms/Progress";
 import useTeamMap from "hooks/useTeamMap";
+import { Score } from "firestore/types/Skillmap";
 import Presentation from "./organisms/TeamMap";
 
 const TeamMapContainer = () => {
-  const [data, yearMonth, setTargetYearMonth, loading, error] = useTeamMap();
+  const [scores, yearMonth, setTargetYearMonth, loading, error] = useTeamMap();
 
-  const [categoryFilter, setCategoryFilter] = useState<
-    { id: string; name: string; filtered: boolean }[]
-  >([]);
+  const [data, setData] = useState<(Score & { hide: boolean })[]>([]);
 
   useEffect(() => {
-    setCategoryFilter(
-      data.map((d) => ({
-        id: d.categoryId,
-        name: d.category,
-        filtered: false,
+    setData(
+      scores.map((score) => ({
+        ...score,
+        hide: false,
       }))
     );
-  }, [data]);
-
-  const filteredData = useMemo(
-    () =>
-      data.filter((d) =>
-        categoryFilter.some(
-          (filter) => filter.id === d.categoryId && filter.filtered === false
-        )
-      ),
-    [data, categoryFilter]
-  );
+  }, [scores]);
 
   const filterCategory = useCallback(
     (categoryId: string) => () => {
-      setCategoryFilter(
-        categoryFilter.map((filter) =>
-          filter.id === categoryId
-            ? { ...filter, filtered: !filter.filtered }
-            : filter
+      setData(
+        data.map((d) =>
+          d.categoryId === categoryId ? { ...d, hide: !d.hide } : d
         )
       );
     },
-    [categoryFilter]
+    [data]
   );
 
   return data && !error && !loading ? (
     <Presentation
-      data={filteredData}
+      data={data}
       yearMonth={yearMonth}
       setYearMonth={setTargetYearMonth}
-      categoryFilter={categoryFilter}
       filterCategory={filterCategory}
     />
   ) : (

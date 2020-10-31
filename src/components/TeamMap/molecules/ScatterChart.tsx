@@ -46,7 +46,7 @@ type Axis = {
 };
 
 const ScatterChart: FC<{
-  data: Record<"category", number | string>[];
+  data: { category: string; hide: boolean }[];
   axis: {
     x: Axis;
     y: Axis;
@@ -71,13 +71,19 @@ const ScatterChart: FC<{
         type="number"
         dataKey={y.key}
         name={y.label}
-        domain={[0, "dataMax"]}
+        domain={[0, "auto"]}
         label={{ value: y.label, position: "insideLeft" }}
       />
       <ZAxis type="number" dataKey={z.key} name={z.label} range={[100, 1000]} />
       <Legend />
       {data.map((d, i) => (
-        <Scatter key={d.category} name={d.category} data={[d]} fill={colors[i]}>
+        <Scatter
+          key={d.category}
+          name={d.category}
+          data={[d]}
+          fill={colors[i]}
+          hide={d.hide}
+        >
           <LabelList dataKey="category" position="top" />
         </Scatter>
       ))}

@@ -10,6 +10,7 @@ import PageTitle from "components/common/atoms/PageTitle";
 import IconButton from "components/common/atoms/IconButton";
 import { getYearMonth } from "util/getYearMonth";
 import Checkbox from "components/common/atoms/Checkbox";
+import { Score } from "firestore/types/Skillmap";
 import ScatterChart from "../molecules/ScatterChart";
 
 const useStyles = makeStyles(() =>
@@ -50,10 +51,9 @@ type Axis = {
 };
 
 type Props = {
-  data: Record<"category", number | string>[];
+  data: (Score & { hide: boolean })[];
   yearMonth: string;
   setYearMonth: (ym: string) => void;
-  categoryFilter: { id: string; name: string; filtered: boolean }[];
   filterCategory: (categoryId: string) => () => void;
 };
 
@@ -61,7 +61,6 @@ const TeamMap: FC<Props> = ({
   data,
   yearMonth,
   setYearMonth,
-  categoryFilter,
   filterCategory,
 }) => {
   const classes = useStyles();
@@ -96,18 +95,17 @@ const TeamMap: FC<Props> = ({
         </div>
         <Box>
           <Typography>User Filter</Typography>
-
           <Checkbox id="aaa" label="hogehoge" onClick={() => {}} />
           <Checkbox id="bbb" label="pekepek" onClick={() => {}} />
         </Box>
         <Box>
           <Typography>Category Filter</Typography>
-          {categoryFilter.map((category) => (
+          {data.map((d) => (
             <Checkbox
-              key={category.id}
-              id={category.id}
-              label={category.name}
-              onClick={filterCategory(category.id)}
+              key={d.categoryId}
+              id={d.categoryId}
+              label={d.category}
+              onClick={filterCategory(d.categoryId)}
             />
           ))}
         </Box>
