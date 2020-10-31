@@ -2,7 +2,7 @@ import { getYearMonth } from "util/getYearMonth";
 import { collectionNames } from "firestore/types/collections";
 import { SkillmapDocument, Score } from "firestore/types/Skillmap";
 import { Worksheet } from "firestore/types/Team";
-import calculateVariance from "util/calculateVariance";
+import calculateDeviation from "util/calculateDeviation";
 
 export const getAllSkillmapDocument = async (
   db: firebase.firestore.Firestore,
@@ -74,14 +74,14 @@ export const updateSkillmapDocument = async (
 
       const average = total / answeres.length;
 
-      const variance = calculateVariance(answeres.map((ans) => ans.point));
+      const deviation = calculateDeviation(answeres.map((ans) => ans.point));
 
       return {
         categoryId: category.id,
         category: category.name,
         total,
         average,
-        variance,
+        deviation,
         answeres,
       };
     });

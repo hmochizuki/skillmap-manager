@@ -9,8 +9,8 @@ const axis = {
     label: "平均",
   },
   y: {
-    key: "variance",
-    label: "分散",
+    key: "deviation",
+    label: "標準偏差",
   },
   z: {
     key: "total",

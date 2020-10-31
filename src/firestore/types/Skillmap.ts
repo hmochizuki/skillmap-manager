@@ -3,7 +3,7 @@ export type Score = {
   category: string;
   total: number;
   average: number;
-  variance: number;
+  deviation: number;
   answeres: { userId: string; point: number }[];
 };
 
