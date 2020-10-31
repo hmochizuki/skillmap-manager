@@ -3,21 +3,6 @@ import Progress from "components/common/atoms/Progress";
 import useTeamMap from "hooks/useTeamMap";
 import Presentation from "./organisms/TeamMap";
 
-const axis = {
-  x: {
-    key: "average",
-    label: "平均",
-  },
-  y: {
-    key: "deviation",
-    label: "標準偏差",
-  },
-  z: {
-    key: "total",
-    label: "総計",
-  },
-};
-
 const TeamMapContainer = () => {
   const [data, yearMonth, setTargetYearMonth, loading, error] = useTeamMap();
 
@@ -61,7 +46,6 @@ const TeamMapContainer = () => {
   return data && !error && !loading ? (
     <Presentation
       data={filteredData}
-      axis={axis}
       yearMonth={yearMonth}
       setYearMonth={setTargetYearMonth}
       categoryFilter={categoryFilter}
