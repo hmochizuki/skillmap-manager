@@ -1,25 +1,16 @@
 import { useContext, useEffect, useState, useCallback, useMemo } from "react";
 import { FirebaseContext, TeamContext } from "contexts";
-import { getYearMonth } from "util/getYearMonth";
 import { SkillmapDocument, Score } from "firestore/types/Skillmap";
 import { getAllSkillmapDocument } from "firestore/services/skillmapCollection";
 
-type Return = [
-  Score[],
-  string,
-  (targetYearMonth: string) => void,
-  boolean,
-  Error | null
-];
+type Return = [Record<string, Score[]>, boolean, Error | null];
 
 const useTeamMap = (): Return => {
   const { teamId } = useContext(TeamContext);
   const [skillmapDocuments, setSkillmapDocuments] = useState<
     SkillmapDocument[] | null
   >(null);
-  const [targetYearMonth, setTargetYearMonth] = useState<string>(
-    getYearMonth()
-  );
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -46,12 +37,17 @@ const useTeamMap = (): Return => {
 
   const data = useMemo(
     () =>
-      skillmapDocuments?.find((s) => s.yearMonth === targetYearMonth)?.scores ||
-      [],
-    [skillmapDocuments, targetYearMonth]
-  );
+      skillmapDocuments?.reduce(
+        (acc, skillmapDoc) => ({
+          ...acc,
+          [skillmapDoc.yearMonth]: skillmapDoc.scores,
+        }),
+        {}
+      ) || {},
+    [skillmapDocuments]
+  ) as Record<string, Score[]>;
 
-  return [data, targetYearMonth, setTargetYearMonth, loading, error];
+  return [data, loading, error];
 };
 
 export default useTeamMap;

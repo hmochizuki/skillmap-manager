@@ -46,7 +46,7 @@ type Axis = {
 };
 
 type Props<Key extends string> = {
-  data: (Record<Key, string> & { show: boolean })[];
+  data: Record<Key, string>[];
   dataKey: Key;
   axis: {
     x: Axis;
@@ -83,17 +83,18 @@ const ScatterChart = <Key extends string>({
       />
       <ZAxis type="number" dataKey={z.key} name={z.label} range={[100, 1000]} />
       <Legend />
-      {data.map((d, i) => (
-        <Scatter
-          key={d[dataKey]}
-          name={d[dataKey]}
-          data={[d]}
-          fill={colors[i]}
-          hide={!d.show}
-        >
-          <LabelList dataKey={dataKey} position="top" />
-        </Scatter>
-      ))}
+      {data &&
+        data.map((d, i) => (
+          <Scatter
+            key={d[dataKey]}
+            name={d[dataKey]}
+            data={[d]}
+            fill={colors[i]}
+            // hide={!d.show}
+          >
+            <LabelList dataKey={dataKey} position="top" />
+          </Scatter>
+        ))}
     </BaseScatterChart>
   );
 };

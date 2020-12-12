@@ -45,23 +45,24 @@ const axis = {
   },
 };
 
-type Axis = {
-  key: string;
-  label: string;
-};
-
 type Props = {
-  data: (Score & { show: boolean })[];
+  data: Score[];
   yearMonth: string;
   setYearMonth: (ym: string) => void;
+  categoriesFilter: { id: string; name: string; show: boolean }[];
   filterCategory: (categoryId: string) => () => void;
+  // userFilter: { userId: string; name: string; show: boolean }[];
+  // filterUser: (id: string) => () => void;
 };
 
 const TeamMap: FC<Props> = ({
   data,
   yearMonth,
   setYearMonth,
+  categoriesFilter,
   filterCategory,
+  // userFilter,
+  // filterUser,
 }) => {
   const classes = useStyles();
 
@@ -95,18 +96,30 @@ const TeamMap: FC<Props> = ({
         </div>
         <Box>
           <Typography>User Filter</Typography>
-          <Checkbox id="aaa" label="hogehoge" onClick={() => {}} />
-          <Checkbox id="bbb" label="pekepek" onClick={() => {}} />
+          {/* {userFilter.map((user) => {
+            return (
+              <Checkbox
+                key={user.userId}
+                id={user.userId}
+                label={user.name}
+                checked={
+                  userFilter &&
+                  userFilter.find(({ userId }) => userId === user.userId)?.show
+                }
+                onClick={filterUser(user.userId)}
+              />
+            );
+          })} */}
         </Box>
         <Box>
           <Typography>Category Filter</Typography>
-          {data.map((d) => (
+          {categoriesFilter.map((filter) => (
             <Checkbox
-              key={d.categoryId}
-              id={d.categoryId}
-              label={d.category}
-              checked={d.show}
-              onClick={filterCategory(d.categoryId)}
+              key={filter.id}
+              id={filter.id}
+              label={filter.name}
+              checked={filter.show}
+              onClick={filterCategory(filter.id)}
             />
           ))}
         </Box>
