@@ -46,13 +46,13 @@ const axis = {
 };
 
 type Props = {
-  data: Score[];
+  data: Score[] | null;
   yearMonth: string;
   setYearMonth: (ym: string) => void;
   categoriesFilter: { id: string; name: string; show: boolean }[];
   filterCategory: (categoryId: string) => () => void;
-  // userFilter: { userId: string; name: string; show: boolean }[];
-  // filterUser: (id: string) => () => void;
+  userFilter: { id: string; name?: string; show: boolean }[]; // nameがオプショナルなのは過去のデータパターンに対する後方互換性の担保
+  filterUser: (id: string) => () => void;
 };
 
 const TeamMap: FC<Props> = ({
@@ -61,8 +61,8 @@ const TeamMap: FC<Props> = ({
   setYearMonth,
   categoriesFilter,
   filterCategory,
-  // userFilter,
-  // filterUser,
+  userFilter,
+  filterUser,
 }) => {
   const classes = useStyles();
 
@@ -96,20 +96,15 @@ const TeamMap: FC<Props> = ({
         </div>
         <Box>
           <Typography>User Filter</Typography>
-          {/* {userFilter.map((user) => {
-            return (
-              <Checkbox
-                key={user.userId}
-                id={user.userId}
-                label={user.name}
-                checked={
-                  userFilter &&
-                  userFilter.find(({ userId }) => userId === user.userId)?.show
-                }
-                onClick={filterUser(user.userId)}
-              />
-            );
-          })} */}
+          {userFilter.map((filter) => (
+            <Checkbox
+              key={filter.id}
+              id={filter.id}
+              label={filter.name || filter.id} // 過去のデータパターンに対する後方互換性の担保
+              checked={filter.show}
+              onClick={filterUser(filter.id)}
+            />
+          ))}
         </Box>
         <Box>
           <Typography>Category Filter</Typography>

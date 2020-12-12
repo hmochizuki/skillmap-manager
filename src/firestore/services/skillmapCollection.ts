@@ -23,7 +23,7 @@ export const getAllSkillmapDocument = async (
 export const updateSkillmapDocument = async (
   db: firebase.firestore.Firestore,
   teamId: string,
-  userId: string,
+  user: { id: string; name: string },
   data: Worksheet
 ) => {
   const yearMonth = getYearMonth();
@@ -49,11 +49,11 @@ export const updateSkillmapDocument = async (
         updatedAt: 0,
       } as SkillmapDocument);
 
-    const isMultipleAnswer = pre.answeredUsers.some((u) => u === userId);
+    const isMultipleAnswer = pre.answeredUsers.some(({ id }) => id === user.id);
 
     const answeredUsers = isMultipleAnswer
       ? pre.answeredUsers
-      : [...pre.answeredUsers, userId];
+      : [...pre.answeredUsers, user];
 
     const scores: Score[] = data.map((category) => {
       const preScore = pre.scores.find((e) => e.categoryId === category.id);
@@ -65,10 +65,10 @@ export const updateSkillmapDocument = async (
 
       const answeres = preScore
         ? [
-            ...preScore.answeres.filter((a) => a.userId !== userId),
-            { userId, point },
+            ...preScore.answeres.filter((a) => a.userId !== user.id),
+            { userId: user.id, point },
           ]
-        : [{ userId, point }];
+        : [{ userId: user.id, point }];
 
       const total = answeres.reduce((acc, cur) => acc + cur.point, 0);
 

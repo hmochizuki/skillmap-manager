@@ -3,11 +3,12 @@ import Progress from "components/common/atoms/Progress";
 import useTeamMap from "hooks/useTeamMap";
 import { Score } from "firestore/types/Skillmap";
 import { getYearMonth } from "util/getYearMonth";
+import calculateDeviation from "util/calculateDeviation";
 import Presentation from "./organisms/TeamMap";
 
 const TeamMapContainer = () => {
-  const [allData, loading, error] = useTeamMap();
-  const [data, setData] = useState<Score[]>([]);
+  const [SkillmapDataList, loading, error] = useTeamMap();
+  const [scoreData, setScoreData] = useState<Score[] | null>(null);
 
   const [targetYearMonth, setTargetYearMonth] = useState<string>(
     getYearMonth()
@@ -17,6 +18,14 @@ const TeamMapContainer = () => {
     {
       id: string;
       name: string;
+      show: boolean;
+    }[]
+  >([]);
+
+  const [userFilter, setUserFilter] = useState<
+    {
+      id: string;
+      name?: string;
       show: boolean;
     }[]
   >([]);
@@ -32,41 +41,90 @@ const TeamMapContainer = () => {
     },
     [categoriesFilter]
   );
+  const filterUser = useCallback(
+    (targetUserId: string) => () => {
+      const next = userFilter.map((user) =>
+        user.id === targetUserId ? { ...user, show: !user.show } : user
+      );
+      setUserFilter(next);
+    },
+    [userFilter]
+  );
 
   useEffect(() => {
-    const targetData = allData[targetYearMonth];
-    setData(targetData);
+    const skillmapData = SkillmapDataList[targetYearMonth];
+    if (!skillmapData) setScoreData(null);
+    else {
+      const { scores } = skillmapData;
+      setScoreData(scoreData);
 
-    if (targetData) {
       setCategoriesFilter(
-        allData[targetYearMonth].map((score) => ({
+        scores.map((score) => ({
           id: score.categoryId,
           name: score.category,
           show: true,
         }))
       );
+      setUserFilter(
+        skillmapData.answeredUsers.map((user) => {
+          // 過去のデータパターンに対する後方互換性の担保
+          if (typeof user === "string") return { id: user, show: true };
+
+          return { id: user.id, name: user.name, show: true };
+        })
+      );
     }
-  }, [allData, targetYearMonth]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [SkillmapDataList, targetYearMonth]);
 
   useEffect(() => {
-    if (!allData[targetYearMonth]) return;
-    const filteredData = allData[targetYearMonth].filter((score) => {
-      return categoriesFilter.some(
-        (filter) => filter.id === score.categoryId && filter.show === true
-      );
-    });
-    setData(filteredData);
-  }, [allData, targetYearMonth, categoriesFilter]);
+    if (!SkillmapDataList[targetYearMonth]) return;
+    const filteredData = SkillmapDataList[targetYearMonth].scores.filter(
+      (score) => {
+        return categoriesFilter.some(
+          (filter) => filter.id === score.categoryId && filter.show === true
+        );
+      }
+    );
+    setScoreData(filteredData);
+  }, [SkillmapDataList, targetYearMonth, categoriesFilter]);
+
+  useEffect(() => {
+    if (!SkillmapDataList[targetYearMonth]) return;
+    const filteredData = SkillmapDataList[targetYearMonth].scores.map(
+      (score) => {
+        const filteredAnsweres = score.answeres.filter((ans) => {
+          return userFilter.some(
+            (filter) => filter.id === ans.userId && filter.show === true
+          );
+        });
+        const total = filteredAnsweres.reduce((acc, cur) => acc + cur.point, 0);
+        const average = total / filteredAnsweres.length;
+        const deviation = calculateDeviation(
+          filteredAnsweres.map((ans) => ans.point)
+        );
+
+        return {
+          ...score,
+          total,
+          average,
+          deviation,
+          answeres: filteredAnsweres,
+        };
+      }
+    );
+    setScoreData(filteredData);
+  }, [SkillmapDataList, targetYearMonth, userFilter]);
 
   return !error && !loading ? (
     <Presentation
-      data={data}
+      data={scoreData}
       yearMonth={targetYearMonth}
       setYearMonth={setTargetYearMonth}
       categoriesFilter={categoriesFilter}
       filterCategory={filterCategory}
-      // filterUser={() => () => {}}
-      // userFilter={[]}
+      filterUser={filterUser}
+      userFilter={userFilter}
     />
   ) : (
     <Progress />

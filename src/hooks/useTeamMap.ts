@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState, useCallback, useMemo } from "react";
 import { FirebaseContext, TeamContext } from "contexts";
-import { SkillmapDocument, Score } from "firestore/types/Skillmap";
+import { SkillmapDocument } from "firestore/types/Skillmap";
 import { getAllSkillmapDocument } from "firestore/services/skillmapCollection";
 
-type Return = [Record<string, Score[]>, boolean, Error | null];
+type Return = [Record<string, SkillmapDocument>, boolean, Error | null];
 
 const useTeamMap = (): Return => {
   const { teamId } = useContext(TeamContext);
@@ -40,12 +40,12 @@ const useTeamMap = (): Return => {
       skillmapDocuments?.reduce(
         (acc, skillmapDoc) => ({
           ...acc,
-          [skillmapDoc.yearMonth]: skillmapDoc.scores,
+          [skillmapDoc.yearMonth]: skillmapDoc,
         }),
         {}
       ) || {},
     [skillmapDocuments]
-  ) as Record<string, Score[]>;
+  ) as Record<string, SkillmapDocument>;
 
   return [data, loading, error];
 };

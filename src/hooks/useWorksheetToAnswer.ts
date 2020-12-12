@@ -47,7 +47,12 @@ const useWorksheetToAnswer = (): Return => {
       if (!user || !teamId) throw new Error("not authorized");
       load(async () => {
         await updateAnswerDocument(db, teamId, user.uid, data);
-        await updateSkillmapDocument(db, teamId, user.uid, data);
+        await updateSkillmapDocument(
+          db,
+          teamId,
+          { id: user.uid, name: user.displayName || "" },
+          data
+        );
       });
     },
     [teamId, user, db, load]
