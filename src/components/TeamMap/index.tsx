@@ -10,17 +10,33 @@ type HistoryChartType = "average" | "deviation";
 
 const createHistoryData = (
   skillmapDataMap: Record<string, SkillmapDocument>,
-  selectedHistoryChartType: HistoryChartType
+  selectedHistoryChartType: HistoryChartType,
+  userFilter: {
+    id: string;
+    name?: string;
+    hide: boolean;
+  }[]
 ) => {
   const dataForHistory = Object.entries(skillmapDataMap).map(
     ([yearMonth, { scores }]) => {
-      const pointByCategories = scores.reduce(
-        (acc, score) => ({
-          ...acc,
-          [score.categoryId]: score[selectedHistoryChartType],
-        }),
-        {}
-      );
+      const pointByCategories = scores.reduce((acc, score) => {
+        const filteredPoints = score.answeres.filter(
+          (ans) =>
+            Boolean(
+              userFilter.find((filter) => filter.id === ans.userId)?.hide
+            ) === false
+        );
+
+        const total = filteredPoints.reduce((ac, cur) => ac + cur.point, 0);
+        const average = total / filteredPoints.length;
+        const deviation = calculateDeviation(
+          filteredPoints.map((ans) => ans.point)
+        );
+
+        const s = selectedHistoryChartType === "average" ? average : deviation;
+
+        return { ...acc, [score.categoryId]: s };
+      }, {});
 
       return { yearMonth, ...pointByCategories };
     }
@@ -94,7 +110,8 @@ const TeamMapContainer = () => {
   useEffect(() => {
     const dataForHistory = createHistoryData(
       skillmapDataMap,
-      selectedHistoryChartType
+      selectedHistoryChartType,
+      userFilter
     );
     setHistoryData(dataForHistory);
 
@@ -156,6 +173,13 @@ const TeamMapContainer = () => {
 
   // ユーザーフィルター時
   useEffect(() => {
+    const dataForHistory = createHistoryData(
+      skillmapDataMap,
+      selectedHistoryChartType,
+      userFilter
+    );
+    setHistoryData(dataForHistory);
+
     if (!skillmapDataMap[targetYearMonth]) return;
     const filteredData = skillmapDataMap[targetYearMonth].scores.map(
       (score) => {
@@ -187,7 +211,8 @@ const TeamMapContainer = () => {
   useEffect(() => {
     const dataForHistory = createHistoryData(
       skillmapDataMap,
-      selectedHistoryChartType
+      selectedHistoryChartType,
+      userFilter
     );
     setHistoryData(dataForHistory);
     // eslint-disable-next-line react-hooks/exhaustive-deps
