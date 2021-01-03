@@ -1,15 +1,5 @@
 import React, { ReactElement } from "react";
 import {
-  purple,
-  blue,
-  red,
-  orange,
-  green,
-  pink,
-  teal,
-  indigo,
-} from "@material-ui/core/colors";
-import {
   ScatterChart as BaseScatterChart,
   CartesianGrid,
   XAxis,
@@ -20,25 +10,7 @@ import {
   LabelList,
 } from "recharts";
 import { FULL_SCORE } from "config/business";
-
-const colors = [
-  purple[500],
-  blue[500],
-  red[500],
-  orange[500],
-  teal[500],
-  green[500],
-  pink[500],
-  indigo[500],
-  purple[200],
-  blue[200],
-  red[200],
-  orange[200],
-  teal[200],
-  green[200],
-  pink[200],
-  indigo[200],
-];
+import { graphColors } from "components/theme";
 
 type Axis = {
   key: string;
@@ -89,7 +61,7 @@ const ScatterChart = <Key extends string>({
             key={d[dataKey]}
             name={d[dataKey]}
             data={[d]}
-            fill={colors[i]}
+            fill={graphColors[i]}
             hide={d.hide}
           >
             <LabelList dataKey={dataKey} position="top" />

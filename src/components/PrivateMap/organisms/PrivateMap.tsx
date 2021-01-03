@@ -81,8 +81,8 @@ const PrivateMap: FC<Props> = ({
           </Typography>
           <HistoryChart
             xDataKey={xDataKey}
-            data={dataForHistory}
             yDataKeys={categoris}
+            data={dataForHistory}
           />
         </div>
       </Paper>

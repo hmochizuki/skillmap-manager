@@ -1,36 +1,19 @@
-import React, { memo, FC } from "react";
+import React, { memo, ReactElement } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
-import {
-  purple,
-  blue,
-  red,
-  orange,
-  green,
-  pink,
-  teal,
-  indigo,
-} from "@material-ui/core/colors";
 import { FULL_SCORE } from "config/business";
+import { graphColors } from "components/theme";
 
-type Props = {
-  xDataKey: string;
-  yDataKeys: string[];
-  data: Array<Record<string, string | number>>;
+type Props<X extends string, Y extends string> = {
+  xDataKey: X;
+  yDataKeys: Y[];
+  data: Record<X, Y | number>[];
 };
 
-// TODO: theme に含める
-const colors = [
-  purple[500],
-  blue[500],
-  red[500],
-  orange[500],
-  teal[500],
-  green[500],
-  pink[500],
-  indigo[500],
-];
-
-const HistryChart: FC<Props> = ({ xDataKey, yDataKeys, data }) => {
+const HistryChart = <X extends string, Y extends string>({
+  xDataKey,
+  yDataKeys,
+  data,
+}: Props<X, Y>): ReactElement<Props<X, Y>> => {
   return (
     <LineChart
       width={800}
@@ -53,7 +36,7 @@ const HistryChart: FC<Props> = ({ xDataKey, yDataKeys, data }) => {
             key={key}
             type="monotone"
             dataKey={key}
-            stroke={colors[i]}
+            stroke={graphColors[i]}
             activeDot={{ r: 8 }}
           />
         );
