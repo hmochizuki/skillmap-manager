@@ -5,16 +5,16 @@ import { graphColors } from "components/theme";
 
 type Props<X extends string, Y extends string> = {
   xDataKey: X;
-  yDataKeys: Y[];
   yLabel: string;
-  data: Record<X, Y | number>[];
+  data: Record<X | Y, string | number>[];
+  categoriesFilter: { id: string; name: string; hide: boolean }[];
 };
 
 const HistryChart = <X extends string, Y extends string>({
   xDataKey,
-  yDataKeys,
   yLabel,
   data,
+  categoriesFilter,
 }: Props<X, Y>): ReactElement<Props<X, Y>> => {
   return (
     <LineChart
@@ -35,12 +35,13 @@ const HistryChart = <X extends string, Y extends string>({
         label={{ value: yLabel, position: "insideLeft" }}
       />
       <Legend layout="horizontal" align="center" verticalAlign="bottom" />
-      {yDataKeys.map((key, i) => {
-        return (
+      {categoriesFilter.map(({ id, name, hide }, i) => {
+        return hide ? null : (
           <Line
-            key={key}
+            key={id}
+            name={name}
             type="monotone"
-            dataKey={key}
+            dataKey={id}
             stroke={graphColors[i]}
             activeDot={{ r: 8 }}
           />

@@ -17,7 +17,7 @@ const createHistoryData = (
       const pointByCategories = scores.reduce(
         (acc, score) => ({
           ...acc,
-          [score.category]: score[selectedHistoryChartType],
+          [score.categoryId]: score[selectedHistoryChartType],
         }),
         {}
       );

@@ -53,7 +53,7 @@ type HistoryChartType = "average" | "deviation";
 
 type Props = {
   monthlyData: Score[] | null;
-  historyData: Record<"yearMonth" | string, string | number>[] | [];
+  historyData: Record<string, string | number>[];
   selectedHistoryChartType: HistoryChartType;
   yearMonth: string;
   setYearMonth: (ym: string) => void;
@@ -97,7 +97,6 @@ const TeamMap: FC<Props> = ({
       })
     : null;
 
-  const categories = categoriesFilter.map(({ name }) => name);
   const yLabel = selectedHistoryChartType === "average" ? "平均値" : "標準偏差";
 
   return (
@@ -140,9 +139,9 @@ const TeamMap: FC<Props> = ({
           </Typography>
           <HistoryChart
             xDataKey="yearMonth"
-            yDataKeys={categories}
-            data={historyData}
             yLabel={yLabel}
+            data={historyData}
+            categoriesFilter={categoriesFilter}
           />
         </div>
         <Box>
