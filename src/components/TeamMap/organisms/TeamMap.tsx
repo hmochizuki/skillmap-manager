@@ -5,13 +5,15 @@ import {
   createStyles,
   Paper,
   Box,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import PageTitle from "components/common/atoms/PageTitle";
 import IconButton from "components/common/atoms/IconButton";
 import { getYearMonth } from "util/getYearMonth";
 import Checkbox from "components/common/atoms/Checkbox";
 import { Score } from "firestore/types/Skillmap";
-import HistoryChart from "components/PrivateMap/molecules/HistoryChart";
+import HistoryChart from "../molecules/HistoryChart";
 import ScatterChart from "../molecules/ScatterChart";
 
 const useStyles = makeStyles(() =>
@@ -47,11 +49,17 @@ const axis = {
   },
 };
 
+type HistoryChartType = "average" | "deviation";
+
 type Props = {
   monthlyData: Score[] | null;
   historyData: Record<"yearMonth" | string, string | number>[] | [];
+  selectedHistoryChartType: HistoryChartType;
   yearMonth: string;
   setYearMonth: (ym: string) => void;
+  changeHistoryChartType: (
+    event: React.ChangeEvent<{ value: HistoryChartType }>
+  ) => void;
   categoriesFilter: { id: string; name: string; hide: boolean }[];
   filterCategory: (categoryId: string) => () => void;
   userFilter: { id: string; name?: string; hide: boolean }[]; // nameがオプショナルなのは過去のデータパターンに対する後方互換性の担保
@@ -61,8 +69,10 @@ type Props = {
 const TeamMap: FC<Props> = ({
   monthlyData,
   historyData,
+  selectedHistoryChartType,
   yearMonth,
   setYearMonth,
+  changeHistoryChartType,
   categoriesFilter,
   filterCategory,
   userFilter,
@@ -88,6 +98,7 @@ const TeamMap: FC<Props> = ({
     : null;
 
   const categories = categoriesFilter.map(({ name }) => name);
+  const yLabel = selectedHistoryChartType === "average" ? "平均値" : "標準偏差";
 
   return (
     <>
@@ -116,11 +127,22 @@ const TeamMap: FC<Props> = ({
         <div className={classes.graphWrapper}>
           <Typography variant="h6" noWrap>
             HistoryChart
+            {/* TODO: 共通化 */}
+            <Select
+              id="history-chart-type-select"
+              value={selectedHistoryChartType}
+              // @ts-ignore
+              onChange={changeHistoryChartType}
+            >
+              <MenuItem value="average">平均値</MenuItem>
+              <MenuItem value="deviation">標準偏差</MenuItem>
+            </Select>
           </Typography>
           <HistoryChart
             xDataKey="yearMonth"
             yDataKeys={categories}
             data={historyData}
+            yLabel={yLabel}
           />
         </div>
         <Box>
