@@ -53,41 +53,59 @@ const TeamMapContainer = () => {
 
   useEffect(() => {
     const skillmapData = SkillmapDataList[targetYearMonth];
-    if (!skillmapData) setScoreData(null);
-    else {
-      const { scores } = skillmapData;
-      setScoreData(scoreData);
+    if (!skillmapData) return setScoreData(null);
+    const { scores } = skillmapData;
+    setScoreData(scores);
 
-      setCategoriesFilter(
-        scores.map((score) => ({
-          id: score.categoryId,
-          name: score.category,
-          show: true,
-        }))
-      );
-      setUserFilter(
-        skillmapData.answeredUsers.map((user) => {
-          // 過去のデータパターンに対する後方互換性の担保
-          if (typeof user === "string") return { id: user, show: true };
+    setCategoriesFilter(
+      scores.map((score) => ({
+        id: score.categoryId,
+        name: score.category,
+        show: true,
+      }))
+    );
 
-          return { id: user.id, name: user.name, show: true };
-        })
-      );
-    }
+    setUserFilter(
+      skillmapData.answeredUsers.map((user) => {
+        // 過去のデータパターンに対する後方互換性の担保
+        if (typeof user === "string") return { id: user, show: true };
+
+        return { id: user.id, name: user.name, show: true };
+      })
+    );
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [SkillmapDataList, targetYearMonth]);
+  }, [SkillmapDataList]);
 
   useEffect(() => {
-    if (!SkillmapDataList[targetYearMonth]) return;
-    const filteredData = SkillmapDataList[targetYearMonth].scores.filter(
-      (score) => {
-        return categoriesFilter.some(
-          (filter) => filter.id === score.categoryId && filter.show === true
-        );
-      }
+    const skillmapData = SkillmapDataList[targetYearMonth];
+    if (!skillmapData) return setScoreData(null);
+
+    const { scores } = skillmapData;
+    setScoreData(scores);
+
+    setCategoriesFilter(
+      scores.map((score) => {
+        const pre = categoriesFilter.find(({ id }) => id === score.categoryId);
+        const show = pre ? pre.show : true;
+
+        return { id: score.categoryId, name: score.category, show };
+      })
     );
-    setScoreData(filteredData);
-  }, [SkillmapDataList, targetYearMonth, categoriesFilter]);
+    setUserFilter(
+      skillmapData.answeredUsers.map((user) => {
+        // 過去のデータパターンに対する後方互換性の担保
+        if (typeof user === "string") return { id: user, show: true };
+
+        const pre = userFilter.find(({ id }) => id === user.id);
+        const show = pre ? pre.show : true;
+
+        return { id: user.id, name: user.name, show };
+      })
+    );
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [targetYearMonth]);
 
   useEffect(() => {
     if (!SkillmapDataList[targetYearMonth]) return;
@@ -114,7 +132,8 @@ const TeamMapContainer = () => {
       }
     );
     setScoreData(filteredData);
-  }, [SkillmapDataList, targetYearMonth, userFilter]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userFilter]);
 
   return !error && !loading ? (
     <Presentation

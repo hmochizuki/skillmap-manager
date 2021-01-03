@@ -46,7 +46,7 @@ type Axis = {
 };
 
 type Props<Key extends string> = {
-  data: Record<Key, string>[] | null;
+  data: (Record<Key, string> & { hide?: boolean })[] | null;
   dataKey: Key;
   axis: {
     x: Axis;
@@ -90,6 +90,7 @@ const ScatterChart = <Key extends string>({
             name={d[dataKey]}
             data={[d]}
             fill={colors[i]}
+            hide={d.hide}
           >
             <LabelList dataKey={dataKey} position="top" />
           </Scatter>

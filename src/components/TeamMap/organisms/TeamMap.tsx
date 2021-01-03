@@ -74,6 +74,15 @@ const TeamMap: FC<Props> = ({
     setYearMonth(getYearMonth(prev));
   };
 
+  const dataFilteredByCategories = data
+    ? data.map((d) => {
+        const filter = categoriesFilter.find(({ id }) => id === d.categoryId);
+        const show = filter ? filter.show : true;
+
+        return { ...d, hide: !show };
+      })
+    : null;
+
   return (
     <>
       <PageTitle iconName="mySkillmap" className={classes.title}>
@@ -92,7 +101,11 @@ const TeamMap: FC<Props> = ({
               onClick={changeTargetYeahMonth(1)}
             />
           </Typography>
-          <ScatterChart dataKey="category" data={data} axis={axis} />
+          <ScatterChart
+            dataKey="category"
+            data={dataFilteredByCategories}
+            axis={axis}
+          />
         </div>
         <Box>
           <Typography>User Filter</Typography>
