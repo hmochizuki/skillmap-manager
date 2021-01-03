@@ -71,9 +71,7 @@ export const updateSkillmapDocument = async (
         : [{ userId: user.id, point }];
 
       const total = answeres.reduce((acc, cur) => acc + cur.point, 0);
-
       const average = total / answeres.length;
-
       const deviation = calculateDeviation(answeres.map((ans) => ans.point));
 
       return {
