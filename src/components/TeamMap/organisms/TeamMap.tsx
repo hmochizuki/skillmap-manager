@@ -49,9 +49,9 @@ type Props = {
   data: Score[] | null;
   yearMonth: string;
   setYearMonth: (ym: string) => void;
-  categoriesFilter: { id: string; name: string; show: boolean }[];
+  categoriesFilter: { id: string; name: string; hide: boolean }[];
   filterCategory: (categoryId: string) => () => void;
-  userFilter: { id: string; name?: string; show: boolean }[]; // nameがオプショナルなのは過去のデータパターンに対する後方互換性の担保
+  userFilter: { id: string; name?: string; hide: boolean }[]; // nameがオプショナルなのは過去のデータパターンに対する後方互換性の担保
   filterUser: (id: string) => () => void;
 };
 
@@ -77,9 +77,9 @@ const TeamMap: FC<Props> = ({
   const dataFilteredByCategories = data
     ? data.map((d) => {
         const filter = categoriesFilter.find(({ id }) => id === d.categoryId);
-        const show = filter ? filter.show : true;
+        const hide = filter ? filter.hide : true;
 
-        return { ...d, hide: !show };
+        return { ...d, hide };
       })
     : null;
 
@@ -114,7 +114,7 @@ const TeamMap: FC<Props> = ({
               key={filter.id}
               id={filter.id}
               label={filter.name || filter.id} // 過去のデータパターンに対する後方互換性の担保
-              checked={filter.show}
+              checked={!filter.hide}
               onClick={filterUser(filter.id)}
             />
           ))}
@@ -126,7 +126,7 @@ const TeamMap: FC<Props> = ({
               key={filter.id}
               id={filter.id}
               label={filter.name}
-              checked={filter.show}
+              checked={!filter.hide}
               onClick={filterCategory(filter.id)}
             />
           ))}

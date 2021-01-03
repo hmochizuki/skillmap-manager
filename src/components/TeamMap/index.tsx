@@ -18,7 +18,7 @@ const TeamMapContainer = () => {
     {
       id: string;
       name: string;
-      show: boolean;
+      hide: boolean;
     }[]
   >([]);
 
@@ -26,7 +26,7 @@ const TeamMapContainer = () => {
     {
       id: string;
       name?: string;
-      show: boolean;
+      hide: boolean;
     }[]
   >([]);
 
@@ -34,7 +34,7 @@ const TeamMapContainer = () => {
     (targetCategoryId: string) => () => {
       const next = categoriesFilter.map((category) =>
         category.id === targetCategoryId
-          ? { ...category, show: !category.show }
+          ? { ...category, hide: !category.hide }
           : category
       );
       setCategoriesFilter(next);
@@ -44,7 +44,7 @@ const TeamMapContainer = () => {
   const filterUser = useCallback(
     (targetUserId: string) => () => {
       const next = userFilter.map((user) =>
-        user.id === targetUserId ? { ...user, show: !user.show } : user
+        user.id === targetUserId ? { ...user, hide: !user.hide } : user
       );
       setUserFilter(next);
     },
@@ -61,16 +61,16 @@ const TeamMapContainer = () => {
       scores.map((score) => ({
         id: score.categoryId,
         name: score.category,
-        show: true,
+        hide: false,
       }))
     );
 
     setUserFilter(
       skillmapData.answeredUsers.map((user) => {
         // 過去のデータパターンに対する後方互換性の担保
-        if (typeof user === "string") return { id: user, show: true };
+        if (typeof user === "string") return { id: user, hide: false };
 
-        return { id: user.id, name: user.name, show: true };
+        return { id: user.id, name: user.name, hide: false };
       })
     );
 
@@ -86,21 +86,21 @@ const TeamMapContainer = () => {
 
     setCategoriesFilter(
       scores.map((score) => {
-        const pre = categoriesFilter.find(({ id }) => id === score.categoryId);
-        const show = pre ? pre.show : true;
+        const hide = Boolean(
+          categoriesFilter.find(({ id }) => id === score.categoryId)?.hide
+        );
 
-        return { id: score.categoryId, name: score.category, show };
+        return { id: score.categoryId, name: score.category, hide };
       })
     );
     setUserFilter(
       skillmapData.answeredUsers.map((user) => {
         // 過去のデータパターンに対する後方互換性の担保
-        if (typeof user === "string") return { id: user, show: true };
+        if (typeof user === "string") return { id: user, hide: false };
 
-        const pre = userFilter.find(({ id }) => id === user.id);
-        const show = pre ? pre.show : true;
+        const hide = Boolean(userFilter.find(({ id }) => id === user.id)?.hide);
 
-        return { id: user.id, name: user.name, show };
+        return { id: user.id, name: user.name, hide };
       })
     );
 
@@ -113,7 +113,7 @@ const TeamMapContainer = () => {
       (score) => {
         const filteredAnsweres = score.answeres.filter((ans) => {
           return userFilter.some(
-            (filter) => filter.id === ans.userId && filter.show === true
+            (filter) => filter.id === ans.userId && filter.hide === false
           );
         });
         const total = filteredAnsweres.reduce((acc, cur) => acc + cur.point, 0);
