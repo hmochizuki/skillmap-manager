@@ -7,8 +7,13 @@ import calculateDeviation from "util/calculateDeviation";
 import Presentation from "./organisms/TeamMap";
 
 const TeamMapContainer = () => {
-  const [SkillmapDataList, loading, error] = useTeamMap();
-  const [scoreData, setScoreData] = useState<Score[] | null>(null);
+  const [SkillmapDataMap, loading, error] = useTeamMap();
+  const [monthlyScoreData, setMonthlyScoreData] = useState<Score[] | null>(
+    null
+  );
+  const [historyData, setHistoryData] = useState<
+    ({ yearMonth: string } & Record<string, number>)[]
+  >([]);
 
   const [targetYearMonth, setTargetYearMonth] = useState<string>(
     getYearMonth()
@@ -52,10 +57,26 @@ const TeamMapContainer = () => {
   );
 
   useEffect(() => {
-    const skillmapData = SkillmapDataList[targetYearMonth];
-    if (!skillmapData) return setScoreData(null);
+    const skillmapData = SkillmapDataMap[targetYearMonth];
+
+    const dataForHistory = Object.entries(SkillmapDataMap).map(
+      ([yearMonth, { scores }]) => {
+        const averageByCategories = scores.reduce(
+          (acc, { category, average }) => ({
+            ...acc,
+            [category]: average,
+          }),
+          {}
+        );
+
+        return { yearMonth, ...averageByCategories };
+      }
+    ) as ({ yearMonth: string } & Record<string, number>)[];
+    setHistoryData(dataForHistory);
+
+    if (!skillmapData) return setMonthlyScoreData(null);
     const { scores } = skillmapData;
-    setScoreData(scores);
+    setMonthlyScoreData(scores);
 
     setCategoriesFilter(
       scores.map((score) => ({
@@ -75,14 +96,14 @@ const TeamMapContainer = () => {
     );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [SkillmapDataList]);
+  }, [SkillmapDataMap]);
 
   useEffect(() => {
-    const skillmapData = SkillmapDataList[targetYearMonth];
-    if (!skillmapData) return setScoreData(null);
+    const skillmapData = SkillmapDataMap[targetYearMonth];
+    if (!skillmapData) return setMonthlyScoreData(null);
 
     const { scores } = skillmapData;
-    setScoreData(scores);
+    setMonthlyScoreData(scores);
 
     setCategoriesFilter(
       scores.map((score) => {
@@ -108,8 +129,8 @@ const TeamMapContainer = () => {
   }, [targetYearMonth]);
 
   useEffect(() => {
-    if (!SkillmapDataList[targetYearMonth]) return;
-    const filteredData = SkillmapDataList[targetYearMonth].scores.map(
+    if (!SkillmapDataMap[targetYearMonth]) return;
+    const filteredData = SkillmapDataMap[targetYearMonth].scores.map(
       (score) => {
         const filteredAnsweres = score.answeres.filter((ans) => {
           return userFilter.some(
@@ -131,13 +152,14 @@ const TeamMapContainer = () => {
         };
       }
     );
-    setScoreData(filteredData);
+    setMonthlyScoreData(filteredData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userFilter]);
 
   return !error && !loading ? (
     <Presentation
-      data={scoreData}
+      monthlyData={monthlyScoreData}
+      historyData={historyData}
       yearMonth={targetYearMonth}
       setYearMonth={setTargetYearMonth}
       categoriesFilter={categoriesFilter}

@@ -11,6 +11,7 @@ import IconButton from "components/common/atoms/IconButton";
 import { getYearMonth } from "util/getYearMonth";
 import Checkbox from "components/common/atoms/Checkbox";
 import { Score } from "firestore/types/Skillmap";
+import HistoryChart from "components/PrivateMap/molecules/HistoryChart";
 import ScatterChart from "../molecules/ScatterChart";
 
 const useStyles = makeStyles(() =>
@@ -46,7 +47,8 @@ const axis = {
 };
 
 type Props = {
-  data: Score[] | null;
+  monthlyData: Score[] | null;
+  historyData: Record<"yearMonth" | string, string | number>[] | [];
   yearMonth: string;
   setYearMonth: (ym: string) => void;
   categoriesFilter: { id: string; name: string; hide: boolean }[];
@@ -56,7 +58,8 @@ type Props = {
 };
 
 const TeamMap: FC<Props> = ({
-  data,
+  monthlyData,
+  historyData,
   yearMonth,
   setYearMonth,
   categoriesFilter,
@@ -74,14 +77,16 @@ const TeamMap: FC<Props> = ({
     setYearMonth(getYearMonth(prev));
   };
 
-  const dataFilteredByCategories = data
-    ? data.map((d) => {
+  const filteredMonthlyData = monthlyData
+    ? monthlyData.map((d) => {
         const filter = categoriesFilter.find(({ id }) => id === d.categoryId);
         const hide = filter ? filter.hide : true;
 
         return { ...d, hide };
       })
     : null;
+
+  const categories = categoriesFilter.map(({ name }) => name);
 
   return (
     <>
@@ -103,8 +108,16 @@ const TeamMap: FC<Props> = ({
           </Typography>
           <ScatterChart
             dataKey="category"
-            data={dataFilteredByCategories}
+            data={filteredMonthlyData}
             axis={axis}
+          />
+        </div>
+        <div className={classes.graphChart}>
+          <Typography variant="h6" noWrap />
+          <HistoryChart
+            xDataKey="yearMonth"
+            yDataKeys={categories}
+            data={historyData}
           />
         </div>
         <Box>
