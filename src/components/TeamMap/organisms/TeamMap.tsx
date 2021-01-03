@@ -23,10 +23,11 @@ const useStyles = makeStyles(() =>
       marginBottom: "3vh",
       padding: "10px",
     },
-    graphChart: {
+    graphWrapper: {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
+      marginBottom: "20px",
     },
   })
 );
@@ -94,7 +95,7 @@ const TeamMap: FC<Props> = ({
         Team Skillmap!!
       </PageTitle>
       <Paper elevation={5} className={classes.paper}>
-        <div className={classes.graphChart}>
+        <div className={classes.graphWrapper}>
           <Typography variant="h6" noWrap>
             <IconButton
               iconName="leftClose"
@@ -112,8 +113,10 @@ const TeamMap: FC<Props> = ({
             axis={axis}
           />
         </div>
-        <div className={classes.graphChart}>
-          <Typography variant="h6" noWrap />
+        <div className={classes.graphWrapper}>
+          <Typography variant="h6" noWrap>
+            HistoryChart
+          </Typography>
           <HistoryChart
             xDataKey="yearMonth"
             yDataKeys={categories}
