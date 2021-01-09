@@ -6,3 +6,7 @@
 typings/
 
 node_modules/
+
+# Firebase authentication infomation
+# see: https://firebase.google.com/docs/functions/local-emulator?authuser=0
+GOOGLE_APPLICATION_CREDENTIALS.json
