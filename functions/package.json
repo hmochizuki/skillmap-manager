@@ -7,7 +7,7 @@
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
-    "start:emulators": "npm run build && firebase emulators:start",
+    "start:emu": "npm run build && firebase emulators:start",
     "test": "jest",
     "deploy:func": "firebase deploy --only functions",
     "logs": "firebase functions:log"
