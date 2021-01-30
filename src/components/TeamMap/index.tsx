@@ -7,15 +7,16 @@ import calculateDeviation from "util/calculateDeviation";
 import Presentation from "./organisms/TeamMap";
 
 type HistoryChartType = "average" | "deviation";
+type Filter = {
+  id: string;
+  name: string;
+  hide: boolean;
+}[];
 
 const createHistoryData = (
   skillmapDataMap: Record<string, SkillmapDocument>,
   selectedHistoryChartType: HistoryChartType,
-  userFilter: {
-    id: string;
-    name?: string;
-    hide: boolean;
-  }[]
+  userFilter: Filter
 ) => {
   const dataForHistory = Object.entries(skillmapDataMap).map(
     ([yearMonth, { scores }]) => {
@@ -45,6 +46,23 @@ const createHistoryData = (
   return dataForHistory;
 };
 
+const createUserFilter = (
+  skillmapDataMap: Record<string, SkillmapDocument>
+): Filter => {
+  const usersMaybeDuplicate = Object.values(skillmapDataMap).flatMap(
+    ({ answeredUsers }) => answeredUsers
+  );
+
+  const users = usersMaybeDuplicate.reduce<Filter>((acc, user) => {
+    if (typeof user === "string") return acc; // 過去のデータパターンに対する互換性担保. 早くマイグレーションしたい
+    if (acc.find(({ id }) => id === user.id)) return acc;
+
+    return [...acc, { ...user, hide: false }];
+  }, []);
+
+  return users;
+};
+
 const TeamMapContainer = () => {
   const [skillmapDataMap, loading, error] = useTeamMap();
   const [monthlyScoreData, setMonthlyScoreData] = useState<Score[] | null>(
@@ -62,21 +80,9 @@ const TeamMapContainer = () => {
     getYearMonth()
   );
 
-  const [categoriesFilter, setCategoriesFilter] = useState<
-    {
-      id: string;
-      name: string;
-      hide: boolean;
-    }[]
-  >([]);
+  const [categoriesFilter, setCategoriesFilter] = useState<Filter>([]);
 
-  const [userFilter, setUserFilter] = useState<
-    {
-      id: string;
-      name?: string;
-      hide: boolean;
-    }[]
-  >([]);
+  const [userFilter, setUserFilter] = useState<Filter>([]);
 
   const changeHistoryChartType = useCallback(
     (event: React.ChangeEvent<{ value: HistoryChartType }>) => {
@@ -128,14 +134,7 @@ const TeamMapContainer = () => {
       }))
     );
 
-    setUserFilter(
-      skillmapData.answeredUsers.map((user) => {
-        // 過去のデータパターンに対する後方互換性の担保
-        if (typeof user === "string") return { id: user, hide: false };
-
-        return { id: user.id, name: user.name, hide: false };
-      })
-    );
+    setUserFilter(createUserFilter(skillmapDataMap));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [skillmapDataMap]);
@@ -155,16 +154,6 @@ const TeamMapContainer = () => {
         );
 
         return { id: score.categoryId, name: score.category, hide };
-      })
-    );
-    setUserFilter(
-      skillmapData.answeredUsers.map((user) => {
-        // 過去のデータパターンに対する後方互換性の担保
-        if (typeof user === "string") return { id: user, hide: false };
-
-        const hide = Boolean(userFilter.find(({ id }) => id === user.id)?.hide);
-
-        return { id: user.id, name: user.name, hide };
       })
     );
 

@@ -62,7 +62,7 @@ type Props = {
   ) => void;
   categoriesFilter: { id: string; name: string; hide: boolean }[];
   filterCategory: (categoryId: string) => () => void;
-  userFilter: { id: string; name?: string; hide: boolean }[]; // nameがオプショナルなのは過去のデータパターンに対する後方互換性の担保
+  userFilter: { id: string; name: string; hide: boolean }[];
   filterUser: (id: string) => () => void;
 };
 
@@ -150,7 +150,7 @@ const TeamMap: FC<Props> = ({
             <Checkbox
               key={filter.id}
               id={filter.id}
-              label={filter.name || filter.id} // 過去のデータパターンに対する後方互換性の担保
+              label={filter.name}
               checked={!filter.hide}
               onClick={filterUser(filter.id)}
             />
