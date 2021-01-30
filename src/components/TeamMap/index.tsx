@@ -49,18 +49,36 @@ const createHistoryData = (
 const createUserFilter = (
   skillmapDataMap: Record<string, SkillmapDocument>
 ): Filter => {
-  const usersMaybeDuplicate = Object.values(skillmapDataMap).flatMap(
+  const usersMaybeDuplicated = Object.values(skillmapDataMap).flatMap(
     ({ answeredUsers }) => answeredUsers
   );
 
-  const users = usersMaybeDuplicate.reduce<Filter>((acc, user) => {
+  const filter = usersMaybeDuplicated.reduce<Filter>((acc, user) => {
     if (typeof user === "string") return acc; // 過去のデータパターンに対する互換性担保. 早くマイグレーションしたい
     if (acc.find(({ id }) => id === user.id)) return acc;
 
     return [...acc, { ...user, hide: false }];
   }, []);
 
-  return users;
+  return filter;
+};
+
+const createCategoryFilter = (
+  skillmapDataMap: Record<string, SkillmapDocument>
+): Filter => {
+  const categoriesMaybeDuplicated = Object.values(
+    skillmapDataMap
+  ).flatMap(({ scores }) =>
+    scores.map((score) => ({ id: score.categoryId, name: score.category }))
+  );
+
+  const filter = categoriesMaybeDuplicated.reduce<Filter>((acc, category) => {
+    if (acc.find(({ id }) => id === category.id)) return acc;
+
+    return [...acc, { ...category, hide: false }];
+  }, []);
+
+  return filter;
 };
 
 const TeamMapContainer = () => {
@@ -120,21 +138,13 @@ const TeamMapContainer = () => {
       userFilter
     );
     setHistoryData(dataForHistory);
+    setCategoriesFilter(createCategoryFilter(skillmapDataMap));
+    setUserFilter(createUserFilter(skillmapDataMap));
 
     const skillmapData = skillmapDataMap[targetYearMonth];
     if (!skillmapData) return setMonthlyScoreData(null);
     const { scores } = skillmapData;
     setMonthlyScoreData(scores);
-
-    setCategoriesFilter(
-      scores.map((score) => ({
-        id: score.categoryId,
-        name: score.category,
-        hide: false,
-      }))
-    );
-
-    setUserFilter(createUserFilter(skillmapDataMap));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [skillmapDataMap]);
@@ -146,16 +156,6 @@ const TeamMapContainer = () => {
 
     const { scores } = skillmapData;
     setMonthlyScoreData(scores);
-
-    setCategoriesFilter(
-      scores.map((score) => {
-        const hide = Boolean(
-          categoriesFilter.find(({ id }) => id === score.categoryId)?.hide
-        );
-
-        return { id: score.categoryId, name: score.category, hide };
-      })
-    );
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetYearMonth]);
