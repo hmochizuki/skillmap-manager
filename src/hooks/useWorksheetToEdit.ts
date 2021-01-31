@@ -8,7 +8,7 @@ import {
 
 type Return = [
   TeamDocument | undefined,
-  (date: Worksheet) => void,
+  (date: Worksheet) => Promise<void>,
   boolean,
   Error | null
 ];
@@ -42,10 +42,11 @@ const useWorksheetToAnswer = (): Return => {
   }, [teamId, db, load]);
 
   const updateWorksheet = useCallback(
-    (data: Worksheet) => {
+    async (data: Worksheet) => {
       if (!db) throw new Error("firebase is not initialized");
       if (!teamId) throw new Error("not authorized");
-      load(async () => {
+
+      return load(async () => {
         await update(db, teamId, data);
       });
     },

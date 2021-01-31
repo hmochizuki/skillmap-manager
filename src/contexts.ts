@@ -1,4 +1,6 @@
-import { createContext } from "react";
+import { createContext, Dispatch } from "react";
+import { toastInitialState, ToastState } from "reducers/toast";
+import { Action } from "util/actioinCreator";
 
 type FirebaseContextValue = {
   auth: firebase.auth.Auth | null;
@@ -31,3 +33,12 @@ export const TeamContext = createContext<TeamContextValue>({
   teamId: null,
   setTeamId: () => undefined,
 });
+
+type ToastContextValue = {
+  toastState: ToastState;
+  dispatch: Dispatch<Action<any>>;
+};
+
+export const ToastContext = createContext<ToastContextValue>({
+  toastState: toastInitialState,
+} as ToastContextValue);

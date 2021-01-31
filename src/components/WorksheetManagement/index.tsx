@@ -1,14 +1,21 @@
-import React, { memo, useEffect, useCallback, useState } from "react";
+import React, {
+  memo,
+  useEffect,
+  useCallback,
+  useState,
+  useContext,
+} from "react";
 import useWorksheetToEdit from "hooks/useWorksheetToEdit";
 import Progress from "components/common/atoms/Progress";
 import { Worksheet } from "firestore/types/Team";
 import shortid from "shortid";
+import { ToastContext } from "contexts";
+import { showSuccessMessage } from "reducers/toast";
 import Presentation from "./organisms/Manage";
 import { WorksheetWithFilter, emptyWorkSheetWithFilter } from "./type";
 
 const ManageContainer = () => {
   const [teamDocument, updateTeamDocment, loading] = useWorksheetToEdit();
-
   const [worksheet, setWorksheet] = useState<WorksheetWithFilter>(
     emptyWorkSheetWithFilter
   );
@@ -88,6 +95,8 @@ const ManageContainer = () => {
     [worksheet]
   );
 
+  const { dispatch } = useContext(ToastContext);
+
   const updateWorksheet = useCallback(
     (worksheetWithFilter: WorksheetWithFilter) => () => {
       const ws: Worksheet = worksheetWithFilter.map((category) => {
@@ -97,8 +106,11 @@ const ManageContainer = () => {
           questions: category.questions.filter((q) => q.value !== ""),
         };
       });
-      updateTeamDocment(ws);
+      updateTeamDocment(ws).then(() =>
+        dispatch(showSuccessMessage("ワークシートの更新に成功しました。"))
+      );
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [updateTeamDocment]
   );
 
@@ -107,15 +119,17 @@ const ManageContainer = () => {
   }, []);
 
   return teamDocument && !loading ? (
-    <Presentation
-      worksheetWithFilter={worksheet}
-      filterCategory={filterCategory}
-      editQuestion={editQuestion}
-      addNewQuestion={addNewQuestion}
-      removeQuestion={removeQuestion}
-      updateWorksheet={updateWorksheet}
-      updateWorksheetState={updateWorksheetState}
-    />
+    <>
+      <Presentation
+        worksheetWithFilter={worksheet}
+        filterCategory={filterCategory}
+        editQuestion={editQuestion}
+        addNewQuestion={addNewQuestion}
+        removeQuestion={removeQuestion}
+        updateWorksheet={updateWorksheet}
+        updateWorksheetState={updateWorksheetState}
+      />
+    </>
   ) : (
     <Progress />
   );
