@@ -7,7 +7,7 @@ type props = {
   checked?: boolean;
   label: string;
   size?: "small" | "medium";
-  onClick: () => void;
+  onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 };
 
 const Checkbox: FC<props> = ({ id, name, checked, label, size, onClick }) => {

@@ -4,17 +4,16 @@ import {
   makeStyles,
   createStyles,
   Paper,
-  Box,
   Select,
   MenuItem,
 } from "@material-ui/core";
 import PageTitle from "components/common/atoms/PageTitle";
 import IconButton from "components/common/atoms/IconButton";
 import { getYearMonth } from "util/getYearMonth";
-import Checkbox from "components/common/atoms/Checkbox";
 import { Score } from "firestore/types/Skillmap";
 import HistoryChart from "../molecules/HistoryChart";
 import ScatterChart from "../molecules/ScatterChart";
+import FilterArea, { Filter } from "../molecules/FilterArea";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -60,9 +59,9 @@ type Props = {
   changeHistoryChartType: (
     event: React.ChangeEvent<{ value: HistoryChartType }>
   ) => void;
-  categoriesFilter: { id: string; name: string; hide: boolean }[];
+  categoriesFilter: Filter;
   filterCategory: (categoryId: string) => () => void;
-  userFilter: { id: string; name: string; hide: boolean }[];
+  userFilter: Filter;
   filterUser: (id: string) => () => void;
 };
 
@@ -144,30 +143,16 @@ const TeamMap: FC<Props> = ({
             categoriesFilter={categoriesFilter}
           />
         </div>
-        <Box>
-          <Typography>User Filter</Typography>
-          {userFilter.map((filter) => (
-            <Checkbox
-              key={filter.id}
-              id={filter.id}
-              label={filter.name}
-              checked={!filter.hide}
-              onClick={filterUser(filter.id)}
-            />
-          ))}
-        </Box>
-        <Box>
-          <Typography>Category Filter</Typography>
-          {categoriesFilter.map((filter) => (
-            <Checkbox
-              key={filter.id}
-              id={filter.id}
-              label={filter.name}
-              checked={!filter.hide}
-              onClick={filterCategory(filter.id)}
-            />
-          ))}
-        </Box>
+        <FilterArea
+          title="User Filter"
+          items={userFilter}
+          handleItemClick={filterUser}
+        />
+        <FilterArea
+          title="Category Filter"
+          items={categoriesFilter}
+          handleItemClick={filterCategory}
+        />
       </Paper>
     </>
   );
