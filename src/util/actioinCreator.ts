@@ -1,17 +1,17 @@
-interface AnyAction {
+interface IAnyAction {
   type: any;
 }
 
 type Meta = null | { [key: string]: any };
 
-export interface Action<Payload> extends AnyAction {
+export interface Action<Payload> extends IAnyAction {
   type: string;
   payload: Payload;
   error?: boolean;
   meta?: Meta;
 }
 
-interface ActionCreator<Payload> {
+interface IActionCreator<Payload> {
   type: string;
   (payload: Payload, meta?: Meta): Action<Payload>;
 }
@@ -49,7 +49,7 @@ export const actionCreatorFactory = (
       {
         type: fullType,
       }
-    ) as ActionCreator<Payload>;
+    ) as IActionCreator<Payload>;
   };
 
   return actionCreator;
