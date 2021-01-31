@@ -7,7 +7,7 @@ import { updateSkillmapDocument } from "firestore/services/skillmapCollection";
 
 type Return = [
   TeamDocument | null,
-  (date: Worksheet) => void,
+  (date: Worksheet) => Promise<void>,
   boolean,
   Error | null
 ];
@@ -42,10 +42,11 @@ const useWorksheetToAnswer = (): Return => {
   }, [teamId, db, load]);
 
   const answerToWorksheet = useCallback(
-    (data: Worksheet) => {
+    async (data: Worksheet) => {
       if (!db) throw new Error("firebase is not initialized");
       if (!user || !teamId) throw new Error("not authorized");
-      load(async () => {
+
+      return load(async () => {
         await updateAnswerDocument(db, teamId, user.uid, data);
         await updateSkillmapDocument(
           db,

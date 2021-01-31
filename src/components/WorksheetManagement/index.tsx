@@ -11,6 +11,8 @@ import { Worksheet } from "firestore/types/Team";
 import shortid from "shortid";
 import { ToastContext } from "contexts";
 import { showSuccessMessage } from "reducers/toast";
+import { useHistory } from "react-router";
+import routeNames from "router/routeNames";
 import Presentation from "./organisms/Manage";
 import { WorksheetWithFilter, emptyWorkSheetWithFilter } from "./type";
 
@@ -96,6 +98,7 @@ const ManageContainer = () => {
   );
 
   const { dispatch } = useContext(ToastContext);
+  const history = useHistory();
 
   const updateWorksheet = useCallback(
     (worksheetWithFilter: WorksheetWithFilter) => () => {
@@ -106,9 +109,14 @@ const ManageContainer = () => {
           questions: category.questions.filter((q) => q.value !== ""),
         };
       });
-      updateTeamDocment(ws).then(() =>
-        dispatch(showSuccessMessage("ワークシートの更新に成功しました。"))
-      );
+      updateTeamDocment(ws).then(() => {
+        dispatch(
+          showSuccessMessage(
+            `ワークシートの更新に成功しました。次はワークシートに回答してみましょう。`
+          )
+        );
+        history.push(routeNames.home);
+      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [updateTeamDocment]

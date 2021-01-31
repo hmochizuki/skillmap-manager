@@ -1,10 +1,20 @@
-import React, { memo, useState, useEffect, useCallback } from "react";
+import React, {
+  memo,
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+} from "react";
 import useWorksheetToAnswer from "hooks/useWorksheetToAnswer";
 import {
   emptyWorkSheetWithFilter,
   WorksheetWithFilter,
 } from "components/WorksheetManagement/type";
 import Progress from "components/common/atoms/Progress";
+import { ToastContext } from "contexts";
+import { useHistory } from "react-router";
+import { showSuccessMessage } from "reducers/toast";
+import routeNames from "router/routeNames";
 import Presentation from "./organisms/Answer";
 
 const AnswerContainer = () => {
@@ -54,9 +64,24 @@ const AnswerContainer = () => {
     [worksheetWithFilter]
   );
 
-  const updateAnswer = (worksheet: WorksheetWithFilter) => () => {
-    answerToWorksheet(worksheet);
-  };
+  const { dispatch } = useContext(ToastContext);
+  const history = useHistory();
+
+  const updateAnswer = useCallback(
+    (worksheet: WorksheetWithFilter) => () => {
+      answerToWorksheet(worksheet).then(() => {
+        dispatch(
+          showSuccessMessage(
+            `ワークシートの回答に成功しました。次はあなたやチームのスキルを分析してみましょう。`
+          )
+        );
+        history.push(routeNames.home);
+      });
+    },
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   return teamDocument && !loading ? (
     <Presentation
