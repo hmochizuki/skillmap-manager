@@ -43,7 +43,7 @@ const teamMap = {
   header: {
     title: "チームのスキルを分析する",
   },
-  navigateTo: routeNames.privateMap,
+  navigateTo: routeNames.teamMap,
 };
 
 const Home = () => {
