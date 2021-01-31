@@ -5,13 +5,35 @@ import { Score, SkillmapDocument } from "firestore/types/Skillmap";
 import { getYearMonth } from "util/getYearMonth";
 import calculateDeviation from "util/calculateDeviation";
 import Presentation from "./organisms/TeamMap";
+import { Filter } from "./molecules/FilterArea";
 
 type HistoryChartType = "average" | "deviation";
-type Filter = {
-  id: string;
-  name: string;
-  hide: boolean;
-}[];
+
+const calculateScoreFromUserFilter = (score: Score, userFilter: Filter) => {
+  const filteredPoints = score.answeres.filter(
+    (ans) =>
+      Boolean(userFilter.find((filter) => filter.id === ans.userId)?.hide) ===
+      false
+  );
+  const total = filteredPoints.reduce((ac, cur) => ac + cur.point, 0);
+  const average = total / filteredPoints.length;
+  const deviation = calculateDeviation(filteredPoints.map((ans) => ans.point));
+
+  return { total, average, deviation };
+};
+
+const filterScoresByUser = (scores: Score[], userFilter: Filter): Score[] => {
+  const scoresByCategory = scores.map((score) => {
+    const { total, average, deviation } = calculateScoreFromUserFilter(
+      score,
+      userFilter
+    );
+
+    return { ...score, total, average, deviation };
+  });
+
+  return scoresByCategory;
+};
 
 const createHistoryData = (
   skillmapDataMap: Record<string, SkillmapDocument>,
@@ -21,17 +43,9 @@ const createHistoryData = (
   const dataForHistory = Object.entries(skillmapDataMap).map(
     ([yearMonth, { scores }]) => {
       const pointByCategories = scores.reduce((acc, score) => {
-        const filteredPoints = score.answeres.filter(
-          (ans) =>
-            Boolean(
-              userFilter.find((filter) => filter.id === ans.userId)?.hide
-            ) === false
-        );
-
-        const total = filteredPoints.reduce((ac, cur) => ac + cur.point, 0);
-        const average = total / filteredPoints.length;
-        const deviation = calculateDeviation(
-          filteredPoints.map((ans) => ans.point)
+        const { average, deviation } = calculateScoreFromUserFilter(
+          score,
+          userFilter
         );
 
         const s = selectedHistoryChartType === "average" ? average : deviation;
@@ -155,7 +169,8 @@ const TeamMapContainer = () => {
     if (!skillmapData) return setMonthlyScoreData(null);
 
     const { scores } = skillmapData;
-    setMonthlyScoreData(scores);
+    const scoreFilteredUser = filterScoresByUser(scores, userFilter);
+    setMonthlyScoreData(scoreFilteredUser);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetYearMonth]);
