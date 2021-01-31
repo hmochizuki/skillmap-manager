@@ -7,9 +7,11 @@ const useStyles = makeStyles(() =>
     chips: {
       display: "flex",
       alignItems: "center",
+      flexWrap: "wrap",
     },
     chip: {
       marginRight: "2vw",
+      marginBottom: "1vw",
     },
   })
 );

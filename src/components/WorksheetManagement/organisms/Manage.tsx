@@ -13,6 +13,7 @@ const useStyles = makeStyles(() =>
     root: {
       padding: "2vh 2vw",
       minWidth: "500px",
+      width: "100%",
     },
     chips: {
       display: "flex",
