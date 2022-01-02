@@ -4,11 +4,11 @@ import {
   makeStyles,
   createStyles,
   Paper,
-  Select,
   MenuItem,
 } from "@material-ui/core";
 import PageTitle from "components/common/atoms/PageTitle";
 import IconButton from "components/common/atoms/IconButton";
+import Select from "components/common/atoms/Select";
 import { getYearMonth } from "util/getYearMonth";
 import { Score } from "firestore/types/Skillmap";
 import HistoryChart from "../molecules/HistoryChart";
@@ -172,9 +172,11 @@ const TeamMap: FC<Props> = ({
           />
         </div>
         <div className={classes.graphWrapper}>
-          <Typography variant="h6" noWrap>
-            HistoryChart
-            {/* TODO: 共通化 */}
+          <p>
+            <Typography variant="h6" noWrap>
+              HistoryChart
+              {/* TODO: 共通化 */}
+            </Typography>
             <Select
               id="history-chart-type-select"
               value={selectedHistoryChartType}
@@ -224,7 +226,7 @@ const TeamMap: FC<Props> = ({
                 </MenuItem>
               ))}
             </Select>
-          </Typography>
+          </p>
           <HistoryChart
             xDataKey="yearMonth"
             yLabel={yLabel}
