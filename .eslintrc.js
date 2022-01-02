@@ -58,6 +58,7 @@ module.exports = {
     'no-continue': 'off',
     // quotes: ['error', 'single', { avoidEscape: true }],
     'require-yield': 'error',
+    'consistent-return': 'warn',
     semi: ['error', 'always'],
     // for react-app-env.d.ts (https://github.com/facebook/create-react-app/issues/6560)
     'spaced-comment': [
