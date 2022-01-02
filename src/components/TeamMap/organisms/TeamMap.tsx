@@ -1,4 +1,4 @@
-import React, { memo, FC } from "react";
+import React, { memo, FC, useState } from "react";
 import {
   Typography,
   makeStyles,
@@ -49,10 +49,16 @@ const axis = {
 };
 
 type HistoryChartType = "average" | "deviation";
+type HistoryData = (Record<string, string | number> & { yearMonth: string })[];
+
+type Period = {
+  start: string; // YYYY-mm
+  end: string; // YYYY-mm
+};
 
 type Props = {
   monthlyData: Score[] | null;
-  historyData: Record<string, string | number>[];
+  historyData: HistoryData;
   selectedHistoryChartType: HistoryChartType;
   yearMonth: string;
   setYearMonth: (ym: string) => void;
@@ -63,6 +69,42 @@ type Props = {
   filterCategory: (categoryId: string) => () => void;
   userFilter: Filter;
   filterUser: (id: string) => () => void;
+};
+
+const useHistoryCartPeriod = (
+  historyData: HistoryData
+): [
+  Period,
+  (event: React.ChangeEvent<{ value: string }>) => void,
+  (event: React.ChangeEvent<{ value: string }>) => void,
+  HistoryData
+] => {
+  const [historyCartPeriod, setHistoryCartPeriod] = useState<Period>({
+    start: historyData[0] && historyData[0].yearMonth,
+    end:
+      historyData[historyData.length - 1] &&
+      historyData[historyData.length - 1].yearMonth,
+  });
+  const onChangeHistoryCartPeriod = (target: "start" | "end") => (
+    event: React.ChangeEvent<{ value: string }>
+  ) =>
+    setHistoryCartPeriod({
+      ...historyCartPeriod,
+      [target]: event.target.value,
+    });
+
+  const filteredHistoryData = historyData.filter(
+    (data) =>
+      new Date(data.yearMonth) >= new Date(historyCartPeriod.start) &&
+      new Date(data.yearMonth) <= new Date(historyCartPeriod.end)
+  );
+
+  return [
+    historyCartPeriod,
+    onChangeHistoryCartPeriod("start"),
+    onChangeHistoryCartPeriod("end"),
+    filteredHistoryData,
+  ];
 };
 
 const TeamMap: FC<Props> = ({
@@ -78,6 +120,13 @@ const TeamMap: FC<Props> = ({
   filterUser,
 }) => {
   const classes = useStyles();
+
+  const [
+    historyCartPeriod,
+    onChangeHistoryCartPeriodStart,
+    onChangeHistoryCartPeriodEnd,
+    filteredHistoryData,
+  ] = useHistoryCartPeriod(historyData);
 
   const changeTargetYeahMonth = (addMonth: number) => () => {
     const d = yearMonth.split("-").map((e) => parseInt(e, 10));
@@ -129,17 +178,57 @@ const TeamMap: FC<Props> = ({
             <Select
               id="history-chart-type-select"
               value={selectedHistoryChartType}
+              label="縦軸"
               // @ts-ignore
               onChange={changeHistoryChartType}
             >
               <MenuItem value="average">平均値</MenuItem>
               <MenuItem value="deviation">標準偏差</MenuItem>
             </Select>
+            <Select
+              id="history-chart-yyyymm-start"
+              value={historyCartPeriod.start}
+              labelId="history-chart-yyyymm-start-label"
+              label="開始月"
+              // @ts-ignore
+              onChange={onChangeHistoryCartPeriodStart}
+            >
+              {historyData.map((e) => (
+                <MenuItem
+                  key={e.yearMonth}
+                  value={e.yearMonth}
+                  disabled={
+                    new Date(e.yearMonth) > new Date(historyCartPeriod.end)
+                  }
+                >
+                  {e.yearMonth}
+                </MenuItem>
+              ))}
+            </Select>
+            <Select
+              id="history-chart-yyyymm-end"
+              value={historyCartPeriod.end}
+              label="終了月"
+              // @ts-ignore
+              onChange={onChangeHistoryCartPeriodEnd}
+            >
+              {historyData.map((e) => (
+                <MenuItem
+                  key={e.yearMonth}
+                  value={e.yearMonth}
+                  disabled={
+                    new Date(e.yearMonth) < new Date(historyCartPeriod.start)
+                  }
+                >
+                  {e.yearMonth}
+                </MenuItem>
+              ))}
+            </Select>
           </Typography>
           <HistoryChart
             xDataKey="yearMonth"
             yLabel={yLabel}
-            data={historyData}
+            data={filteredHistoryData}
             categoriesFilter={categoriesFilter}
           />
         </div>
