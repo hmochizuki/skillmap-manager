@@ -8,6 +8,7 @@ import Presentation from "./organisms/TeamMap";
 import { Filter } from "./molecules/FilterArea";
 
 type HistoryChartType = "average" | "deviation";
+type SkillmapDataMap = Record<string, SkillmapDocument>;
 
 const calculateScoreFromUserFilter = (score: Score, userFilter: Filter) => {
   const filteredPoints = score.answeres.filter(
@@ -36,7 +37,7 @@ const filterScoresByUser = (scores: Score[], userFilter: Filter): Score[] => {
 };
 
 const createHistoryData = (
-  skillmapDataMap: Record<string, SkillmapDocument>,
+  skillmapDataMap: SkillmapDataMap,
   selectedHistoryChartType: HistoryChartType,
   userFilter: Filter
 ) => {
@@ -97,11 +98,79 @@ const createCategoryFilter = (
   return filter;
 };
 
-const TeamMapContainer = () => {
-  const [skillmapDataMap, loading, error] = useTeamMap();
+const useMonthlyChart = (
+  skillmapDataMap: SkillmapDataMap,
+  userFilter: Filter
+) => {
   const [monthlyScoreData, setMonthlyScoreData] = useState<Score[] | null>(
     null
   );
+  const [targetYearMonth, setTargetYearMonth] = useState<string>(
+    getYearMonth()
+  );
+
+  // データフェッチ時に初期化
+  useEffect(() => {
+    const skillmapData = skillmapDataMap[targetYearMonth];
+    if (!skillmapData) return setMonthlyScoreData(null);
+    const { scores } = skillmapData;
+    setMonthlyScoreData(scores);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [skillmapDataMap]);
+
+  // 表示月の切替時
+  useEffect(() => {
+    const skillmapData = skillmapDataMap[targetYearMonth];
+    if (!skillmapData) return setMonthlyScoreData(null);
+
+    const { scores } = skillmapData;
+    const scoreFilteredUser = filterScoresByUser(scores, userFilter);
+    setMonthlyScoreData(scoreFilteredUser);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [targetYearMonth]);
+
+  // ユーザフィルターの変更時
+  useEffect(() => {
+    if (!skillmapDataMap[targetYearMonth]) return;
+    const filteredData = skillmapDataMap[targetYearMonth].scores.map(
+      (score) => {
+        const filteredAnsweres = score.answeres.filter((ans) => {
+          return userFilter.some(
+            (filter) => filter.id === ans.userId && filter.hide === false
+          );
+        });
+        const total = filteredAnsweres.reduce((acc, cur) => acc + cur.point, 0);
+        const average = total / filteredAnsweres.length;
+        const deviation = calculateDeviation(
+          filteredAnsweres.map((ans) => ans.point)
+        );
+
+        return {
+          ...score,
+          total,
+          average,
+          deviation,
+          answeres: filteredAnsweres,
+        };
+      }
+    );
+    setMonthlyScoreData(filteredData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userFilter]);
+
+  return {
+    monthlyScoreData,
+    targetYearMonth,
+    setTargetYearMonth,
+  };
+};
+
+const useHistoryChart = (
+  skillmapDataMap: SkillmapDataMap,
+  userFilter: Filter
+) => {
   const [selectedHistoryChartType, setSelectedHistoryChartType] = useState<
     HistoryChartType
   >("average");
@@ -113,20 +182,55 @@ const TeamMapContainer = () => {
     } & Record<string, number>)[]
   >([]);
 
-  const [targetYearMonth, setTargetYearMonth] = useState<string>(
-    getYearMonth()
-  );
-
-  const [categoriesFilter, setCategoriesFilter] = useState<Filter>([]);
-
-  const [userFilter, setUserFilter] = useState<Filter>([]);
-
   const changeHistoryChartType = useCallback(
     (event: React.ChangeEvent<{ value: HistoryChartType }>) => {
       setSelectedHistoryChartType(event.target.value);
     },
     []
   );
+
+  // データフェッチ時に初期化
+  useEffect(() => {
+    const dataForHistory = createHistoryData(
+      skillmapDataMap,
+      selectedHistoryChartType,
+      userFilter
+    );
+    setHistoryData(dataForHistory);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [skillmapDataMap]);
+
+  // History Chart のタイプ変更時
+  useEffect(() => {
+    const dataForHistory = createHistoryData(
+      skillmapDataMap,
+      selectedHistoryChartType,
+      userFilter
+    );
+    setHistoryData(dataForHistory);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedHistoryChartType]);
+
+  // ユーザーフィルター時
+  useEffect(() => {
+    const dataForHistory = createHistoryData(
+      skillmapDataMap,
+      selectedHistoryChartType,
+      userFilter
+    );
+    setHistoryData(dataForHistory);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userFilter]);
+
+  return { historyData, changeHistoryChartType, selectedHistoryChartType };
+};
+
+const TeamMapContainer = () => {
+  const [skillmapDataMap, loading, error] = useTeamMap();
+
+  const [categoriesFilter, setCategoriesFilter] = useState<Filter>([]);
+  const [userFilter, setUserFilter] = useState<Filter>([]);
 
   const filterCategory = useCallback(
     (targetCategoryId: string) => () => {
@@ -156,83 +260,25 @@ const TeamMapContainer = () => {
     setUserFilter(next);
   };
 
+  const {
+    monthlyScoreData,
+    targetYearMonth,
+    setTargetYearMonth,
+  } = useMonthlyChart(skillmapDataMap, userFilter);
+
+  const {
+    historyData,
+    changeHistoryChartType,
+    selectedHistoryChartType,
+  } = useHistoryChart(skillmapDataMap, userFilter);
+
   // データフェッチ時
   useEffect(() => {
-    const dataForHistory = createHistoryData(
-      skillmapDataMap,
-      selectedHistoryChartType,
-      userFilter
-    );
-    setHistoryData(dataForHistory);
     setCategoriesFilter(createCategoryFilter(skillmapDataMap));
     setUserFilter(createUserFilter(skillmapDataMap));
 
-    const skillmapData = skillmapDataMap[targetYearMonth];
-    if (!skillmapData) return setMonthlyScoreData(null);
-    const { scores } = skillmapData;
-    setMonthlyScoreData(scores);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [skillmapDataMap]);
-
-  // 表示月の切替時
-  useEffect(() => {
-    const skillmapData = skillmapDataMap[targetYearMonth];
-    if (!skillmapData) return setMonthlyScoreData(null);
-
-    const { scores } = skillmapData;
-    const scoreFilteredUser = filterScoresByUser(scores, userFilter);
-    setMonthlyScoreData(scoreFilteredUser);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [targetYearMonth]);
-
-  // ユーザーフィルター時
-  useEffect(() => {
-    const dataForHistory = createHistoryData(
-      skillmapDataMap,
-      selectedHistoryChartType,
-      userFilter
-    );
-    setHistoryData(dataForHistory);
-
-    if (!skillmapDataMap[targetYearMonth]) return;
-    const filteredData = skillmapDataMap[targetYearMonth].scores.map(
-      (score) => {
-        const filteredAnsweres = score.answeres.filter((ans) => {
-          return userFilter.some(
-            (filter) => filter.id === ans.userId && filter.hide === false
-          );
-        });
-        const total = filteredAnsweres.reduce((acc, cur) => acc + cur.point, 0);
-        const average = total / filteredAnsweres.length;
-        const deviation = calculateDeviation(
-          filteredAnsweres.map((ans) => ans.point)
-        );
-
-        return {
-          ...score,
-          total,
-          average,
-          deviation,
-          answeres: filteredAnsweres,
-        };
-      }
-    );
-    setMonthlyScoreData(filteredData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userFilter]);
-
-  // History Chart のタイプ変更時
-  useEffect(() => {
-    const dataForHistory = createHistoryData(
-      skillmapDataMap,
-      selectedHistoryChartType,
-      userFilter
-    );
-    setHistoryData(dataForHistory);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedHistoryChartType]);
 
   return !error && !loading ? (
     <Presentation
