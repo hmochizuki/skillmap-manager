@@ -5,12 +5,14 @@ import {
   createStyles,
   Paper,
   MenuItem,
+  Box,
 } from "@material-ui/core";
 import PageTitle from "components/common/atoms/PageTitle";
 import IconButton from "components/common/atoms/IconButton";
 import Select from "components/common/atoms/Select";
 import { getYearMonth } from "util/getYearMonth";
 import { Score } from "firestore/types/Skillmap";
+import Icon from "components/common/atoms/Icon";
 import HistoryChart from "../molecules/HistoryChart";
 import ScatterChart from "../molecules/ScatterChart";
 import FilterArea, { Filter } from "../molecules/FilterArea";
@@ -29,6 +31,9 @@ const useStyles = makeStyles(() =>
       flexDirection: "column",
       alignItems: "center",
       marginBottom: "20px",
+    },
+    graphTitle: {
+      textAlign: "center",
     },
   })
 );
@@ -49,7 +54,7 @@ const axis = {
 };
 
 type HistoryChartType = "average" | "deviation";
-type HistoryData = (Record<string, string | number> & { yearMonth: string })[];
+type HistoryData = (Record<string, number> & { yearMonth: string })[];
 
 type Period = {
   start: string; // YYYY-mm
@@ -80,7 +85,9 @@ const useHistoryCartPeriod = (
   HistoryData
 ] => {
   const [historyCartPeriod, setHistoryCartPeriod] = useState<Period>({
-    start: historyData[0] && historyData[0].yearMonth,
+    start:
+      historyData[historyData.length - 3] &&
+      historyData[historyData.length - 3].yearMonth,
     end:
       historyData[historyData.length - 1] &&
       historyData[historyData.length - 1].yearMonth,
@@ -146,6 +153,23 @@ const TeamMap: FC<Props> = ({
     : null;
 
   const yLabel = selectedHistoryChartType === "average" ? "平均値" : "標準偏差";
+  // const tabelData = categoriesFilter.map(({ id, name, hide }) => {}
+  const startData = historyData.find(
+    (data) => data.yearMonth === historyCartPeriod.start
+  );
+  const endData = historyData.find(
+    (data) => data.yearMonth === historyCartPeriod.end
+  );
+  const tableData = categoriesFilter
+    .filter(({ hide }) => !hide)
+    .map(({ id, name }) => {
+      return {
+        id,
+        name,
+        start: startData ? Math.floor(startData[id] * 10) / 10 : 0,
+        end: endData ? Math.floor(endData[id] * 10) / 10 : 0,
+      };
+    });
 
   return (
     <>
@@ -171,69 +195,100 @@ const TeamMap: FC<Props> = ({
             axis={axis}
           />
         </div>
-        <div className={classes.graphWrapper}>
-          <p>
-            <Typography variant="h6" noWrap>
-              HistoryChart
-              {/* TODO: 共通化 */}
-            </Typography>
-            <Select
-              id="history-chart-type-select"
-              value={selectedHistoryChartType}
-              label="縦軸"
-              // @ts-ignore
-              onChange={changeHistoryChartType}
-            >
-              <MenuItem value="average">平均値</MenuItem>
-              <MenuItem value="deviation">標準偏差</MenuItem>
-            </Select>
-            <Select
-              id="history-chart-yyyymm-start"
-              value={historyCartPeriod.start}
-              labelId="history-chart-yyyymm-start-label"
-              label="開始月"
-              // @ts-ignore
-              onChange={onChangeHistoryCartPeriodStart}
-            >
-              {historyData.map((e) => (
-                <MenuItem
-                  key={e.yearMonth}
-                  value={e.yearMonth}
-                  disabled={
-                    new Date(e.yearMonth) > new Date(historyCartPeriod.end)
-                  }
-                >
-                  {e.yearMonth}
-                </MenuItem>
-              ))}
-            </Select>
-            <Select
-              id="history-chart-yyyymm-end"
-              value={historyCartPeriod.end}
-              label="終了月"
-              // @ts-ignore
-              onChange={onChangeHistoryCartPeriodEnd}
-            >
-              {historyData.map((e) => (
-                <MenuItem
-                  key={e.yearMonth}
-                  value={e.yearMonth}
-                  disabled={
-                    new Date(e.yearMonth) < new Date(historyCartPeriod.start)
-                  }
-                >
-                  {e.yearMonth}
-                </MenuItem>
-              ))}
-            </Select>
-          </p>
-          <HistoryChart
-            xDataKey="yearMonth"
-            yLabel={yLabel}
-            data={filteredHistoryData}
-            categoriesFilter={categoriesFilter}
-          />
-        </div>
+        <Box display="flex">
+          <div className={classes.graphWrapper}>
+            <p className={classes.graphTitle}>
+              <Typography variant="h6" noWrap>
+                HistoryChart
+              </Typography>
+              <Select
+                id="history-chart-type-select"
+                value={selectedHistoryChartType}
+                label="縦軸"
+                // @ts-ignore
+                onChange={changeHistoryChartType}
+              >
+                <MenuItem value="average">平均値</MenuItem>
+                <MenuItem value="deviation">標準偏差</MenuItem>
+              </Select>
+              <Select
+                id="history-chart-yyyymm-start"
+                value={historyCartPeriod.start}
+                labelId="history-chart-yyyymm-start-label"
+                label="開始月"
+                // @ts-ignore
+                onChange={onChangeHistoryCartPeriodStart}
+              >
+                {historyData.map((e) => (
+                  <MenuItem
+                    key={e.yearMonth}
+                    value={e.yearMonth}
+                    disabled={
+                      new Date(e.yearMonth) > new Date(historyCartPeriod.end)
+                    }
+                  >
+                    {e.yearMonth}
+                  </MenuItem>
+                ))}
+              </Select>
+              <Select
+                id="history-chart-yyyymm-end"
+                value={historyCartPeriod.end}
+                label="終了月"
+                // @ts-ignore
+                onChange={onChangeHistoryCartPeriodEnd}
+              >
+                {historyData.map((e) => (
+                  <MenuItem
+                    key={e.yearMonth}
+                    value={e.yearMonth}
+                    disabled={
+                      new Date(e.yearMonth) < new Date(historyCartPeriod.start)
+                    }
+                  >
+                    {e.yearMonth}
+                  </MenuItem>
+                ))}
+              </Select>
+            </p>
+            <HistoryChart
+              xDataKey="yearMonth"
+              yLabel={yLabel}
+              data={filteredHistoryData}
+              categoriesFilter={categoriesFilter}
+            />
+          </div>
+          <div className={classes.graphWrapper}>
+            <table>
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Diff</th>
+                  <th>Icon</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tableData.map(({ id, name, start, end }) => {
+                  return (
+                    <tr key={id}>
+                      <td>{name}</td>
+                      <td>{Math.floor((end - start) * 10) / 10}</td>
+                      <td>
+                        {end - start === 0 ? (
+                          <Icon name="trendingFlat" size="small" />
+                        ) : end - start > 0 ? (
+                          <Icon name="trendingUp" size="small" />
+                        ) : (
+                          <Icon name="trendingDown" size="small" />
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </Box>
         <FilterArea
           title="User Filter"
           items={userFilter}

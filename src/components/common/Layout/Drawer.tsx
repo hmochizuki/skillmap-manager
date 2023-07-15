@@ -110,11 +110,6 @@ const Drawer: React.FC<Props> = ({ handleDrawerClose, open }) => {
         history.push(routeNames.teamMap);
       },
     },
-    {
-      title: "TimelineGraphs",
-      icon: <Icon name="timelineGraphs" />,
-      text: "TimelineGraphs",
-    },
   ];
 
   return (

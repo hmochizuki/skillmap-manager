@@ -5,7 +5,6 @@ import RightClose from "@material-ui/icons/ChevronRight";
 import CheckBox from "@material-ui/icons/CheckBox";
 import Account from "@material-ui/icons/AccountBox";
 import Settings from "@material-ui/icons/Settings";
-import Timeline from "@material-ui/icons/TrendingUp";
 import Equalizer from "@material-ui/icons/Equalizer";
 import Help from "@material-ui/icons/Help";
 import Create from "@material-ui/icons/Create";
@@ -16,6 +15,8 @@ import AddCircle from "@material-ui/icons/AddCircle";
 import ExitToApp from "@material-ui/icons/ExitToApp";
 import Menu from "@material-ui/icons/Menu";
 import Delete from "@material-ui/icons/Delete";
+import TrendingUp from "@material-ui/icons/TrendingUp";
+import { TrendingDown, TrendingFlat } from "@material-ui/icons";
 
 export type IconName =
   | "edit"
@@ -32,6 +33,9 @@ export type IconName =
   | "add"
   | "signout"
   | "menu"
+  | "trendingDown"
+  | "trendingFlat"
+  | "trendingUp"
   | "delete"
   | "error";
 
@@ -59,8 +63,6 @@ const Icon: React.FC<Props> = ({ name, size }) => {
       return <Account fontSize={size} className={classes.icon} />;
     case "teamSkillmap":
       return <Equalizer fontSize={size} className={classes.icon} />;
-    case "timelineGraphs":
-      return <Timeline fontSize={size} className={classes.icon} />;
     case "settings":
       return <Settings fontSize={size} className={classes.icon} />;
     case "help":
@@ -79,6 +81,12 @@ const Icon: React.FC<Props> = ({ name, size }) => {
       return <ExitToApp fontSize={size} className={classes.icon} />;
     case "menu":
       return <Menu fontSize={size} className={classes.icon} />;
+    case "trendingUp":
+      return <TrendingUp fontSize={size} className={classes.icon} />;
+    case "trendingFlat":
+      return <TrendingFlat fontSize={size} className={classes.icon} />;
+    case "trendingDown":
+      return <TrendingDown fontSize={size} className={classes.icon} />;
     case "delete":
       return <Delete fontSize={size} className={classes.icon} />;
     default:
