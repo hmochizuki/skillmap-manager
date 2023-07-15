@@ -13,6 +13,8 @@ import Select from "components/common/atoms/Select";
 import { getYearMonth } from "util/getYearMonth";
 import { Score } from "firestore/types/Skillmap";
 import Icon from "components/common/atoms/Icon";
+import { PrimaryButton } from "components/common/atoms/Buttons";
+import { unique } from "util/unique";
 import HistoryChart from "../molecules/HistoryChart";
 import ScatterChart from "../molecules/ScatterChart";
 import FilterArea, { Filter } from "../molecules/FilterArea";
@@ -54,7 +56,10 @@ const axis = {
 };
 
 type HistoryChartType = "average" | "deviation";
-type HistoryData = (Record<string, number> & { yearMonth: string })[];
+type HistoryData = (Record<string, number> & {
+  yearMonth: string;
+  answeredUsers: { id: string; name: string }[];
+})[];
 
 type Period = {
   start: string; // YYYY-mm
@@ -74,6 +79,7 @@ type Props = {
   filterCategory: (categoryId: string) => () => void;
   userFilter: Filter;
   filterUser: (id: string) => () => void;
+  initUserFilter: (ids: string[]) => void;
 };
 
 const useHistoryCartPeriod = (
@@ -125,6 +131,7 @@ const TeamMap: FC<Props> = ({
   filterCategory,
   userFilter,
   filterUser,
+  initUserFilter,
 }) => {
   const classes = useStyles();
 
@@ -153,14 +160,13 @@ const TeamMap: FC<Props> = ({
     : null;
 
   const yLabel = selectedHistoryChartType === "average" ? "平均値" : "標準偏差";
-  // const tabelData = categoriesFilter.map(({ id, name, hide }) => {}
   const startData = historyData.find(
     (data) => data.yearMonth === historyCartPeriod.start
   );
   const endData = historyData.find(
     (data) => data.yearMonth === historyCartPeriod.end
   );
-  const tableData = categoriesFilter
+  const trendData = categoriesFilter
     .filter(({ hide }) => !hide)
     .map(({ id, name }) => {
       return {
@@ -269,7 +275,7 @@ const TeamMap: FC<Props> = ({
                 </tr>
               </thead>
               <tbody>
-                {tableData.map(({ id, name, start, end }) => {
+                {trendData.map(({ id, name, start, end }) => {
                   return (
                     <tr key={id}>
                       <td>{name}</td>
@@ -290,6 +296,27 @@ const TeamMap: FC<Props> = ({
             </table>
           </div>
         </Box>
+        <PrimaryButton
+          text="表示期間に全て回答しているユーザのみにフィルターする"
+          onClick={() => {
+            const historyDataWithinPeriod = historyData.filter((data) => {
+              const date = new Date(data.yearMonth);
+
+              return (
+                date >= new Date(historyCartPeriod.start) &&
+                date <= new Date(historyCartPeriod.end)
+              );
+            });
+            const answers = unique(
+              historyDataWithinPeriod
+                .map((d) => d.answeredUsers)
+                .flat()
+                .map(({ id }) => id)
+            );
+
+            initUserFilter(answers);
+          }}
+        />
         <FilterArea
           title="User Filter"
           items={userFilter}

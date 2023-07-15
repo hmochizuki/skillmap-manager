@@ -41,7 +41,7 @@ const createHistoryData = (
   userFilter: Filter
 ) => {
   const dataForHistory = Object.entries(skillmapDataMap).map(
-    ([yearMonth, { scores }]) => {
+    ([yearMonth, { scores, answeredUsers }]) => {
       const pointByCategories = scores.reduce((acc, score) => {
         const { average, deviation } = calculateScoreFromUserFilter(
           score,
@@ -53,9 +53,12 @@ const createHistoryData = (
         return { ...acc, [score.categoryId]: s };
       }, {});
 
-      return { yearMonth, ...pointByCategories };
+      return { yearMonth, answeredUsers, ...pointByCategories };
     }
-  ) as ({ yearMonth: string } & Record<string, number>)[];
+  ) as ({
+    yearMonth: string;
+    answeredUsers: { id: string; name: string }[];
+  } & Record<string, number>)[];
 
   return dataForHistory;
 };
@@ -104,7 +107,10 @@ const TeamMapContainer = () => {
   >("average");
 
   const [historyData, setHistoryData] = useState<
-    ({ yearMonth: string } & Record<string, number>)[]
+    ({
+      yearMonth: string;
+      answeredUsers: { id: string; name: string }[];
+    } & Record<string, number>)[]
   >([]);
 
   const [targetYearMonth, setTargetYearMonth] = useState<string>(
@@ -142,6 +148,13 @@ const TeamMapContainer = () => {
     },
     [userFilter]
   );
+  const initUserFilter = (targetUserIds: string[]) => {
+    const next = userFilter.map((user) => ({
+      ...user,
+      hide: !targetUserIds.includes(user.id),
+    }));
+    setUserFilter(next);
+  };
 
   // データフェッチ時
   useEffect(() => {
@@ -233,6 +246,7 @@ const TeamMapContainer = () => {
       filterCategory={filterCategory}
       filterUser={filterUser}
       userFilter={userFilter}
+      initUserFilter={initUserFilter}
     />
   ) : (
     <Progress />

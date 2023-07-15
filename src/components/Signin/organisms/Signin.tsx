@@ -21,7 +21,7 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const Signin: React.FC = () => {
+const SignIn: React.FC = () => {
   const classes = useStyles();
   const { auth } = useContext(FirebaseContext);
   const { setCredential } = useContext(UserContext);
@@ -58,4 +58,4 @@ const Signin: React.FC = () => {
   );
 };
 
-export default memo(Signin);
+export default memo(SignIn);
