@@ -182,6 +182,28 @@ const useHistoryChart = (
     } & Record<string, number>)[]
   >([]);
 
+  const [historyCartPeriod, setHistoryCartPeriod] = useState<{
+    start: string; // YYYY-mm
+    end: string; // YYYY-mm
+  }>({
+    start: "",
+    end: "",
+  });
+
+  const onChangeHistoryCartPeriod = (target: "start" | "end") => (
+    event: React.ChangeEvent<{ value: string }>
+  ) =>
+    setHistoryCartPeriod({
+      ...historyCartPeriod,
+      [target]: event.target.value,
+    });
+
+  const filteredHistoryData = historyData.filter(
+    (data) =>
+      new Date(data.yearMonth) >= new Date(historyCartPeriod.start) &&
+      new Date(data.yearMonth) <= new Date(historyCartPeriod.end)
+  );
+
   const changeHistoryChartType = useCallback(
     (event: React.ChangeEvent<{ value: HistoryChartType }>) => {
       setSelectedHistoryChartType(event.target.value);
@@ -197,6 +219,14 @@ const useHistoryChart = (
       userFilter
     );
     setHistoryData(dataForHistory);
+    setHistoryCartPeriod({
+      start:
+        dataForHistory[dataForHistory.length - 3] &&
+        dataForHistory[dataForHistory.length - 3].yearMonth,
+      end:
+        dataForHistory[dataForHistory.length - 1] &&
+        dataForHistory[dataForHistory.length - 1].yearMonth,
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [skillmapDataMap]);
@@ -223,13 +253,19 @@ const useHistoryChart = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userFilter]);
 
-  return { historyData, changeHistoryChartType, selectedHistoryChartType };
+  return {
+    historyData,
+    changeHistoryChartType,
+    selectedHistoryChartType,
+    historyCartPeriod,
+    onChangeHistoryCartPeriod,
+    filteredHistoryData,
+  };
 };
 
 const useFilters = (skillmapDataMap: SkillmapDataMap) => {
   const [categoriesFilter, setCategoriesFilter] = useState<Filter>([]);
   const [userFilter, setUserFilter] = useState<Filter>([]);
-
   const filterCategory = useCallback(
     (targetCategoryId: string) => () => {
       const next = categoriesFilter.map((category) =>
@@ -298,6 +334,9 @@ const TeamMapContainer = () => {
     historyData,
     changeHistoryChartType,
     selectedHistoryChartType,
+    historyCartPeriod,
+    onChangeHistoryCartPeriod,
+    filteredHistoryData,
   } = useHistoryChart(skillmapDataMap, userFilter);
 
   return !error && !loading ? (
@@ -313,6 +352,9 @@ const TeamMapContainer = () => {
       filterUser={filterUser}
       userFilter={userFilter}
       initUserFilter={initUserFilter}
+      historyCartPeriod={historyCartPeriod}
+      onChangeHistoryCartPeriod={onChangeHistoryCartPeriod}
+      filteredHistoryData={filteredHistoryData}
     />
   ) : (
     <Progress />

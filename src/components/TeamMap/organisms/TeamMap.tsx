@@ -1,4 +1,4 @@
-import React, { memo, FC, useState } from "react";
+import React, { memo, FC } from "react";
 import {
   Typography,
   makeStyles,
@@ -66,7 +66,7 @@ type Period = {
   end: string; // YYYY-mm
 };
 
-type Props = {
+export type Props = {
   monthlyData: Score[] | null;
   historyData: HistoryData;
   selectedHistoryChartType: HistoryChartType;
@@ -80,44 +80,11 @@ type Props = {
   userFilter: Filter;
   filterUser: (id: string) => () => void;
   initUserFilter: (ids: string[]) => void;
-};
-
-const useHistoryCartPeriod = (
-  historyData: HistoryData
-): [
-  Period,
-  (event: React.ChangeEvent<{ value: string }>) => void,
-  (event: React.ChangeEvent<{ value: string }>) => void,
-  HistoryData
-] => {
-  const [historyCartPeriod, setHistoryCartPeriod] = useState<Period>({
-    start:
-      historyData[historyData.length - 3] &&
-      historyData[historyData.length - 3].yearMonth,
-    end:
-      historyData[historyData.length - 1] &&
-      historyData[historyData.length - 1].yearMonth,
-  });
-  const onChangeHistoryCartPeriod = (target: "start" | "end") => (
-    event: React.ChangeEvent<{ value: string }>
-  ) =>
-    setHistoryCartPeriod({
-      ...historyCartPeriod,
-      [target]: event.target.value,
-    });
-
-  const filteredHistoryData = historyData.filter(
-    (data) =>
-      new Date(data.yearMonth) >= new Date(historyCartPeriod.start) &&
-      new Date(data.yearMonth) <= new Date(historyCartPeriod.end)
-  );
-
-  return [
-    historyCartPeriod,
-    onChangeHistoryCartPeriod("start"),
-    onChangeHistoryCartPeriod("end"),
-    filteredHistoryData,
-  ];
+  historyCartPeriod: Period;
+  onChangeHistoryCartPeriod: (
+    target: "start" | "end"
+  ) => (event: React.ChangeEvent<{ value: string }>) => void;
+  filteredHistoryData: HistoryData;
 };
 
 const TeamMap: FC<Props> = ({
@@ -132,15 +99,11 @@ const TeamMap: FC<Props> = ({
   userFilter,
   filterUser,
   initUserFilter,
+  historyCartPeriod,
+  onChangeHistoryCartPeriod,
+  filteredHistoryData,
 }) => {
   const classes = useStyles();
-
-  const [
-    historyCartPeriod,
-    onChangeHistoryCartPeriodStart,
-    onChangeHistoryCartPeriodEnd,
-    filteredHistoryData,
-  ] = useHistoryCartPeriod(historyData);
 
   const changeTargetYeahMonth = (addMonth: number) => () => {
     const d = yearMonth.split("-").map((e) => parseInt(e, 10));
@@ -223,7 +186,7 @@ const TeamMap: FC<Props> = ({
                 labelId="history-chart-yyyymm-start-label"
                 label="開始月"
                 // @ts-ignore
-                onChange={onChangeHistoryCartPeriodStart}
+                onChange={onChangeHistoryCartPeriod("start")}
               >
                 {/* reverse は元の配列の参照を返す(不変性を破壊する)ため、スプレッドしてから reverse する */}
                 {[...historyData].reverse().map((e) => (
@@ -243,7 +206,7 @@ const TeamMap: FC<Props> = ({
                 value={historyCartPeriod.end}
                 label="終了月"
                 // @ts-ignore
-                onChange={onChangeHistoryCartPeriodEnd}
+                onChange={onChangeHistoryCartPeriod("end")}
               >
                 {[...historyData].reverse().map((e) => (
                   <MenuItem
