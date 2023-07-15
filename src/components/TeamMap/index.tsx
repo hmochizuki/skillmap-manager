@@ -226,9 +226,7 @@ const useHistoryChart = (
   return { historyData, changeHistoryChartType, selectedHistoryChartType };
 };
 
-const TeamMapContainer = () => {
-  const [skillmapDataMap, loading, error] = useTeamMap();
-
+const useFilters = (skillmapDataMap: SkillmapDataMap) => {
   const [categoriesFilter, setCategoriesFilter] = useState<Filter>([]);
   const [userFilter, setUserFilter] = useState<Filter>([]);
 
@@ -243,6 +241,15 @@ const TeamMapContainer = () => {
     },
     [categoriesFilter]
   );
+
+  const initUserFilter = (targetUserIds: string[]) => {
+    const next = userFilter.map((user) => ({
+      ...user,
+      hide: !targetUserIds.includes(user.id),
+    }));
+    setUserFilter(next);
+  };
+
   const filterUser = useCallback(
     (targetUserId: string) => () => {
       const next = userFilter.map((user) =>
@@ -252,13 +259,34 @@ const TeamMapContainer = () => {
     },
     [userFilter]
   );
-  const initUserFilter = (targetUserIds: string[]) => {
-    const next = userFilter.map((user) => ({
-      ...user,
-      hide: !targetUserIds.includes(user.id),
-    }));
-    setUserFilter(next);
+
+  // データフェッチ時
+  useEffect(() => {
+    setCategoriesFilter(createCategoryFilter(skillmapDataMap));
+    setUserFilter(createUserFilter(skillmapDataMap));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [skillmapDataMap]);
+
+  return {
+    categoriesFilter,
+    userFilter,
+    filterCategory,
+    initUserFilter,
+    filterUser,
   };
+};
+
+const TeamMapContainer = () => {
+  const [skillmapDataMap, loading, error] = useTeamMap();
+
+  const {
+    categoriesFilter,
+    userFilter,
+    filterCategory,
+    initUserFilter,
+    filterUser,
+  } = useFilters(skillmapDataMap);
 
   const {
     monthlyScoreData,
@@ -271,14 +299,6 @@ const TeamMapContainer = () => {
     changeHistoryChartType,
     selectedHistoryChartType,
   } = useHistoryChart(skillmapDataMap, userFilter);
-
-  // データフェッチ時
-  useEffect(() => {
-    setCategoriesFilter(createCategoryFilter(skillmapDataMap));
-    setUserFilter(createUserFilter(skillmapDataMap));
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [skillmapDataMap]);
 
   return !error && !loading ? (
     <Presentation
