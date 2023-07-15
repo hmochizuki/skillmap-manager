@@ -219,7 +219,8 @@ const TeamMap: FC<Props> = ({
                 // @ts-ignore
                 onChange={onChangeHistoryCartPeriodStart}
               >
-                {historyData.map((e) => (
+                {/* reverse は元の配列の参照を返す(不変性を破壊する)ため、スプレッドしてから reverse する */}
+                {[...historyData].reverse().map((e) => (
                   <MenuItem
                     key={e.yearMonth}
                     value={e.yearMonth}
@@ -238,7 +239,7 @@ const TeamMap: FC<Props> = ({
                 // @ts-ignore
                 onChange={onChangeHistoryCartPeriodEnd}
               >
-                {historyData.map((e) => (
+                {[...historyData].reverse().map((e) => (
                   <MenuItem
                     key={e.yearMonth}
                     value={e.yearMonth}
