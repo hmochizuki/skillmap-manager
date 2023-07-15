@@ -9,7 +9,6 @@ export type Score = {
 
 export type SkillmapDocument = {
   yearMonth: string;
-  // 過去のデータパターンでは answeredUsers: string[]がありうる
   answeredUsers: { id: string; name: string }[];
   scores: Score[];
   updatedAt: number;

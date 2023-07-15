@@ -68,7 +68,6 @@ const createUserFilter = (
   );
 
   const filter = usersMaybeDuplicated.reduce<Filter>((acc, user) => {
-    if (typeof user === "string") return acc; // 過去のデータパターンに対する互換性担保. 早くマイグレーションしたい
     if (acc.find(({ id }) => id === user.id)) return acc;
 
     return [...acc, { ...user, hide: false }];
