@@ -100,18 +100,19 @@ const createCategoryFilter = (
 
 const useMonthlyChart = (
   skillmapDataMap: SkillmapDataMap,
-  userFilter: Filter
+  userFilter: Filter,
+  categoriesFilter: Filter
 ) => {
   const [monthlyScoreData, setMonthlyScoreData] = useState<Score[] | null>(
     null
   );
-  const [targetYearMonth, setTargetYearMonth] = useState<string>(
+  const [selectedYearMonth, setSelectedYearMonth] = useState<string>(
     getYearMonth()
   );
 
   // データフェッチ時に初期化
   useEffect(() => {
-    const skillmapData = skillmapDataMap[targetYearMonth];
+    const skillmapData = skillmapDataMap[selectedYearMonth];
     if (!skillmapData) return setMonthlyScoreData(null);
     const { scores } = skillmapData;
     setMonthlyScoreData(scores);
@@ -121,7 +122,7 @@ const useMonthlyChart = (
 
   // 表示月の切替時
   useEffect(() => {
-    const skillmapData = skillmapDataMap[targetYearMonth];
+    const skillmapData = skillmapDataMap[selectedYearMonth];
     if (!skillmapData) return setMonthlyScoreData(null);
 
     const { scores } = skillmapData;
@@ -129,41 +130,60 @@ const useMonthlyChart = (
     setMonthlyScoreData(scoreFilteredUser);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [targetYearMonth]);
+  }, [selectedYearMonth]);
 
   // ユーザフィルターの変更時
   useEffect(() => {
-    if (!skillmapDataMap[targetYearMonth]) return;
-    const filteredData = skillmapDataMap[targetYearMonth].scores.map(
-      (score) => {
-        const filteredAnsweres = score.answeres.filter((ans) => {
-          return userFilter.some(
-            (filter) => filter.id === ans.userId && filter.hide === false
+    // if (!monthlyScoreData || !monthlyScoreData[selectedYearMonth]) return;
+    const filteredData = monthlyScoreData
+      ? monthlyScoreData.map((score) => {
+          const filteredAnswers = score.answeres.filter((ans) => {
+            return userFilter.some(
+              (filter) => filter.id === ans.userId && filter.hide === false
+            );
+          });
+          const total = filteredAnswers.reduce(
+            (acc, cur) => acc + cur.point,
+            0
           );
-        });
-        const total = filteredAnsweres.reduce((acc, cur) => acc + cur.point, 0);
-        const average = total / filteredAnsweres.length;
-        const deviation = calculateDeviation(
-          filteredAnsweres.map((ans) => ans.point)
-        );
+          const average = total / filteredAnswers.length;
+          const deviation = calculateDeviation(
+            filteredAnswers.map((ans) => ans.point)
+          );
 
-        return {
-          ...score,
-          total,
-          average,
-          deviation,
-          answeres: filteredAnsweres,
-        };
-      }
-    );
+          return {
+            ...score,
+            total,
+            average,
+            deviation,
+            answeres: filteredAnswers,
+          };
+        })
+      : null;
     setMonthlyScoreData(filteredData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userFilter]);
 
+  // カテゴリーフィルターの変更時
+  // TODO：ユーザとカテゴリのフィルターを交互に操作すると変になるようになっちゃった
+  useEffect(() => {
+    // if (!skillmapDataMap[selectedYearMonth]) return;
+    const filteredData = monthlyScoreData
+      ? monthlyScoreData.map((d) => {
+          const filter = categoriesFilter.find(({ id }) => id === d.categoryId);
+          const hide = filter ? filter.hide : true;
+
+          return { ...d, hide };
+        })
+      : null;
+    setMonthlyScoreData(filteredData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoriesFilter]);
+
   return {
     monthlyScoreData,
-    targetYearMonth,
-    setTargetYearMonth,
+    selectedYearMonth,
+    setSelectedYearMonth,
   };
 };
 
@@ -198,7 +218,7 @@ const useHistoryChart = (
       [target]: event.target.value,
     });
 
-  const filteredHistoryData = historyData.filter(
+  const historyDataWithinDisplayPeriod = historyData.filter(
     (data) =>
       new Date(data.yearMonth) >= new Date(historyCartPeriod.start) &&
       new Date(data.yearMonth) <= new Date(historyCartPeriod.end)
@@ -259,7 +279,7 @@ const useHistoryChart = (
     selectedHistoryChartType,
     historyCartPeriod,
     onChangeHistoryCartPeriod,
-    filteredHistoryData,
+    historyDataWithinDisplayPeriod,
   };
 };
 
@@ -326,9 +346,9 @@ const TeamMapContainer = () => {
 
   const {
     monthlyScoreData,
-    targetYearMonth,
-    setTargetYearMonth,
-  } = useMonthlyChart(skillmapDataMap, userFilter);
+    selectedYearMonth,
+    setSelectedYearMonth,
+  } = useMonthlyChart(skillmapDataMap, userFilter, categoriesFilter);
 
   const {
     historyData,
@@ -336,7 +356,7 @@ const TeamMapContainer = () => {
     selectedHistoryChartType,
     historyCartPeriod,
     onChangeHistoryCartPeriod,
-    filteredHistoryData,
+    historyDataWithinDisplayPeriod,
   } = useHistoryChart(skillmapDataMap, userFilter);
 
   return !error && !loading ? (
@@ -345,8 +365,8 @@ const TeamMapContainer = () => {
       selectedHistoryChartType={selectedHistoryChartType}
       changeHistoryChartType={changeHistoryChartType}
       historyData={historyData}
-      yearMonth={targetYearMonth}
-      setYearMonth={setTargetYearMonth}
+      selectedYearMonth={selectedYearMonth}
+      setSelectedYearMonth={setSelectedYearMonth}
       categoriesFilter={categoriesFilter}
       filterCategory={filterCategory}
       filterUser={filterUser}
@@ -354,7 +374,7 @@ const TeamMapContainer = () => {
       initUserFilter={initUserFilter}
       historyCartPeriod={historyCartPeriod}
       onChangeHistoryCartPeriod={onChangeHistoryCartPeriod}
-      filteredHistoryData={filteredHistoryData}
+      historyDataWithinDisplayPeriod={historyDataWithinDisplayPeriod}
     />
   ) : (
     <Progress />

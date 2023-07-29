@@ -66,12 +66,18 @@ type Period = {
   end: string; // YYYY-mm
 };
 
+type MonthlyChartProps = {
+  monthlyData: Score[] | null;
+  selectedYearMonth: string;
+  setSelectedYearMonth: (ym: string) => void;
+};
+
 export type Props = {
   monthlyData: Score[] | null;
   historyData: HistoryData;
   selectedHistoryChartType: HistoryChartType;
-  yearMonth: string;
-  setYearMonth: (ym: string) => void;
+  selectedYearMonth: string;
+  setSelectedYearMonth: (ym: string) => void;
   changeHistoryChartType: (
     event: React.ChangeEvent<{ value: HistoryChartType }>
   ) => void;
@@ -84,15 +90,15 @@ export type Props = {
   onChangeHistoryCartPeriod: (
     target: "start" | "end"
   ) => (event: React.ChangeEvent<{ value: string }>) => void;
-  filteredHistoryData: HistoryData;
+  historyDataWithinDisplayPeriod: HistoryData;
 };
 
 const TeamMap: FC<Props> = ({
-  monthlyData,
+  monthlyData, // 不要。カテゴリー・ユーザでフィルター済みのデータに変更する
   historyData,
   selectedHistoryChartType,
-  yearMonth,
-  setYearMonth,
+  selectedYearMonth,
+  setSelectedYearMonth,
   changeHistoryChartType,
   categoriesFilter,
   filterCategory,
@@ -101,26 +107,17 @@ const TeamMap: FC<Props> = ({
   initUserFilter,
   historyCartPeriod,
   onChangeHistoryCartPeriod,
-  filteredHistoryData,
+  historyDataWithinDisplayPeriod,
 }) => {
   const classes = useStyles();
 
   const changeTargetYeahMonth = (addMonth: number) => () => {
-    const d = yearMonth.split("-").map((e) => parseInt(e, 10));
+    const d = selectedYearMonth.split("-").map((e) => parseInt(e, 10));
     // @ts-ignore
     const prev = new Date(d[0], (d[1] - 1).toString().padStart(2, "0"));
     prev.setMonth(prev.getMonth() + addMonth);
-    setYearMonth(getYearMonth(prev));
+    setSelectedYearMonth(getYearMonth(prev));
   };
-
-  const filteredMonthlyData = monthlyData
-    ? monthlyData.map((d) => {
-        const filter = categoriesFilter.find(({ id }) => id === d.categoryId);
-        const hide = filter ? filter.hide : true;
-
-        return { ...d, hide };
-      })
-    : null;
 
   const yLabel = selectedHistoryChartType === "average" ? "平均値" : "標準偏差";
   const startData = historyData.find(
@@ -152,17 +149,13 @@ const TeamMap: FC<Props> = ({
               iconName="leftClose"
               onClick={changeTargetYeahMonth(-1)}
             />
-            MonthlyChart[{yearMonth}]
+            MonthlyChart[{selectedYearMonth}]
             <IconButton
               iconName="rightClose"
               onClick={changeTargetYeahMonth(1)}
             />
           </Typography>
-          <ScatterChart
-            dataKey="category"
-            data={filteredMonthlyData}
-            axis={axis}
-          />
+          <ScatterChart dataKey="category" data={monthlyData} axis={axis} />
         </div>
         <Box display="flex">
           <div className={classes.graphWrapper}>
@@ -224,7 +217,7 @@ const TeamMap: FC<Props> = ({
             <HistoryChart
               xDataKey="yearMonth"
               yLabel={yLabel}
-              data={filteredHistoryData}
+              data={historyDataWithinDisplayPeriod}
               categoriesFilter={categoriesFilter}
             />
           </div>
@@ -262,16 +255,8 @@ const TeamMap: FC<Props> = ({
         <PrimaryButton
           text="表示期間に全て回答しているユーザのみにフィルターする"
           onClick={() => {
-            const historyDataWithinPeriod = historyData.filter((data) => {
-              const date = new Date(data.yearMonth);
-
-              return (
-                date >= new Date(historyCartPeriod.start) &&
-                date <= new Date(historyCartPeriod.end)
-              );
-            });
             const answers = unique(
-              historyDataWithinPeriod
+              historyDataWithinDisplayPeriod
                 .map((d) => d.answeredUsers)
                 .flat()
                 .map(({ id }) => id)
