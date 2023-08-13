@@ -17,7 +17,7 @@ export const updateUserDocument = async (
   db: firebase.firestore.Firestore,
   data: Omit<UserDocument, "teams" | "createdAt" | "updatedAt">
 ): Promise<void> => {
-  const userRef = await db.collection(collectionNames.users).doc(data.id);
+  const userRef = db.collection(collectionNames.users).doc(data.id);
   const now = new Date().getTime();
 
   return userRef.update({

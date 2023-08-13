@@ -66,12 +66,6 @@ type Period = {
   end: string; // YYYY-mm
 };
 
-type MonthlyChartProps = {
-  monthlyData: Score[] | null;
-  selectedYearMonth: string;
-  setSelectedYearMonth: (ym: string) => void;
-};
-
 export type Props = {
   monthlyData: Score[] | null;
   historyData: HistoryData;

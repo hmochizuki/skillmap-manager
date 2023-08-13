@@ -134,7 +134,6 @@ const useMonthlyChart = (
 
   // ユーザフィルターの変更時
   useEffect(() => {
-    // if (!monthlyScoreData || !monthlyScoreData[selectedYearMonth]) return;
     const filteredData = monthlyScoreData
       ? monthlyScoreData.map((score) => {
           const filteredAnswers = score.answeres.filter((ans) => {
@@ -165,9 +164,7 @@ const useMonthlyChart = (
   }, [userFilter]);
 
   // カテゴリーフィルターの変更時
-  // TODO：ユーザとカテゴリのフィルターを交互に操作すると変になるようになっちゃった
   useEffect(() => {
-    // if (!skillmapDataMap[selectedYearMonth]) return;
     const filteredData = monthlyScoreData
       ? monthlyScoreData.map((d) => {
           const filter = categoriesFilter.find(({ id }) => id === d.categoryId);
