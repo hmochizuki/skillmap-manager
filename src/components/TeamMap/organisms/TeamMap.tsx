@@ -14,7 +14,6 @@ import { getYearMonth } from "util/getYearMonth";
 import { Score } from "firestore/types/Skillmap";
 import Icon from "components/common/atoms/Icon";
 import { PrimaryButton } from "components/common/atoms/Buttons";
-import { unique } from "util/unique";
 import HistoryChart from "../molecules/HistoryChart";
 import ScatterChart from "../molecules/ScatterChart";
 import FilterArea, { Filter } from "../molecules/FilterArea";
@@ -249,14 +248,17 @@ const TeamMap: FC<Props> = ({
         <PrimaryButton
           text="表示期間に全て回答しているユーザのみにフィルターする"
           onClick={() => {
-            const answers = unique(
-              historyDataWithinDisplayPeriod
-                .map((d) => d.answeredUsers)
-                .flat()
-                .map(({ id }) => id)
+            const answeredUsers = historyDataWithinDisplayPeriod.map((d) =>
+              d.answeredUsers.map(({ id }) => id)
             );
 
-            initUserFilter(answers);
+            const answeredUserIds = answeredUsers.reduce((pre, cur) => {
+              const next = cur.filter((id) => pre.includes(id));
+
+              return next;
+            }, answeredUsers[0]);
+
+            initUserFilter(answeredUserIds);
           }}
         />
         <FilterArea
